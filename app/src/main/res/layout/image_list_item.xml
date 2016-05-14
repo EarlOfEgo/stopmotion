@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="#124567"
+    android:orientation="vertical"
+    card_view:cardCornerRadius="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:layout_alignParentBottom="true"
+            android:background="#4D000000"
+            android:padding="4dp">
+
+            <ImageView
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:id="@+id/share_button"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_alignParentEnd="true"
+                android:src="@android:drawable/ic_menu_share" />
+
+            <TextView
+                android:layout_alignParentStart="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:id="@+id/image_text"
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent"
+                android:textColor="#ffffff"
+                android:layout_toStartOf="@+id/share_button"
+                tools:text="BLA LBA" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_above="@+id/info_layout"
+            android:id="@+id/image_view"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
