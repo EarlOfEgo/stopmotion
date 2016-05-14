@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import com.sthagios.stopmotion.R
+import com.sthagios.stopmotion.create.CreateNewImage
+import com.sthagios.stopmotion.utils.startActivity
 import kotlinx.android.synthetic.main.activity_image_list.*
 
 /**
@@ -45,8 +47,12 @@ class ImageList : AppCompatActivity() {
 
         recyclerViewImageList.adapter = adapter
 
-
         recyclerViewImageList.addItemDecoration(ItemDecorator())
 
+        fab.setOnClickListener({ view -> createNewImage() })
+    }
+
+    private fun createNewImage() {
+        startActivity<CreateNewImage>()
     }
 }
