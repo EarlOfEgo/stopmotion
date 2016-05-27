@@ -35,6 +35,9 @@ dependencies {
 
     compile "com.android.support:design:$support_lib_version"
 
+    //Firebase
+    apply plugin: 'com.google.gms.google-services'
+
     compile 'com.github.bumptech.glide:glide:3.7.0'
 }
 buildscript {
