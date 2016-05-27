@@ -38,12 +38,6 @@ class ImageList : AppCompatActivity() {
         adapter.addItem("LOLOLO")
         adapter.addItem("LOLOLO")
         adapter.addItem("LOLOLO")
-        adapter.addItem("LOLOLO")
-        adapter.addItem("LOLOLO")
-        adapter.addItem("LOLOLO")
-        adapter.addItem("LOLOLO")
-        adapter.addItem("LOLOLO")
-        adapter.addItem("LOLOLO")
 
         recyclerViewImageList.adapter = adapter
 
