@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
@@ -30,8 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:text="3 sec"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            tools:text="3 sec" />
     </LinearLayout>
 
 
@@ -54,11 +55,12 @@
             android:src="@drawable/ic_burst_mode_black_24dp" />
 
         <TextView
+            android:id="@+id/amount_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:text="5"
-            android:textSize="28sp" />
+            android:textSize="24sp"
+            tools:text="5" />
     </LinearLayout>
 
     <android.support.v7.widget.CardView

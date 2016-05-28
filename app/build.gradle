@@ -38,7 +38,10 @@ dependencies {
     //Firebase
     apply plugin: 'com.google.gms.google-services'
 
+
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.afollestad.material-dialogs:core:0.8.5.9'
+    compile 'com.android.support:support-v4:23.4.0'
 }
 buildscript {
     ext.kotlin_version = '1.0.1-2'

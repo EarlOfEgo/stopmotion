@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="burst_times">
+        <item>@string/burst_time_1</item>
+        <item>@string/burst_time_2</item>
+        <item>@string/burst_time_3</item>
+        <item>@string/burst_time_5</item>
+    </string-array>
+</resources>
