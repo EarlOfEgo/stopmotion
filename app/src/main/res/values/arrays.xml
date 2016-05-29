@@ -4,6 +4,7 @@
         <item>@string/burst_time_1</item>
         <item>@string/burst_time_2</item>
         <item>@string/burst_time_3</item>
+        <item>@string/burst_time_4</item>
         <item>@string/burst_time_5</item>
     </string-array>
 </resources>

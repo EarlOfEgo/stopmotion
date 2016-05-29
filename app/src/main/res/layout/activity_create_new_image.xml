@@ -8,6 +8,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+
     <LinearLayout
         android:id="@+id/container_time"
         android:layout_width="wrap_content"
@@ -99,5 +100,21 @@
         android:background="@drawable/ripple_primary_rectangle_round_corners"
         android:padding="8dp"
         android:src="@drawable/ic_camera_front_black_48dp" />
+
+    <FrameLayout
+        android:id="@+id/progress_bar"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff">
+
+        <ProgressBar
+            android:id="@+id/loading_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="#000000"
+            android:indeterminateTintMode="src_atop" />
+    </FrameLayout>
 
 </RelativeLayout>

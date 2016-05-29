@@ -38,6 +38,11 @@ dependencies {
     //Firebase
     apply plugin: 'com.google.gms.google-services'
 
+    //Rx
+    compile 'io.reactivex:rxkotlin:0.55.0'
+    compile 'io.reactivex:rxandroid:1.2.0'
+    compile 'io.reactivex:rxjava:1.1.5'
+
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.afollestad.material-dialogs:core:0.8.5.9'
