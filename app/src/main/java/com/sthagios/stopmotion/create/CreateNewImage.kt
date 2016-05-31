@@ -333,7 +333,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
                 // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
                 // garbage capture data.
-                mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture::javaClass),
+                mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture::class.java).asList(),
                         rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
                         maxPreviewHeight, largest);
 
@@ -354,7 +354,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 mCameraId = cameraId;
                 return;
             }
-        } catch (e : CameraAccessException) {
+        } catch (e: CameraAccessException) {
             e.printStackTrace();
         } catch (e: NullPointerException) {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
@@ -380,8 +380,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
      * @param aspectRatio       The aspect ratio
      * @return The optimal {@code Size}, or an arbitrary one if none were big enough
      */
-    private fun chooseOptimalSize(choices: Size, textureViewWidth: Int,
-    textureViewHeight : Int, maxWidth: Int, maxHeight: Int, aspectRatio:Size): Size? {
+    private fun chooseOptimalSize(choices: List<Size>, textureViewWidth: Int,
+                                  textureViewHeight: Int, maxWidth: Int, maxHeight: Int, aspectRatio: Size): Size? {
         throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
