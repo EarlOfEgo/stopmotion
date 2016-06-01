@@ -2,9 +2,7 @@ package com.sthagios.stopmotion.create
 
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.ImageFormat
-import android.graphics.Point
-import android.graphics.SurfaceTexture
+import android.graphics.*
 import android.hardware.camera2.*
 import android.hardware.camera2.params.StreamConfigurationMap
 import android.media.Image
@@ -73,8 +71,34 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
     }
 
+    /**
+     * Configures the necessary {@link android.graphics.Matrix} transformation to `mTextureView`.
+     * This method should be called after the camera preview size is determined in
+     * setUpCameraOutputs and also the size of `mTextureView` is fixed.
+     *
+     * @param width  The width of `mTextureView`
+     * @param height The height of `mTextureView`
+     */
     private fun configureTransform(width: Int, height: Int) {
-
+        if (null == camera_preview || null == mPreviewSize) {
+            return;
+        }
+        val rotation = windowManager.defaultDisplay.rotation
+        val matrix = Matrix()
+        val viewRect = RectF(0.toFloat(), 0.toFloat(), width.toFloat(), height.toFloat())
+        val bufferRect = RectF(0.toFloat(), 0.toFloat(), mPreviewSize!!.height.toFloat(), mPreviewSize!!.width.toFloat())
+        val centerX = viewRect.centerX()
+        val centerY = viewRect.centerY()
+        if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
+            bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY());
+            matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL);
+            val scale = Math.max((height / mPreviewSize!!.height).toFloat(), (width / mPreviewSize!!.width).toFloat())
+            matrix.postScale(scale, scale, centerX, centerY);
+            matrix.postRotate((90 * (rotation - 2)).toFloat(), centerX, centerY);
+        } else if (Surface.ROTATION_180 == rotation) {
+            matrix.postRotate(180.toFloat(), centerX, centerY);
+        }
+        camera_preview.setTransform(matrix);
     }
 
     override fun onResume() {
@@ -184,7 +208,10 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private var mPreviewRequest: CaptureRequest? = null
 
     private fun setAutoFlash(mPreviewRequestBuilder: CaptureRequest.Builder) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (mFlashSupported) {
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
+                    CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+        }
     }
 
     private val mStateCallback = object : CameraDevice.StateCallback() {
@@ -232,6 +259,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 throw RuntimeException("Time out waiting to lock camera opening.");
             }
             manager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
+            Log.v(TAG, "Camera($mCameraId) opened")
         } catch (e: CameraAccessException) {
             e.printStackTrace();
         } catch (e: InterruptedException) {
@@ -265,9 +293,11 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
      * @param height The height of available size for camera preview
      */
     private fun setUpCameraOutputs(width: Int, height: Int) {
+        Log.v(TAG, "Setting camera output, width: $width, height: $height")
         val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager;
         try {
             for (cameraId in manager.cameraIdList) {
+                Log.v(TAG, "Available cameraids: $cameraId")
                 val characteristics = manager.getCameraCharacteristics(cameraId);
 
                 // We don't use a front facing camera in this sample.
