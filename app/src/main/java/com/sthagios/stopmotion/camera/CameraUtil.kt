@@ -2,7 +2,6 @@ package com.sthagios.stopmotion.camera
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.hardware.Camera
 
 /**
  * Stopmotion
@@ -17,7 +16,7 @@ import android.hardware.Camera
 fun Context.hasCamera() = this.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)
 
 
-fun getCameraInstance(): Camera {
-
-    return Camera.open();
-}
+//fun getCameraInstance(): Camera {
+//
+//    return Camera.open();
+//}

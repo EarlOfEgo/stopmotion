@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.graphics.*
 import android.hardware.camera2.*
 import android.hardware.camera2.params.StreamConfigurationMap
-import android.media.Image
 import android.media.ImageReader
 import android.net.Uri
 import android.os.Bundle
@@ -20,10 +19,10 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import com.sthagios.stopmotion.R
+import com.sthagios.stopmotion.camera.ImageSaver
 import kotlinx.android.synthetic.main.activity_create_new_image.*
+import rx.android.schedulers.AndroidSchedulers
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Semaphore
@@ -188,7 +187,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                                 mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AF_MODE,
                                         CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
                                 // Flash is automatically enabled when necessary.
-                                setAutoFlash(mPreviewRequestBuilder!!);
+//                                setAutoFlash(mPreviewRequestBuilder!!);
 
                                 // Finally, we start displaying the camera preview.
                                 mPreviewRequest = mPreviewRequestBuilder!!.build();
@@ -303,9 +302,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 return;
             }
             // This is the CaptureRequest.Builder that we use to take a picture.
-            val captureBuilder =
-                    mCameraDevice!!.createCaptureRequest(
-                            CameraDevice.TEMPLATE_STILL_CAPTURE) as CaptureRequest.Builder
+            val captureBuilder = mCameraDevice!!.createCaptureRequest(
+                    CameraDevice.TEMPLATE_STILL_CAPTURE)
             captureBuilder.addTarget(mImageReader!!.surface);
 
             // Use the same AE and AF modes as the preview.
@@ -322,7 +320,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
                 override fun onCaptureCompleted(session: CameraCaptureSession?,
                         request: CaptureRequest?, result: TotalCaptureResult?) {
-                    Log.d(TAG, "Stored image at ${mFile.toString()}");
+                    Log.d(TAG, "Capture complete");
                     unlockFocus();
                 }
             };
@@ -354,8 +352,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             e.printStackTrace();
         }
     }
-
-    private var mFile: File = File("empty")
 
     /**
      * Conversion from screen rotation to JPEG orientation.
@@ -431,8 +427,12 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     }
 
     private val mOnImageAvailableListener = ImageReader.OnImageAvailableListener { reader ->
-        val mFile = getOutputMediaFile()
-        mBackgroundHandler!!.post(ImageSaver(reader.acquireNextImage(), mFile!!));
+        val file = getOutputMediaFile()
+        mBackgroundHandler!!.post(ImageSaver(reader.acquireNextImage(), file, {
+            Log.d(TAG, "Saved")
+            mPictureList = mPictureList.plus(it)
+        }
+        ));
     }
 
     private var mSensorOrientation: Int = 0
@@ -674,10 +674,47 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         setBurstTexts()
 
         button_capture.setOnClickListener({
-            mFile = getOutputMediaFile()
-            takePicture()
+
+            container_amount.visibility = View.GONE
+            container_time.visibility = View.GONE
+            button_switch_camera.visibility = View.GONE
+            button_capture.visibility = View.GONE
+
+            mPictureList = emptyArray()
+
+//            cameraSubscription =
+            rx.Observable
+                    .interval(0, mBurstTime.toLong() + 1, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .take(mBurstAmount)
+
+                    .flatMap { it -> rx.Observable.just(takePicture()) }
+//                        .subscribeOn(Schedulers.io())
+                    .subscribe({
+                        Log.d(TAG, "Image: $it")
+                    }, {
+                        Log.e(TAG, "${it.message}")
+                        container_amount.visibility = View.VISIBLE
+                        container_time.visibility = View.VISIBLE
+                        button_switch_camera.visibility = View.VISIBLE
+                        button_capture.visibility = View.VISIBLE
+                    }, {
+                        container_amount.visibility = View.VISIBLE
+                        container_time.visibility = View.VISIBLE
+                        button_switch_camera.visibility = View.VISIBLE
+                        button_capture.visibility = View.VISIBLE
+//                        if (mBurstAmount != mPictureList.size) {
+//                            Log.d(TAG,
+//                                    "mBurstAmount:$mBurstAmount != mPictureList.size: ${mPictureList.size}")
+//                            Snackbar.make(camera_preview, "This was to fast for your camera",
+//                                    Snackbar.LENGTH_LONG).show()
+//                        }
+                    })
+
         })
     }
+
+    private var mPictureList = emptyArray<String>()
 
     private fun takePicture() {
         lockFocus()
@@ -730,13 +767,13 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
     fun getOutputMediaFile(): File {
         val mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "stopmotion")
+                Environment.DIRECTORY_PICTURES), "Stopmotion")
 
 
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.d("stopmotion", "failed to create directory")
+                Log.d(TAG, "failed to create directory")
                 return File("empty")
             }
         }
@@ -779,35 +816,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
 }
 
-class ImageSaver(image: Image, file: File) : Runnable {
-
-    private val mImage = image
-
-    private val mFile = file
-
-    override fun run() {
-        val buffer = mImage.planes[0].buffer;
-        val bytes = ByteArray(buffer.remaining());
-        buffer.get(bytes);
-        var output: FileOutputStream? = null;
-        try {
-            output = FileOutputStream(mFile);
-            output.write(bytes);
-        } catch (e: IOException) {
-            e.printStackTrace();
-        } finally {
-            mImage.close();
-            if (null != output) {
-                try {
-                    output.close();
-                } catch (e: IOException) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-}
 
 class CompareSizesByArea : Comparator<Size> {
     override fun compare(lhs: Size?, rhs: Size?): Int {
