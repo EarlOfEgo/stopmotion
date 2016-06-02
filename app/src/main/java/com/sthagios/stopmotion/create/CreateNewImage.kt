@@ -15,12 +15,15 @@ import android.os.HandlerThread
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.Size
+import android.util.SparseIntArray
 import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import com.sthagios.stopmotion.R
 import kotlinx.android.synthetic.main.activity_create_new_image.*
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Semaphore
@@ -63,7 +66,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             openCamera(width, height);
         }
 
-        override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+        override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int,
+                height: Int) {
             configureTransform(width, height);
         }
 
@@ -87,13 +91,15 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         val rotation = windowManager.defaultDisplay.rotation
         val matrix = Matrix()
         val viewRect = RectF(0.toFloat(), 0.toFloat(), width.toFloat(), height.toFloat())
-        val bufferRect = RectF(0.toFloat(), 0.toFloat(), mPreviewSize!!.height.toFloat(), mPreviewSize!!.width.toFloat())
+        val bufferRect = RectF(0.toFloat(), 0.toFloat(), mPreviewSize!!.height.toFloat(),
+                mPreviewSize!!.width.toFloat())
         val centerX = viewRect.centerX()
         val centerY = viewRect.centerY()
         if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
             bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY());
             matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL);
-            val scale = Math.max((height / mPreviewSize!!.height).toFloat(), (width / mPreviewSize!!.width).toFloat())
+            val scale = Math.max((height / mPreviewSize!!.height).toFloat(),
+                    (width / mPreviewSize!!.width).toFloat())
             matrix.postScale(scale, scale, centerX, centerY);
             matrix.postRotate((90 * (rotation - 2)).toFloat(), centerX, centerY);
         } else if (Surface.ROTATION_180 == rotation) {
@@ -159,11 +165,13 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             val surface = Surface(texture);
 
             // We set up a CaptureRequest.Builder with the output Surface.
-            mPreviewRequestBuilder = mCameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+            mPreviewRequestBuilder = mCameraDevice!!.createCaptureRequest(
+                    CameraDevice.TEMPLATE_PREVIEW);
             mPreviewRequestBuilder!!.addTarget(surface);
 
             // Here, we create a CameraCaptureSession for camera preview.
-            mCameraDevice!!.createCaptureSession(Arrays.asList(surface, mImageReader!!.getSurface()),
+            mCameraDevice!!.createCaptureSession(
+                    Arrays.asList(surface, mImageReader!!.getSurface()),
                     object : CameraCaptureSession.StateCallback() {
 
 
@@ -203,7 +211,78 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     }
 
 
-    private val mCaptureCallback: CameraCaptureSession.CaptureCallback? = null
+    private val mCaptureCallback: CameraCaptureSession.CaptureCallback = object : CameraCaptureSession.CaptureCallback() {
+
+        override fun onCaptureCompleted(session: CameraCaptureSession?, request: CaptureRequest?,
+                result: TotalCaptureResult?) {
+            process(result!!);
+        }
+
+        override fun onCaptureProgressed(session: CameraCaptureSession?, request: CaptureRequest?,
+                partialResult: CaptureResult?) {
+            process(partialResult!!)
+        }
+
+        private fun process(result: CaptureResult) {
+            when (mState) {
+            // We have nothing to do when the camera preview is working normally.
+                STATE_PREVIEW                -> {
+                }
+                STATE_WAITING_LOCK           -> {
+                    val afState = result.get(CaptureResult.CONTROL_AF_STATE)
+                    if (afState == null)
+                        captureStillPicture()
+                    else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
+                            CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState) {
+                        // CONTROL_AE_STATE can be null on some devices
+                        val aeState = result.get(CaptureResult.CONTROL_AE_STATE);
+                        if (aeState == null ||
+                                aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
+                            mState = STATE_PICTURE_TAKEN;
+                            captureStillPicture();
+                        } else {
+                            runPrecaptureSequence();
+                        }
+                    }
+                }
+                STATE_WAITING_PRECAPTURE     -> {
+                    // CONTROL_AE_STATE can be null on some devices
+                    val aeState = result.get(CaptureResult.CONTROL_AE_STATE);
+                    if (aeState == null ||
+                            aeState == CaptureResult.CONTROL_AE_STATE_PRECAPTURE ||
+                            aeState == CaptureRequest.CONTROL_AE_STATE_FLASH_REQUIRED) {
+                        mState = STATE_WAITING_NON_PRECAPTURE;
+                    }
+                }
+                STATE_WAITING_NON_PRECAPTURE -> {
+                    // CONTROL_AE_STATE can be null on some devices
+                    val aeState = result.get(CaptureResult.CONTROL_AE_STATE);
+                    if (aeState == null || aeState != CaptureResult.CONTROL_AE_STATE_PRECAPTURE) {
+                        mState = STATE_PICTURE_TAKEN;
+                        captureStillPicture();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Run the precapture sequence for capturing a still image. This method should be called when
+     * we get a response in {@link #mCaptureCallback} from {@link #lockFocus()}.
+     */
+    private fun runPrecaptureSequence() {
+        try {
+            // This is how to tell the camera to trigger.
+            mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
+                    CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_START);
+            // Tell #mCaptureCallback to wait for the precapture sequence to be set.
+            mState = STATE_WAITING_PRECAPTURE;
+            mCaptureSession!!.capture(mPreviewRequestBuilder!!.build(), mCaptureCallback,
+                    mBackgroundHandler);
+        } catch (e: CameraAccessException) {
+            e.printStackTrace();
+        }
+    }
 
     private var mPreviewRequest: CaptureRequest? = null
 
@@ -213,6 +292,90 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
         }
     }
+
+    /**
+     * Capture a still picture. This method should be called when we get a response in
+     * {@link #mCaptureCallback} from both {@link #lockFocus()}.
+     */
+    private fun captureStillPicture() {
+        try {
+            if (null == mCameraDevice) {
+                return;
+            }
+            // This is the CaptureRequest.Builder that we use to take a picture.
+            val captureBuilder =
+                    mCameraDevice!!.createCaptureRequest(
+                            CameraDevice.TEMPLATE_STILL_CAPTURE) as CaptureRequest.Builder
+            captureBuilder.addTarget(mImageReader!!.surface);
+
+            // Use the same AE and AF modes as the preview.
+            captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
+                    CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+            setAutoFlash(captureBuilder);
+
+            // Orientation
+            val rotation = windowManager.defaultDisplay.rotation;
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation));
+
+            val CaptureCallback = object : CameraCaptureSession.CaptureCallback() {
+
+
+                override fun onCaptureCompleted(session: CameraCaptureSession?,
+                        request: CaptureRequest?, result: TotalCaptureResult?) {
+                    Log.d(TAG, "Stored image at ${mFile.toString()}");
+                    unlockFocus();
+                }
+            };
+
+            mCaptureSession!!.stopRepeating();
+            mCaptureSession!!.capture(captureBuilder.build(), CaptureCallback, null);
+        } catch (e: CameraAccessException) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Unlock the focus. This method should be called when still image capture sequence is
+     * finished.
+     */
+    private fun unlockFocus() {
+        try {
+            // Reset the auto-focus trigger
+            mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AF_TRIGGER,
+                    CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
+            setAutoFlash(mPreviewRequestBuilder!!);
+            mCaptureSession!!.capture(mPreviewRequestBuilder!!.build(), mCaptureCallback,
+                    mBackgroundHandler);
+            // After this, the camera will go back to the normal state of preview.
+            mState = STATE_PREVIEW;
+            mCaptureSession!!.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
+                    mBackgroundHandler);
+        } catch (e: CameraAccessException) {
+            e.printStackTrace();
+        }
+    }
+
+    private var mFile: File = File("empty")
+
+    /**
+     * Conversion from screen rotation to JPEG orientation.
+     */
+    private val ORIENTATIONS: SparseIntArray = SparseIntArray()
+
+    /**
+     * Retrieves the JPEG orientation from the specified screen rotation.
+     *
+     * @param rotation The screen rotation.
+     * @return The JPEG orientation (one of 0, 90, 270, and 360)
+     */
+    private fun getOrientation(rotation: Int): Int {
+        // Sensor orientation is 90 for most devices, or 270 for some devices (eg. Nexus 5X)
+        // We have to take that into account and rotate JPEG properly.
+        // For devices with orientation of 90, we simply return our mapping from ORIENTATIONS.
+        // For devices with orientation of 270, we need to rotate the JPEG 180 degrees.
+        return (ORIENTATIONS.get(rotation) + mSensorOrientation + 270) % 360;
+    }
+
 
     private val mStateCallback = object : CameraDevice.StateCallback() {
 
@@ -272,7 +435,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         mBackgroundHandler!!.post(ImageSaver(reader.acquireNextImage(), mFile!!));
     }
 
-    private var mSensorOrientation: Int? = 0
+    private var mSensorOrientation: Int = 0
 
     /**
      * Max preview width that is guaranteed by Camera2 API
@@ -313,12 +476,14 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 //                continue;
 //            }
 
-            val map: StreamConfigurationMap = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+            val map: StreamConfigurationMap = characteristics.get(
+                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
 
             // For still image captures, we use the largest available size.
             val largest: Size = Collections.max(map.getOutputSizes(ImageFormat.JPEG).asList(),
                     { lhs, rhs ->
-                        Math.signum((lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
+                        Math.signum(
+                                (lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
                     });
             mImageReader = ImageReader.newInstance(largest.width, largest.height,
                     ImageFormat.JPEG, /*maxImages*/2);
@@ -333,7 +498,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             var swappedDimensions = false;
 
             when (displayRotation) {
-                Surface.ROTATION_0, Surface.ROTATION_180 ->
+                Surface.ROTATION_0, Surface.ROTATION_180  ->
                     if (mSensorOrientation == 90 || mSensorOrientation == 270) {
                         swappedDimensions = true;
                     }
@@ -341,7 +506,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     if (mSensorOrientation == 0 || mSensorOrientation == 180) {
                         swappedDimensions = true;
                     }
-                else ->
+                else                                      ->
                     Log.e(TAG, "Display rotation is invalid: " + displayRotation);
             }
 
@@ -370,10 +535,12 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
             // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
             // garbage capture data.
-            mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture::class.java).asList(),
+            mPreviewSize = chooseOptimalSize(
+                    map.getOutputSizes(SurfaceTexture::class.java).asList(),
                     rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
                     maxPreviewHeight, largest);
-            Log.v(TAG, "Preview size: height=${mPreviewSize!!.height} width=${mPreviewSize!!.width}")
+            Log.v(TAG,
+                    "Preview size: height=${mPreviewSize!!.height} width=${mPreviewSize!!.width}")
 
             // We fit the aspect ratio of TextureView to the size of preview we picked.
             val orientation = resources.configuration.orientation;
@@ -387,9 +554,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             val available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
             if (available == null) mFlashSupported = false else mFlashSupported = available;
 
-//                mCameraId = cameraId;
-//                return;
-//            }
         } catch (e: CameraAccessException) {
             Log.e(TAG, e.message)
             e.printStackTrace();
@@ -419,7 +583,9 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
      * @return The optimal {@code Size}, or an arbitrary one if none were big enough
      */
     private fun chooseOptimalSize(choices: List<Size>, textureViewWidth: Int,
-                                  textureViewHeight: Int, maxWidth: Int, maxHeight: Int, aspectRatio: Size): Size? {
+            textureViewHeight: Int, maxWidth: Int, maxHeight: Int, aspectRatio: Size): Size? {
+        Log.v(TAG, "Choosing optimal size from ${choices.toString()}\n" +
+                "with: textureViewWidth:$textureViewWidth textureViewHeight: $textureViewHeight, maxWidth: $maxWidth, maxHeight: $maxHeight, aspectRatio: $aspectRatio")
         // Collect the supported resolutions that are at least as big as the preview Surface
         val bigEnough = ArrayList<Size>();
         // Collect the supported resolutions that are smaller than the preview Surface
@@ -486,10 +652,12 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             button_switch_camera.setOnClickListener({
                 if (mCameraId == mAvailableCameras[0]) {
                     mCameraId = mAvailableCameras[1]
-                    button_switch_camera.setImageDrawable(resources.getDrawable(R.drawable.ic_camera_rear_black_48dp))
+                    button_switch_camera.setImageDrawable(
+                            resources.getDrawable(R.drawable.ic_camera_rear_black_48dp))
                 } else {
                     mCameraId = mAvailableCameras[0]
-                    button_switch_camera.setImageDrawable(resources.getDrawable(R.drawable.ic_camera_front_black_48dp))
+                    button_switch_camera.setImageDrawable(
+                            resources.getDrawable(R.drawable.ic_camera_front_black_48dp))
                 }
 
                 closeCamera()
@@ -506,15 +674,61 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         setBurstTexts()
 
         button_capture.setOnClickListener({
-            //TODO Track
+            mFile = getOutputMediaFile()
+            takePicture()
         })
     }
 
+    private fun takePicture() {
+        lockFocus()
+    }
 
-    private var mCameraId: String = "Camera(0)"
+    /**
+     * Camera state: Showing camera preview.
+     */
+    private val STATE_PREVIEW: Int = 0
+
+    /**
+     * Camera state: Waiting for the focus to be locked.
+     */
+    private val STATE_WAITING_LOCK: Int = 1
+
+    /**
+     * Camera state: Waiting for the exposure to be precapture state.
+     */
+    private val STATE_WAITING_PRECAPTURE = 2;
+
+    /**
+     * Camera state: Waiting for the exposure state to be something other than precapture.
+     */
+    private val STATE_WAITING_NON_PRECAPTURE = 3;
+
+    /**
+     * Camera state: Picture was taken.
+     */
+    private val STATE_PICTURE_TAKEN = 4;
+
+    private var mState: Int = STATE_PREVIEW
 
 
-    fun getOutputMediaFile(): File? {
+    private fun lockFocus() {
+        try {
+            // This is how to tell the camera to lock focus.
+            mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AF_TRIGGER,
+                    CameraMetadata.CONTROL_AF_TRIGGER_START);
+            // Tell #mCaptureCallback to wait for the lock.
+            mState = STATE_WAITING_LOCK;
+            mCaptureSession!!.capture(mPreviewRequestBuilder!!.build(), mCaptureCallback,
+                    mBackgroundHandler);
+        } catch (e: CameraAccessException) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private lateinit var mCameraId: String
+
+    fun getOutputMediaFile(): File {
         val mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "stopmotion")
 
@@ -523,7 +737,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 Log.d("stopmotion", "failed to create directory")
-                return null
+                return File("empty")
             }
         }
 
@@ -565,9 +779,32 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
 }
 
-class ImageSaver(acquireNextImage: Image?, mFile: Any) : Runnable {
+class ImageSaver(image: Image, file: File) : Runnable {
+
+    private val mImage = image
+
+    private val mFile = file
+
     override fun run() {
-        throw UnsupportedOperationException()
+        val buffer = mImage.planes[0].buffer;
+        val bytes = ByteArray(buffer.remaining());
+        buffer.get(bytes);
+        var output: FileOutputStream? = null;
+        try {
+            output = FileOutputStream(mFile);
+            output.write(bytes);
+        } catch (e: IOException) {
+            e.printStackTrace();
+        } finally {
+            mImage.close();
+            if (null != output) {
+                try {
+                    output.close();
+                } catch (e: IOException) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }
@@ -575,7 +812,8 @@ class ImageSaver(acquireNextImage: Image?, mFile: Any) : Runnable {
 class CompareSizesByArea : Comparator<Size> {
     override fun compare(lhs: Size?, rhs: Size?): Int {
         // We cast here to ensure the multiplications won't overflow
-        return Math.signum((lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt();
+        return Math.signum(
+                (lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt();
     }
 
 }
