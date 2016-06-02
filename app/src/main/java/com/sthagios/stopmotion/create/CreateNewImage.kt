@@ -17,6 +17,7 @@ import android.util.Log
 import android.util.Size
 import android.view.Surface
 import android.view.TextureView
+import android.view.View
 import com.sthagios.stopmotion.R
 import kotlinx.android.synthetic.main.activity_create_new_image.*
 import java.io.File
@@ -109,7 +110,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             openCamera(camera_preview.width, camera_preview.height)
         } else {
             camera_preview.surfaceTextureListener = mSurfaceTextureListener
-
         }
     }
 
@@ -286,6 +286,14 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
     private var mFlashSupported: Boolean = false
 
+    private var mAvailableCameras: Array<String> = emptyArray()
+
+    private fun setUpCameraInfos() {
+        val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager;
+        mAvailableCameras = manager.cameraIdList
+        Log.v(TAG, "Available cameraids: ${manager.cameraIdList.size}")
+    }
+
     /**
      * Sets up member variables related to camera.
      *
@@ -294,95 +302,94 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
      */
     private fun setUpCameraOutputs(width: Int, height: Int) {
         Log.v(TAG, "Setting camera output, width: $width, height: $height")
-        val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager;
         try {
-            for (cameraId in manager.cameraIdList) {
-                Log.v(TAG, "Available cameraids: $cameraId")
-                val characteristics = manager.getCameraCharacteristics(cameraId);
+            val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager;
 
-                // We don't use a front facing camera in this sample.
-                val facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-                if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
-                    continue;
-                }
+            val characteristics = manager.getCameraCharacteristics(mCameraId);
 
-                val map: StreamConfigurationMap = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP) ?: continue;
+            // We don't use a front facing camera in this sample.
+//            val facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+//            if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+//                continue;
+//            }
 
-                // For still image captures, we use the largest available size.
-                val largest: Size = Collections.max(map.getOutputSizes(ImageFormat.JPEG).asList(),
-                        { lhs, rhs ->
-                            Math.signum((lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
-                        });
-                mImageReader = ImageReader.newInstance(largest.width, largest.height,
-                        ImageFormat.JPEG, /*maxImages*/2);
-                mImageReader!!.setOnImageAvailableListener(
-                        mOnImageAvailableListener, mBackgroundHandler);
+            val map: StreamConfigurationMap = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
 
-                // Find out if we need to swap dimension to get the preview size relative to sensor
-                // coordinate.
-                val displayRotation = windowManager.defaultDisplay.rotation;
-                //noinspection ConstantConditions
-                mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-                var swappedDimensions = false;
+            // For still image captures, we use the largest available size.
+            val largest: Size = Collections.max(map.getOutputSizes(ImageFormat.JPEG).asList(),
+                    { lhs, rhs ->
+                        Math.signum((lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
+                    });
+            mImageReader = ImageReader.newInstance(largest.width, largest.height,
+                    ImageFormat.JPEG, /*maxImages*/2);
+            mImageReader!!.setOnImageAvailableListener(
+                    mOnImageAvailableListener, mBackgroundHandler);
 
-                when (displayRotation) {
-                    Surface.ROTATION_0, Surface.ROTATION_180 ->
-                        if (mSensorOrientation == 90 || mSensorOrientation == 270) {
-                            swappedDimensions = true;
-                        }
-                    Surface.ROTATION_90, Surface.ROTATION_270 ->
-                        if (mSensorOrientation == 0 || mSensorOrientation == 180) {
-                            swappedDimensions = true;
-                        }
-                    else ->
-                        Log.e(TAG, "Display rotation is invalid: " + displayRotation);
-                }
+            // Find out if we need to swap dimension to get the preview size relative to sensor
+            // coordinate.
+            val displayRotation = windowManager.defaultDisplay.rotation;
+            //noinspection ConstantConditions
+            mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
+            var swappedDimensions = false;
 
-                val displaySize = Point();
-                windowManager.defaultDisplay.getSize(displaySize);
-                var rotatedPreviewWidth = width;
-                var rotatedPreviewHeight = height;
-                var maxPreviewWidth = displaySize.x;
-                var maxPreviewHeight = displaySize.y;
-
-                if (swappedDimensions) {
-                    rotatedPreviewWidth = height;
-                    rotatedPreviewHeight = width;
-                    maxPreviewWidth = displaySize.y;
-                    maxPreviewHeight = displaySize.x;
-                }
-
-                if (maxPreviewWidth > MAX_PREVIEW_WIDTH) {
-                    maxPreviewWidth = MAX_PREVIEW_WIDTH;
-                }
-
-                if (maxPreviewHeight > MAX_PREVIEW_HEIGHT) {
-                    maxPreviewHeight = MAX_PREVIEW_HEIGHT;
-                }
-
-                // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
-                // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
-                // garbage capture data.
-                mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture::class.java).asList(),
-                        rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
-                        maxPreviewHeight, largest);
-                Log.v(TAG, "Preview size: height=${mPreviewSize!!.height} width=${mPreviewSize!!.width}")
-
-                // We fit the aspect ratio of TextureView to the size of preview we picked.
-                val orientation = resources.configuration.orientation;
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    camera_preview.setAspectRatio(mPreviewSize!!.width, mPreviewSize!!.height);
-                } else {
-                    camera_preview.setAspectRatio(mPreviewSize!!.height, mPreviewSize!!.width);
-                }
-
-                // Check if the flash is supported.
-                val available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
-                if (available == null) mFlashSupported = false else mFlashSupported = available;
-
-                mCameraId = cameraId;
-                return;
+            when (displayRotation) {
+                Surface.ROTATION_0, Surface.ROTATION_180 ->
+                    if (mSensorOrientation == 90 || mSensorOrientation == 270) {
+                        swappedDimensions = true;
+                    }
+                Surface.ROTATION_90, Surface.ROTATION_270 ->
+                    if (mSensorOrientation == 0 || mSensorOrientation == 180) {
+                        swappedDimensions = true;
+                    }
+                else ->
+                    Log.e(TAG, "Display rotation is invalid: " + displayRotation);
             }
+
+            val displaySize = Point();
+            windowManager.defaultDisplay.getSize(displaySize);
+            var rotatedPreviewWidth = width;
+            var rotatedPreviewHeight = height;
+            var maxPreviewWidth = displaySize.x;
+            var maxPreviewHeight = displaySize.y;
+
+            if (swappedDimensions) {
+                rotatedPreviewWidth = height;
+                rotatedPreviewHeight = width;
+                maxPreviewWidth = displaySize.y;
+                maxPreviewHeight = displaySize.x;
+            }
+
+            if (maxPreviewWidth > MAX_PREVIEW_WIDTH) {
+                maxPreviewWidth = MAX_PREVIEW_WIDTH;
+            }
+
+            if (maxPreviewHeight > MAX_PREVIEW_HEIGHT) {
+                maxPreviewHeight = MAX_PREVIEW_HEIGHT;
+            }
+
+            // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
+            // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
+            // garbage capture data.
+            mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture::class.java).asList(),
+                    rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
+                    maxPreviewHeight, largest);
+            Log.v(TAG, "Preview size: height=${mPreviewSize!!.height} width=${mPreviewSize!!.width}")
+
+            // We fit the aspect ratio of TextureView to the size of preview we picked.
+            val orientation = resources.configuration.orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                camera_preview.setAspectRatio(mPreviewSize!!.width, mPreviewSize!!.height);
+            } else {
+                camera_preview.setAspectRatio(mPreviewSize!!.height, mPreviewSize!!.width);
+            }
+
+            // Check if the flash is supported.
+            val available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+            if (available == null) mFlashSupported = false else mFlashSupported = available;
+
+//                mCameraId = cameraId;
+//                return;
+//            }
         } catch (e: CameraAccessException) {
             Log.e(TAG, e.message)
             e.printStackTrace();
@@ -469,17 +476,32 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             onAmountClicked()
         })
 
-        button_switch_camera.setOnClickListener({
-            if (mCameraId == "0") {
-                mCameraId = "1"
-                //TODO make this work
-                button_switch_camera.setImageDrawable(resources.getDrawable(R.drawable.ic_camera_rear_black_48dp))
-            } else {
-                mCameraId = "0"
-                //TODO make this work
-                button_switch_camera.setImageDrawable(resources.getDrawable(R.drawable.ic_camera_front_black_48dp))
-            }
-        })
+        setUpCameraInfos()
+
+        if (mAvailableCameras.size > 0) {
+            mCameraId = mAvailableCameras[0]
+        }
+
+        if (mAvailableCameras.size > 1) {
+            button_switch_camera.setOnClickListener({
+                if (mCameraId == mAvailableCameras[0]) {
+                    mCameraId = mAvailableCameras[1]
+                    button_switch_camera.setImageDrawable(resources.getDrawable(R.drawable.ic_camera_rear_black_48dp))
+                } else {
+                    mCameraId = mAvailableCameras[0]
+                    button_switch_camera.setImageDrawable(resources.getDrawable(R.drawable.ic_camera_front_black_48dp))
+                }
+
+                closeCamera()
+                if (camera_preview.isAvailable) {
+                    openCamera(camera_preview.width, camera_preview.height)
+                } else {
+                    camera_preview.surfaceTextureListener = mSurfaceTextureListener
+                }
+            })
+        } else {
+            button_switch_camera.visibility = View.GONE
+        }
 
         setBurstTexts()
 
@@ -489,7 +511,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     }
 
 
-    private var mCameraId: String = "0"
+    private var mCameraId: String = "Camera(0)"
 
 
     fun getOutputMediaFile(): File? {
