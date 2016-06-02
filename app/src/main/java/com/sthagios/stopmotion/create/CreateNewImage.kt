@@ -366,6 +366,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture::class.java).asList(),
                         rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
                         maxPreviewHeight, largest);
+                Log.v(TAG, "Preview size: height=${mPreviewSize!!.height} width=${mPreviewSize!!.width}")
 
                 // We fit the aspect ratio of TextureView to the size of preview we picked.
                 val orientation = resources.configuration.orientation;
@@ -383,8 +384,10 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 return;
             }
         } catch (e: CameraAccessException) {
+            Log.e(TAG, e.message)
             e.printStackTrace();
         } catch (e: NullPointerException) {
+            Log.e(TAG, e.message)
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
 //            ErrorDialog.newInstance(getString(R.string.camera_error))
