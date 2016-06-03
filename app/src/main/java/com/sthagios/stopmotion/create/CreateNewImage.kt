@@ -468,6 +468,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         try {
             val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager;
 
+
+            //TODO check for camter if available
             val characteristics = manager.getCameraCharacteristics(mCameraId);
 
             // We don't use a front facing camera in this sample.
