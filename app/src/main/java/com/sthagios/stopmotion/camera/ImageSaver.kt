@@ -35,5 +35,4 @@ class ImageSaver(val mImage: Image, val mFile: File, val callback: (String) -> U
             }
         }
     }
-
 }
