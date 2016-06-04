@@ -183,7 +183,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     Arrays.asList(surface, mImageReader!!.surface),
                     object : CameraCaptureSession.StateCallback() {
 
-
                         override fun onConfigured(session: CameraCaptureSession?) {
                             // The camera is already closed
                             if (null == mCameraDevice) {
@@ -198,6 +197,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                                         CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
                                 // Flash is automatically enabled when necessary.
 //                                setAutoFlash(mPreviewRequestBuilder!!)
+//                                mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_MODE,
+//                                        CaptureRequest.FLASH_MODE_OFF)
 
                                 // Finally, we start displaying the camera preview.
                                 mPreviewRequest = mPreviewRequestBuilder!!.build()
@@ -672,10 +673,20 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         encoder.setRepeat(0)
         Log.d(TAG, "Start gif encoding")
         for (path in mPictureList) {
+            val matrix = Matrix();
+
             val bitmap = BitmapFactory.decodeFile(path)
-            Log.d(TAG, "Adding Frame: ${bitmap.toString()}")
-            encoder.setDelay(mBurstTime * 1000)
-            encoder.addFrame(bitmap);
+            matrix.postRotate(90.toFloat());
+
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 600, 800, true);
+
+            val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
+                    scaledBitmap.height, matrix, true);
+
+            Log.d(TAG,
+                    "Adding Frame: height:${rotatedBitmap.height} + width:${rotatedBitmap.width}")
+            encoder.setDelay(200)
+            encoder.addFrame(rotatedBitmap);
         }
         Log.d(TAG, "Added all")
         encoder.finish();
