@@ -14,23 +14,23 @@ import java.io.IOException
 class ImageSaver(val mImage: Image, val mFile: File, val callback: (String) -> Unit) : Runnable {
 
     override fun run() {
-        val buffer = mImage.planes[0].buffer;
-        val bytes = ByteArray(buffer.remaining());
-        buffer.get(bytes);
-        var output: FileOutputStream? = null;
+        val buffer = mImage.planes[0].buffer
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+        var output: FileOutputStream? = null
         try {
-            output = FileOutputStream(mFile);
-            output.write(bytes);
+            output = FileOutputStream(mFile)
+            output.write(bytes)
         } catch (e: IOException) {
-            e.printStackTrace();
+            e.printStackTrace()
         } finally {
-            mImage.close();
+            mImage.close()
             callback(mFile.absolutePath)
             if (null != output) {
                 try {
-                    output.close();
+                    output.close()
                 } catch (e: IOException) {
-                    e.printStackTrace();
+                    e.printStackTrace()
                 }
             }
         }

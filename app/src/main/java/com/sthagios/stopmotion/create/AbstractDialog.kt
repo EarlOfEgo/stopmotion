@@ -128,7 +128,8 @@ class BurstAmountDialog : AbstractDialog() {
                 })
                 .alwaysCallSingleChoiceCallback()
                 .positiveText("ok")
-                .onPositive({ materialDialog, dialogAction -> mListener.amountChosen(mValues[mValue]) })
+                .onPositive(
+                        { materialDialog, dialogAction -> mListener.amountChosen(mValues[mValue]) })
                 .show();
 
         return dialog
