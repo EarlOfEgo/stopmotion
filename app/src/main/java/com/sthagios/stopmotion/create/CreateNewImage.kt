@@ -21,9 +21,13 @@ import android.view.TextureView
 import android.view.View
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.camera.ImageSaver
+import com.sthagios.stopmotion.utils.showWhichThreadInLogcat
 import kotlinx.android.synthetic.main.activity_create_new_image.*
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Semaphore
@@ -435,8 +439,13 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private val mOnImageAvailableListener = ImageReader.OnImageAvailableListener { reader ->
         val file = getOutputMediaFile()
         mBackgroundHandler!!.post(ImageSaver(reader.acquireNextImage(), file, {
-            Log.d(TAG, "Saved")
+            Log.d(TAG, "Saved $it")
             mPictureList = mPictureList.plus(it)
+
+            if (mPictureList.size == mBurstAmount) {
+                Log.d(TAG, "All images taken, converting to gif")
+                createGif()
+            }
         }
         ))
     }
@@ -615,9 +624,17 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         // Pick the smallest of those big enough. If there is no one big enough, pick the
         // largest of those not big enough.
         if (bigEnough.size > 0) {
-            return Collections.min(bigEnough, CompareSizesByArea())
+            return Collections.min(bigEnough, {
+                lhs, rhs ->
+                Math.signum(
+                        (lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
+            })
         } else if (notBigEnough.size > 0) {
-            return Collections.max(notBigEnough, CompareSizesByArea())
+            return Collections.max(notBigEnough, {
+                lhs, rhs ->
+                Math.signum(
+                        (lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
+            })
         } else {
             Log.e(TAG, "Couldn't find any suitable preview size")
             return choices[0]
@@ -630,6 +647,40 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         outState!!.putInt(BUNDLE_BURST_TIME, mBurstTime)
         outState.putInt(BUNDLE_BURST_AMOUNT, mBurstAmount)
         super.onSaveInstanceState(outState)
+    }
+
+    private fun createGif() {
+        rx.Observable.just(
+                File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                        "Stopmotion").absolutePath)
+                .doOnNext { Log.d(TAG, "Gif path $it") }
+                .map { FileOutputStream("$it/test.gif") }
+                .doOnNext { t -> t!!.write(generateGIF()) }
+                .doOnNext { t -> t.close() }
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ Log.d(TAG, "Gif created") },
+                        { Log.e(TAG, "${it.message}") },
+                        { Log.d(TAG, "Done") })
+    }
+
+    private fun generateGIF(): ByteArray {
+        showWhichThreadInLogcat()
+        val bos = ByteArrayOutputStream();
+        val encoder = GifEncoder();
+        encoder.start(bos);
+        encoder.setRepeat(0)
+        Log.d(TAG, "Start gif encoding")
+        for (path in mPictureList) {
+            val bitmap = BitmapFactory.decodeFile(path)
+            Log.d(TAG, "Adding Frame: ${bitmap.toString()}")
+            encoder.setDelay(mBurstTime * 1000)
+            encoder.addFrame(bitmap);
+        }
+        Log.d(TAG, "Added all")
+        encoder.finish();
+        Log.d(TAG, "Encoding finished")
+        return bos.toByteArray();
     }
 
 
@@ -697,7 +748,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     .take(mBurstAmount)
 
                     .flatMap { it -> rx.Observable.just(takePicture()) }
-//                        .subscribeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.io())
                     .subscribe({
                         Log.d(TAG, "Image: $it")
                     }, {
@@ -711,12 +762,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                         container_time.visibility = View.VISIBLE
                         button_switch_camera.visibility = View.VISIBLE
                         button_capture.visibility = View.VISIBLE
-//                        if (mBurstAmount != mPictureList.size) {
-//                            Log.d(TAG,
-//                                    "mBurstAmount:$mBurstAmount != mPictureList.size: ${mPictureList.size}")
-//                            Snackbar.make(camera_preview, "This was to fast for your camera",
-//                                    Snackbar.LENGTH_LONG).show()
-//                        }
                     })
 
         })
@@ -820,16 +865,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private fun onAmountClicked() {
         val dialog = BurstAmountDialog.newInstance(mBurstAmount)
         dialog.show(fragmentManager, "BurstAmountDialog")
-    }
-
-}
-
-
-class CompareSizesByArea : Comparator<Size> {
-    override fun compare(lhs: Size?, rhs: Size?): Int {
-        // We cast here to ensure the multiplications won't overflow
-        return Math.signum(
-                (lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
     }
 
 }

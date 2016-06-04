@@ -1,10 +1,8 @@
 package com.sthagios.stopmotion.create
 
-import android.app.Activity
 import android.app.Dialog
 import android.app.DialogFragment
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import com.afollestad.materialdialogs.MaterialDialog
 import com.sthagios.stopmotion.R
@@ -29,16 +27,6 @@ open class AbstractDialog() : DialogFragment() {
             mListener = context
         } else
             throw Exception("${context.toString()} must implement Callback")
-    }
-
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            if (activity is Callback) {
-                mListener = activity
-            } else
-                throw Exception("${context.toString()} must implement Callback")
-        }
     }
 
     lateinit var mListener: Callback

@@ -2,6 +2,7 @@ package com.sthagios.stopmotion.utils
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Looper
 import android.util.Log
 
 /**
@@ -29,3 +30,14 @@ inline fun <reified T : Activity> Activity.startActivity() {
 }
 
 fun Activity.retrieveStringParameter() = intent.extras.get("string_param")
+
+
+fun Activity.showWhichThreadInLogcat() {
+
+    val main = Looper.myLooper() == Looper.getMainLooper()
+    if (main) {
+        Log.d("${this.javaClass.simpleName}", "On main Thread")
+    } else {
+        Log.d("${this.javaClass.simpleName}", "On ${Thread.currentThread().toString()} Thread")
+    }
+}
