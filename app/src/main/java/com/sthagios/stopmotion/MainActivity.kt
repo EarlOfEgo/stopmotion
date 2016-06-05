@@ -32,10 +32,15 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
                     MY_PERMISSIONS_REQUEST_CAMERA);
         } else {
-            LogDebug("Permissions granted, starting Gif List")
-            startActivity<ImageListActivity>()
-//        startActivity<ShowGifActivity>()
+
+            permissionGranted()
         }
+    }
+
+    private fun permissionGranted() {
+        LogDebug("Permissions granted, starting Gif List")
+        startActivity<ImageListActivity>()
+        finish()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
@@ -45,9 +50,7 @@ class MainActivity : AppCompatActivity() {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.size > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LogDebug("Permissions granted, starting Gif List")
-                    startActivity<ImageListActivity>()
-
+                    permissionGranted()
                 } else {
                     LogDebug("Permissions granted, starting Gif List")
                     showPermissionDenyInfo()

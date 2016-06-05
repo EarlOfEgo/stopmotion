@@ -327,7 +327,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             // Use the same AE and AF modes as the preview.
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
-            setAutoFlash(captureBuilder)
+//            setAutoFlash(captureBuilder)
 
             // Orientation
             val rotation = windowManager.defaultDisplay.rotation
@@ -714,6 +714,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             realm.close()
 
             startActivity<ShowGifActivity>(id)
+            finish()
         }
     }
 

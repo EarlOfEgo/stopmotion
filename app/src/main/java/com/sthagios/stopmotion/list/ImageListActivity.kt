@@ -22,8 +22,6 @@ class ImageListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_list)
 
-
-
         recyclerViewImageList.setHasFixedSize(true)
         recyclerViewImageList.layoutManager = GridLayoutManager(this, 2)
 

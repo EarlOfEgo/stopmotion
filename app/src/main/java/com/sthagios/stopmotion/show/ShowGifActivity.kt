@@ -11,6 +11,9 @@ import com.sthagios.stopmotion.share.shareGif
 import com.sthagios.stopmotion.utils.LogDebug
 import com.sthagios.stopmotion.utils.retrieveLongParameter
 import kotlinx.android.synthetic.main.activity_show_gif.*
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 
 class ShowGifActivity : AppCompatActivity() {
@@ -27,11 +30,20 @@ class ShowGifActivity : AppCompatActivity() {
 
         val uri = Uri.parse(gif.fileUriString)
 
-        Glide.with(this).load(uri).into(preview)
+        Observable.just(Glide.with(this).load(uri).into(preview))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    LogDebug("loaded")
+                }, {
+                    e ->
+                    e.printStackTrace()
+                })
+
 
 
         share_button.setOnClickListener({
-           shareGif(gif.shareUriString)
+            shareGif(gif.shareUriString)
         })
     }
 }

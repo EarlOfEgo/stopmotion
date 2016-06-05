@@ -1,5 +1,6 @@
 package com.sthagios.stopmotion.list
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.support.v7.widget.RecyclerView
@@ -10,6 +11,8 @@ import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.share.shareGif
+import com.sthagios.stopmotion.show.ShowGifActivity
+import com.sthagios.stopmotion.utils.startActivity
 import io.realm.OrderedRealmCollection
 import io.realm.RealmRecyclerViewAdapter
 import kotlinx.android.synthetic.main.image_list_item.view.*
@@ -30,6 +33,8 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
         val uri = Uri.parse(gif.fileUriString)
         Glide.with(mContext).load(uri).into(holder.mImageView)
         holder.mShareButton.setOnClickListener({ mContext.shareGif(gif.shareUriString) })
+        holder.mImageView.setOnClickListener(
+                { (mContext as Activity).startActivity<ShowGifActivity>(gif.id) })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
