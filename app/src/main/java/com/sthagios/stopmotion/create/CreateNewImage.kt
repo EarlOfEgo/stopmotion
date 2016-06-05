@@ -6,7 +6,6 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.hardware.camera2.params.StreamConfigurationMap
 import android.media.ImageReader
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -19,9 +18,13 @@ import android.util.SparseIntArray
 import android.view.Surface
 import android.view.TextureView
 import android.view.View
+import com.bumptech.glide.gifencoder.AnimatedGifEncoder
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.camera.ImageSaver
+import com.sthagios.stopmotion.show.ShowGifActivity
+import com.sthagios.stopmotion.utils.LogDebug
 import com.sthagios.stopmotion.utils.showWhichThreadInLogcat
+import com.sthagios.stopmotion.utils.startActivity
 import kotlinx.android.synthetic.main.activity_create_new_image.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -438,7 +441,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     }
 
     private val mOnImageAvailableListener = ImageReader.OnImageAvailableListener { reader ->
-        val file = getOutputMediaFile()
+        val file = getOutputMediaFileForImage()
         mBackgroundHandler!!.post(ImageSaver(reader.acquireNextImage(), file, {
             Log.d(TAG, "Saved $it")
             mPictureList = mPictureList.plus(it)
@@ -650,43 +653,66 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         super.onSaveInstanceState(outState)
     }
 
+    private val APP_FOLDER_NAME = "Stopmotion"
+
     private fun createGif() {
+        var gifPath = ""
         rx.Observable.just(
-                File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                        "Stopmotion").absolutePath)
+                //                File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//                        APP_FOLDER_NAME).absolutePath)
+                getGifDirectoryFile())
+                .map { "$it/${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}.gif" }
+                .doOnNext { gifPath = it }
                 .doOnNext { Log.d(TAG, "Gif path $it") }
-                .map { FileOutputStream("$it/test.gif") }
+                .map { FileOutputStream(it) }
                 .doOnNext { t -> t!!.write(generateGIF()) }
                 .doOnNext { t -> t.close() }
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ Log.d(TAG, "Gif created") },
                         { Log.e(TAG, "${it.message}") },
-                        { Log.d(TAG, "Done") })
+                        {
+//                            deleteTempFolder()
+                            Log.d(TAG, "Done")
+                            startActivity<ShowGifActivity>(gifPath)
+                        }
+                )
     }
+
+//    private fun deleteTempFolder() {
+//        val file = File(Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/tmp_images/")
+//        file.delete()
+//    }
 
     private fun generateGIF(): ByteArray {
         showWhichThreadInLogcat()
-        val bos = ByteArrayOutputStream();
-        val encoder = GifEncoder();
-        encoder.start(bos);
+        val bos = ByteArrayOutputStream()
+        //Use glide gif encoder
+        val encoder = AnimatedGifEncoder()
+        encoder.start(bos)
         encoder.setRepeat(0)
         Log.d(TAG, "Start gif encoding")
         for (path in mPictureList) {
-            val matrix = Matrix();
+            val matrix = Matrix()
 
             val bitmap = BitmapFactory.decodeFile(path)
-            matrix.postRotate(90.toFloat());
+            matrix.postRotate(90.toFloat())
 
-            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 600, 800, true);
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 800, 600, true)
 
             val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
-                    scaledBitmap.height, matrix, true);
+                    scaledBitmap.height, matrix, true)
 
             Log.d(TAG,
                     "Adding Frame: height:${rotatedBitmap.height} + width:${rotatedBitmap.width}")
             encoder.setDelay(200)
             encoder.addFrame(rotatedBitmap);
+            bitmap.recycle()
+            scaledBitmap.recycle()
+            rotatedBitmap.recycle()
+            LogDebug(
+                    "Is recycled bitmap:${bitmap.isRecycled} scaledBitmap:${scaledBitmap.isRecycled} rotatedBitmap:${rotatedBitmap.isRecycled}")
         }
         Log.d(TAG, "Added all")
         encoder.finish();
@@ -826,19 +852,32 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         }
     }
 
-
-    private lateinit var mCameraId: String
-
-    fun getOutputMediaFile(): File {
-        val mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "Stopmotion")
-
-
-
+    private fun getGifDirectoryFile(): File {
+        val mediaStorageDir = File(filesDir.absolutePath + "/gifs/")
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 Log.d(TAG, "failed to create directory")
-                return File("empty")
+                return File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/gifs/")
+            }
+        }
+        return mediaStorageDir
+    }
+
+
+    private lateinit var mCameraId: String
+
+    fun getOutputMediaFileForImage(): File {
+//        val mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/tmp_images/")
+
+        var mediaStorageDir = File(filesDir.absolutePath + "/tmp_images/")
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d(TAG, "failed to create internal directory")
+                mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/tmp_images/")
             }
         }
 
@@ -864,9 +903,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             e.printStackTrace()
         }
     }
-
-
-    private fun getOutputMediaFileUri() = Uri.fromFile(getOutputMediaFile())
 
     private fun onTimeClicked() {
         val dialog = BurstTimeDialog.newInstance(mBurstTime)
