@@ -676,12 +676,9 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 .subscribe({ Log.d(TAG, "Gif created") },
                         { Log.e(TAG, "${it.message}") },
                         {
-//                            deleteTempFolder()
-
+                            deleteTempFolderContent()
                             storeInDatabase(gifName)
-
                             Log.d(TAG, "Done")
-
                         }
                 )
     }
@@ -718,10 +715,23 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         }
     }
 
-    private fun deleteTempFolder() {
-        val file = File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/tmp_images/")
-        file.delete()
+    private fun deleteTempFolderContent() {
+        val directory = File(filesDir, "tmp_images");
+
+        rx.Observable.from(directory.listFiles())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    file ->
+                    LogDebug("Deleting ${file.name}")
+                    file.delete()
+                }, {
+                    e ->
+                    e.printStackTrace()
+                }, { LogDebug("Deleted all files") })
+
+        for (file in directory.listFiles()) {
+            file.delete()
+        }
     }
 
     private fun generateGIF(): ByteArray {
