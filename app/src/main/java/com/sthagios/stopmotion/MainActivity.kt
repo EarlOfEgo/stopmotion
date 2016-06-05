@@ -1,13 +1,19 @@
 package com.sthagios.stopmotion
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.sthagios.stopmotion.list.ImageListActivity
+import com.sthagios.stopmotion.utils.LogDebug
 import com.sthagios.stopmotion.utils.startActivity
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,34 +23,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         //permission check
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_CONTACTS)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        arrayOf(Manifest.permission.CAMERA),
-                        MY_PERMISSIONS_REQUEST_CAMERA);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
+            // No explanation needed, it's a camera app
+            LogDebug("Ask for permission")
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
+                    MY_PERMISSIONS_REQUEST_CAMERA);
         } else {
-
+            LogDebug("Permissions granted, starting Gif List")
             startActivity<ImageListActivity>()
 //        startActivity<ShowGifActivity>()
         }
@@ -57,23 +45,36 @@ class MainActivity : AppCompatActivity() {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.size > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    LogDebug("Permissions granted, starting Gif List")
                     startActivity<ImageListActivity>()
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
 
                 } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    LogDebug("Permissions granted, starting Gif List")
+                    showPermissionDenyInfo()
                 }
                 return;
             }
-
-        // other 'case' lines to check for other
-        // permissions this app might request
         }
     }
 
+    private fun showPermissionDenyInfo() {
+
+        permissions_denied.visibility = View.VISIBLE
+        button_settings.visibility = View.VISIBLE
+        button_settings.setOnClickListener({
+            val i = Intent();
+            i.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
+            i.addCategory(Intent.CATEGORY_DEFAULT);
+            i.data = Uri.parse("package:" + packageName);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            startActivity(i);
+        })
+    }
 }
+
+
+
 
 
