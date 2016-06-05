@@ -3,14 +3,15 @@ package com.sthagios.stopmotion.show
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
+import com.sthagios.stopmotion.image.database.Gif
+import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.utils.LogDebug
-import com.sthagios.stopmotion.utils.retrieveStringParameter
+import com.sthagios.stopmotion.utils.retrieveLongParameter
 import kotlinx.android.synthetic.main.activity_show_gif.*
-import java.io.File
+
 
 class ShowGifActivity : AppCompatActivity() {
 
@@ -18,18 +19,14 @@ class ShowGifActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_gif)
 
-        val file = retrieveStringParameter()
-        LogDebug(file)
+        val id = retrieveLongParameter()
+        LogDebug(id.toString())
+
+        val gif = getRealmInstance().where(Gif::class.java).equalTo("id", id).findFirst()
 
 
-//        val mResultIntent = Intent("com.sthagios.stopmotion.ACTION_RETURN_FILE");
-//        setResult(Activity.RESULT_CANCELED, null);
+        val uri = Uri.parse(gif.fileUriString)
 
-
-        val imagePath = File(filesDir, "gifs");
-        val newFile = File(imagePath, file);
-
-        val uri = Uri.fromFile(newFile)
         Glide.with(this).load(uri).into(preview)
 
 
@@ -38,11 +35,7 @@ class ShowGifActivity : AppCompatActivity() {
             shareIntent.action = Intent.ACTION_SEND;
             shareIntent.putExtra(Intent.EXTRA_TEXT, "Stopmotion");
             try {
-                val shareUri = FileProvider.getUriForFile(
-                        this,
-                        "com.sthagios.stopmotion.fileprovider",
-                        newFile);
-
+                val shareUri = Uri.parse(gif.shareUriString)
                 LogDebug("Sharing ${shareUri.toString()}")
                 shareIntent.putExtra(Intent.EXTRA_STREAM, shareUri);
                 shareIntent.type = "image/*";

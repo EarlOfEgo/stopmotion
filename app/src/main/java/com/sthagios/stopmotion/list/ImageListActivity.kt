@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.create.CreateNewImage
+import com.sthagios.stopmotion.image.database.Gif
+import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.utils.startActivity
 import kotlinx.android.synthetic.main.activity_image_list.*
 
@@ -14,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_image_list.*
  * @author  stephan
  * @since   30.04.16
  */
-class ImageList : AppCompatActivity() {
+class ImageListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +29,10 @@ class ImageList : AppCompatActivity() {
 
         val adapter = ImageListAdapter(this)
 
-        adapter.addItem("LALALA")
-        adapter.addItem("LOLOLO")
+        val gifs = getRealmInstance().where(Gif::class.java).findAll()
+
+        for (gif in gifs)
+            adapter.addItem(gif)
 
         recyclerViewImageList.adapter = adapter
 

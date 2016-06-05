@@ -19,6 +19,19 @@ inline fun <reified T : Activity> Activity.startActivity(string: String) {
     startActivity(intent)
 }
 
+inline fun <reified T : Activity> Activity.startActivity(long: Long) {
+    val intent = Intent(this, T::class.java)
+    intent.putExtra("long_param", long)
+    startActivity(intent)
+}
+
+fun Activity.retrieveLongParameter(): Long {
+    if (intent != null && intent.extras != null)
+        return intent.extras.getLong("long_param", 0)
+    else
+        return 0
+}
+
 /**
  * Starts an activity without a parameter.
  * There is a verbose log call with the calling activity's name as tag.

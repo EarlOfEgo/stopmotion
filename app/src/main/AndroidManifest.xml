@@ -37,7 +37,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".list.ImageList"
+            android:name=".list.ImageListActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity

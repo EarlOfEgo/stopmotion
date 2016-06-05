@@ -6,11 +6,13 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.hardware.camera2.params.StreamConfigurationMap
 import android.media.ImageReader
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
 import android.support.design.widget.Snackbar
+import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.Size
@@ -21,6 +23,8 @@ import android.view.View
 import com.bumptech.glide.gifencoder.AnimatedGifEncoder
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.camera.ImageSaver
+import com.sthagios.stopmotion.image.database.Gif
+import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.show.ShowGifActivity
 import com.sthagios.stopmotion.utils.LogDebug
 import com.sthagios.stopmotion.utils.showWhichThreadInLogcat
@@ -672,11 +676,45 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 .subscribe({ Log.d(TAG, "Gif created") },
                         { Log.e(TAG, "${it.message}") },
                         {
-                            deleteTempFolder()
+//                            deleteTempFolder()
+
+                            storeInDatabase(gifName)
+
                             Log.d(TAG, "Done")
-                            startActivity<ShowGifActivity>(gifName)
+
                         }
                 )
+    }
+
+    private fun storeInDatabase(gifName: String) {
+
+
+        val realm = getRealmInstance()
+
+        realm.executeTransaction {
+            val gif = realm.createObject(Gif::class.java)
+            val id = Math.abs(Random().nextLong())
+            gif.id = id
+            gif.fileName = gifName
+            val imagePath = File(filesDir, "gifs");
+            val newFile = File(imagePath, gif.fileName);
+
+            gif.shareUriString = FileProvider.getUriForFile(
+                    this,
+                    "com.sthagios.stopmotion.fileprovider",
+                    newFile).toString()
+
+
+            gif.name = "Stopmotion Gif"
+            gif.fileUriString = Uri.fromFile(newFile).toString()
+
+
+            LogDebug("Stored gif ${gif.toString()}")
+
+            realm.close()
+
+            startActivity<ShowGifActivity>(id)
+        }
     }
 
     private fun deleteTempFolder() {
