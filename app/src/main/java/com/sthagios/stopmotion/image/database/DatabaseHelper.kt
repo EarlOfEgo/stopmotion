@@ -22,7 +22,6 @@ fun Activity.getRealmInstance(): Realm {
 
     // Create configuration and reset Realm.
     val realmConfig = RealmConfiguration.Builder(this).build()
-//    Realm.deleteRealm(realmConfig)
 
     // Open the realm for the UI thread.
     val realm = Realm.getInstance(realmConfig)

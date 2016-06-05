@@ -27,11 +27,9 @@ class ImageListActivity : AppCompatActivity() {
         recyclerViewImageList.setHasFixedSize(true)
         recyclerViewImageList.layoutManager = GridLayoutManager(this, 2)
 
-//        val adapter = ImageListAdapter(this)
         val realm = getRealmInstance()
 
         val adapter = ImageListAdapter(this, realm.where(Gif::class.java).findAllAsync())
-
 
         recyclerViewImageList.adapter = adapter
 
