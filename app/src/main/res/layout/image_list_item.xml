@@ -3,7 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="260dp"
     android:background="#124567"
     android:orientation="vertical"
     card_view:cardCornerRadius="4dp">

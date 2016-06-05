@@ -3,7 +3,9 @@ package com.sthagios.stopmotion.share
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
+import com.google.firebase.analytics.FirebaseAnalytics
 
 /**
  * Stopmotion
@@ -23,6 +25,11 @@ fun Context.shareGif(shareUriString: String) {
         shareIntent.type = "image/*";
 
         startActivity(Intent.createChooser(shareIntent, "Stopmotion sharing"));
+
+
+        val payload = Bundle();
+        payload.putString(FirebaseAnalytics.Param.VALUE, "sent");
+        FirebaseAnalytics.getInstance(this).logEvent(FirebaseAnalytics.Event.SHARE, payload)
 
     } catch (e: Exception) {
         e.printStackTrace()

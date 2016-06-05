@@ -11,10 +11,15 @@ import io.realm.annotations.PrimaryKey
  */
 open class Gif(
         @PrimaryKey open var id: Long = 0,
+        //Name of the gif
         open var name: String = "Stopmotion Gif",
+        //Times shared
         open var sharedAmount: Int = 0,
+        //Gif file name
         open var fileName: String = "",
+        //Gif file uri as string
         open var fileUriString: String = "",
+        //Gif share uri as string
         open var shareUriString: String = ""
 ) : RealmObject() {
 }
