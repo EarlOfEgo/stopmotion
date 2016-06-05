@@ -10,8 +10,9 @@ import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.share.shareGif
+import io.realm.OrderedRealmCollection
+import io.realm.RealmRecyclerViewAdapter
 import kotlinx.android.synthetic.main.image_list_item.view.*
-import java.util.*
 
 /**
  * Stopmotion
@@ -19,25 +20,17 @@ import java.util.*
  * @author  stephan
  * @since   30.04.16
  */
-class ImageListAdapter(private val mContext: Context) : RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
-
-
-    var items: ArrayList<Gif> = ArrayList()
-
-    fun addItem(gif: Gif) {
-        items.add(gif)
-    }
+class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollection<Gif>) : RealmRecyclerViewAdapter<Gif, ImageListAdapter.ViewHolder>(
+        mContext, data, true) {
 
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        val gif = items[position]
+        val gif = data[position]
         holder!!.mImageText.text = gif.name
         val uri = Uri.parse(gif.fileUriString)
         Glide.with(mContext).load(uri).into(holder.mImageView)
         holder.mShareButton.setOnClickListener({ mContext.shareGif(gif.shareUriString) })
     }
-
-    override fun getItemCount() = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
         val view = LayoutInflater.from(parent!!.context).inflate(R.layout.image_list_item, parent,

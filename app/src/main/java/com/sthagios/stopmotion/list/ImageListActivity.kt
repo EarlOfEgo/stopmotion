@@ -27,21 +27,22 @@ class ImageListActivity : AppCompatActivity() {
         recyclerViewImageList.setHasFixedSize(true)
         recyclerViewImageList.layoutManager = GridLayoutManager(this, 2)
 
-        val adapter = ImageListAdapter(this)
+//        val adapter = ImageListAdapter(this)
+        val realm = getRealmInstance()
 
-        val gifs = getRealmInstance().where(Gif::class.java).findAll()
+        val adapter = ImageListAdapter(this, realm.where(Gif::class.java).findAllAsync())
 
-        for (gif in gifs)
-            adapter.addItem(gif)
 
         recyclerViewImageList.adapter = adapter
 
         recyclerViewImageList.addItemDecoration(ItemDecorator())
 
         fab.setOnClickListener({ view -> createNewImage() })
+
     }
 
     private fun createNewImage() {
         startActivity<CreateNewImage>()
     }
+
 }
