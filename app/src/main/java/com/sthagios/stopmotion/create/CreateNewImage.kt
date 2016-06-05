@@ -655,6 +655,12 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
     private fun createGif() {
         var gifName = ""
+
+        runOnUiThread {
+            loading_bar.visibility = View.VISIBLE
+            camera_preview.visibility = View.GONE
+        }
+
         rx.Observable.just(
                 getGifDirectoryFile())
                 .map {
@@ -729,6 +735,9 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     }
 
     private fun generateGIF(): ByteArray {
+        Snackbar.make(camera_preview, "Images captured, starting to create a gif",
+                Snackbar.LENGTH_LONG).show()
+
         showWhichThreadInLogcat()
         val bos = ByteArrayOutputStream()
         //Use glide gif encoder
@@ -837,10 +846,11 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                         button_switch_camera.visibility = View.VISIBLE
                         button_capture.visibility = View.VISIBLE
                     }, {
-                        container_amount.visibility = View.VISIBLE
-                        container_time.visibility = View.VISIBLE
-                        button_switch_camera.visibility = View.VISIBLE
-                        button_capture.visibility = View.VISIBLE
+//                        container_amount.visibility = View.VISIBLE
+//                        container_time.visibility = View.VISIBLE
+//                        button_switch_camera.visibility = View.VISIBLE
+//                        button_capture.visibility = View.VISIBLE
+
                     })
 
         })

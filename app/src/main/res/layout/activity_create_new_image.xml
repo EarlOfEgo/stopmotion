@@ -7,29 +7,12 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-
-    <!--<android.support.v7.widget.CardView-->
-    <!--android:id="@+id/camera_container"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_above="@+id/button_capture"-->
-    <!--android:layout_alignParentTop="true"-->
-    <!--card_view:cardCornerRadius="4dp">-->
-
-    <!--<FrameLayout-->
-    <!--android:id="@+id/camera_preview"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_weight="1" />-->
-
     <com.sthagios.stopmotion.camera.AutoFitTextureView
         android:id="@+id/camera_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_centerInParent="true"
         android:layout_margin="4dp" />
-
-    <!--</android.support.v7.widget.CardView>-->
 
     <ImageButton
         android:id="@+id/button_capture"
@@ -106,5 +89,12 @@
             android:textSize="24sp"
             tools:text="5" />
     </LinearLayout>
+
+    <ProgressBar
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:id="@+id/loading_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
