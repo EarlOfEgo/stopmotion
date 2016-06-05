@@ -29,7 +29,12 @@ inline fun <reified T : Activity> Activity.startActivity() {
     startActivity(intent)
 }
 
-fun Activity.retrieveStringParameter(): String = intent.extras.getString("string_param", "")
+fun Activity.retrieveStringParameter(): String {
+    if (intent != null && intent.extras != null)
+        return intent.extras.getString("string_param", "")
+    else
+        return ""
+}
 
 fun Activity.LogDebug(param: String) {
     Log.d("${this.javaClass.simpleName}", param)

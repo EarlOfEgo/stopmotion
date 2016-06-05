@@ -16,17 +16,38 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.sthagios.stopmotion.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".list.ImageList" />
-        <activity android:name=".create.CreateNewImage" />
+        <activity
+            android:name=".list.ImageList"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".create.CreateNewImage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".show.ShowGifActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

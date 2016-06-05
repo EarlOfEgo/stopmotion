@@ -656,13 +656,13 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private val APP_FOLDER_NAME = "Stopmotion"
 
     private fun createGif() {
-        var gifPath = ""
+        var gifName = ""
         rx.Observable.just(
-                //                File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-//                        APP_FOLDER_NAME).absolutePath)
                 getGifDirectoryFile())
-                .map { "$it/${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}.gif" }
-                .doOnNext { gifPath = it }
+                .map {
+                    gifName = "${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}.gif"
+                    "$it/$gifName"
+                }
                 .doOnNext { Log.d(TAG, "Gif path $it") }
                 .map { FileOutputStream(it) }
                 .doOnNext { t -> t!!.write(generateGIF()) }
@@ -672,18 +672,18 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 .subscribe({ Log.d(TAG, "Gif created") },
                         { Log.e(TAG, "${it.message}") },
                         {
-//                            deleteTempFolder()
+                            deleteTempFolder()
                             Log.d(TAG, "Done")
-                            startActivity<ShowGifActivity>(gifPath)
+                            startActivity<ShowGifActivity>(gifName)
                         }
                 )
     }
 
-//    private fun deleteTempFolder() {
-//        val file = File(Environment.getExternalStoragePublicDirectory(
-//                Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/tmp_images/")
-//        file.delete()
-//    }
+    private fun deleteTempFolder() {
+        val file = File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/tmp_images/")
+        file.delete()
+    }
 
     private fun generateGIF(): ByteArray {
         showWhichThreadInLogcat()
@@ -853,7 +853,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     }
 
     private fun getGifDirectoryFile(): File {
-        val mediaStorageDir = File(filesDir.absolutePath + "/gifs/")
+        val mediaStorageDir = File(filesDir, "gifs");
+//                File(filesDir.absolutePath + "/gifs/")
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 Log.d(TAG, "failed to create directory")
@@ -871,7 +872,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 //        val mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(
 //                Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/tmp_images/")
 
-        var mediaStorageDir = File(filesDir.absolutePath + "/tmp_images/")
+        var mediaStorageDir = File(filesDir, "tmp_images");
+//                File(filesDir.absolutePath + "/tmp_images/")
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
