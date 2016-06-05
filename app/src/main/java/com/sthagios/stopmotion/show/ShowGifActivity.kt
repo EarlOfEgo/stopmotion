@@ -3,6 +3,7 @@ package com.sthagios.stopmotion.show
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
@@ -27,20 +28,18 @@ class ShowGifActivity : AppCompatActivity() {
 
         val gif = getRealmInstance().where(Gif::class.java).equalTo("id", id).findFirst()
 
-
         val uri = Uri.parse(gif.fileUriString)
 
         Observable.just(Glide.with(this).load(uri).into(preview))
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    LogDebug("loaded")
-                }, {
+                .subscribe({}, {
                     e ->
                     e.printStackTrace()
+                }, {
+                    LogDebug("loaded")
+                    loading_spinner.visibility = View.GONE
                 })
-
-
 
         share_button.setOnClickListener({
             shareGif(gif.shareUriString)
