@@ -14,7 +14,6 @@ import android.os.HandlerThread
 import android.support.design.widget.Snackbar
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.Surface
@@ -26,9 +25,7 @@ import com.sthagios.stopmotion.camera.ImageSaver
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.show.ShowGifActivity
-import com.sthagios.stopmotion.utils.LogDebug
-import com.sthagios.stopmotion.utils.showWhichThreadInLogcat
-import com.sthagios.stopmotion.utils.startActivity
+import com.sthagios.stopmotion.utils.*
 import kotlinx.android.synthetic.main.activity_create_new_image.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -218,7 +215,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
 
                         override fun onConfigureFailed(session: CameraCaptureSession?) {
-                            Log.e(TAG, "Failed to create capture session")
+                            LogError("Failed to create capture session")
                         }
                     }, null
             )
@@ -338,7 +335,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
                 override fun onCaptureCompleted(session: CameraCaptureSession?,
                         request: CaptureRequest?, result: TotalCaptureResult?) {
-                    Log.d(TAG, "Capture complete")
+                    LogDebug("Capture complete")
                     unlockFocus()
                 }
             }
@@ -436,7 +433,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 throw RuntimeException("Time out waiting to lock camera opening.")
             }
             manager.openCamera(mCameraId, mStateCallback, mBackgroundHandler)
-            Log.v(TAG, "Camera($mCameraId) opened")
+            LogVerbose("Camera($mCameraId) opened")
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         } catch (e: InterruptedException) {
@@ -447,11 +444,11 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private val mOnImageAvailableListener = ImageReader.OnImageAvailableListener { reader ->
         val file = getOutputMediaFileForImage()
         mBackgroundHandler!!.post(ImageSaver(reader.acquireNextImage(), file, {
-            Log.d(TAG, "Saved $it")
+            LogDebug("Saved $it")
             mPictureList = mPictureList.plus(it)
 
             if (mPictureList.size == mBurstAmount) {
-                Log.d(TAG, "All images taken, converting to gif")
+                LogDebug("All images taken, converting to gif")
                 createGif()
             }
         }
@@ -477,7 +474,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private fun setUpCameraInfos() {
         val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
         mAvailableCameras = manager.cameraIdList
-        Log.v(TAG, "Available cameraids: ${manager.cameraIdList.size}")
+        LogVerbose("Available cameraids: ${manager.cameraIdList.size}")
     }
 
     /**
@@ -487,7 +484,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
      * @param height The height of available size for camera preview
      */
     private fun setUpCameraOutputs(width: Int, height: Int) {
-        Log.v(TAG, "Setting camera output, width: $width, height: $height")
+        LogVerbose("Setting camera output, width: $width, height: $height")
         try {
             val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
@@ -532,7 +529,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                         swappedDimensions = true
                     }
                 else                                      ->
-                    Log.e(TAG, "Display rotation is invalid: " + displayRotation)
+                    LogError("Display rotation is invalid: " + displayRotation)
             }
 
             val displaySize = Point()
@@ -564,7 +561,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     map.getOutputSizes(SurfaceTexture::class.java).asList(),
                     rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
                     maxPreviewHeight, largest)
-            Log.v(TAG,
+            LogVerbose(
                     "Preview size: height=${mPreviewSize!!.height} width=${mPreviewSize!!.width}")
 
             // We fit the aspect ratio of TextureView to the size of preview we picked.
@@ -580,10 +577,9 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             if (available == null) mFlashSupported = false else mFlashSupported = available
 
         } catch (e: CameraAccessException) {
-            Log.e(TAG, e.message)
-            e.printStackTrace()
+            LogError("${e.message}")
         } catch (e: NullPointerException) {
-            Log.e(TAG, e.message)
+            LogError("${e.message}")
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
 //            ErrorDialog.newInstance(getString(R.string.camera_error))
@@ -609,7 +605,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
      */
     private fun chooseOptimalSize(choices: List<Size>, textureViewWidth: Int,
             textureViewHeight: Int, maxWidth: Int, maxHeight: Int, aspectRatio: Size): Size? {
-        Log.v(TAG, "Choosing optimal size from ${choices.toString()}\n" +
+        LogVerbose("Choosing optimal size from ${choices.toString()}\n" +
                 "with: textureViewWidth:$textureViewWidth textureViewHeight: $textureViewHeight, maxWidth: $maxWidth, maxHeight: $maxHeight, aspectRatio: $aspectRatio")
         // Collect the supported resolutions that are at least as big as the preview Surface
         val bigEnough = ArrayList<Size>()
@@ -644,12 +640,10 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                         (lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
             })
         } else {
-            Log.e(TAG, "Couldn't find any suitable preview size")
+            LogError("Couldn't find any suitable preview size")
             return choices[0]
         }
     }
-
-    private val TAG = "CreateNewImage"
 
     override fun onSaveInstanceState(outState: Bundle?) {
         outState!!.putInt(BUNDLE_BURST_TIME, mBurstTime)
@@ -667,18 +661,18 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     gifName = "${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}.gif"
                     "$it/$gifName"
                 }
-                .doOnNext { Log.d(TAG, "Gif path $it") }
+                .doOnNext { LogDebug("Gif path $it") }
                 .map { FileOutputStream(it) }
                 .doOnNext { t -> t!!.write(generateGIF()) }
                 .doOnNext { t -> t.close() }
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ Log.d(TAG, "Gif created") },
-                        { Log.e(TAG, "${it.message}") },
+                .subscribe({ LogDebug("Gif created") },
+                        { LogError("${it.message}") },
                         {
                             deleteTempFolderContent()
                             storeInDatabase(gifName)
-                            Log.d(TAG, "Done")
+                            LogDebug("Done")
                         }
                 )
     }
@@ -741,7 +735,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         val encoder = AnimatedGifEncoder()
         encoder.start(bos)
         encoder.setRepeat(0)
-        Log.d(TAG, "Start gif encoding")
+        LogDebug("Start gif encoding")
         for (path in mPictureList) {
             val matrix = Matrix()
 
@@ -753,8 +747,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
                     scaledBitmap.height, matrix, true)
 
-            Log.d(TAG,
-                    "Adding Frame: height:${rotatedBitmap.height} + width:${rotatedBitmap.width}")
+            LogDebug("Adding Frame: height:${rotatedBitmap.height} + width:${rotatedBitmap.width}")
             encoder.setDelay(200)
             encoder.addFrame(rotatedBitmap);
             bitmap.recycle()
@@ -763,9 +756,9 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             LogDebug(
                     "Is recycled bitmap:${bitmap.isRecycled} scaledBitmap:${scaledBitmap.isRecycled} rotatedBitmap:${rotatedBitmap.isRecycled}")
         }
-        Log.d(TAG, "Added all")
+        LogDebug("Added all")
         encoder.finish();
-        Log.d(TAG, "Encoding finished")
+        LogDebug("Encoding finished")
         return bos.toByteArray();
     }
 
@@ -836,9 +829,9 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     .flatMap { it -> rx.Observable.just(takePicture()) }
                     .subscribeOn(Schedulers.io())
                     .subscribe({
-                        Log.d(TAG, "Image: $it")
+                        LogDebug("Image: $it")
                     }, {
-                        Log.e(TAG, "${it.message}")
+                        LogError("${it.message}")
                         container_amount.visibility = View.VISIBLE
                         container_time.visibility = View.VISIBLE
                         button_switch_camera.visibility = View.VISIBLE
@@ -906,7 +899,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 //                File(filesDir.absolutePath + "/gifs/")
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.d(TAG, "failed to create directory")
+                LogDebug("failed to create directory")
                 return File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/gifs/")
             }
@@ -926,7 +919,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.d(TAG, "failed to create internal directory")
+                LogDebug("failed to create internal directory")
                 mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/tmp_images/")
             }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Looper
 import android.util.Log
+import com.sthagios.stopmotion.BuildConfig
 
 /**
  * Stopmotion
@@ -50,7 +51,18 @@ fun Activity.retrieveStringParameter(): String {
 }
 
 fun Activity.LogDebug(param: String) {
-    Log.d("${this.javaClass.simpleName}", param)
+    if (BuildConfig.DEBUG)
+        Log.d("${this.javaClass.simpleName}", param)
+}
+
+fun Activity.LogVerbose(param: String) {
+    if (BuildConfig.DEBUG)
+        Log.v("${this.javaClass.simpleName}", param)
+}
+
+fun Activity.LogError(param: String) {
+    if (BuildConfig.DEBUG)
+        Log.e("${this.javaClass.simpleName}", param)
 }
 
 fun Activity.showWhichThreadInLogcat() {
