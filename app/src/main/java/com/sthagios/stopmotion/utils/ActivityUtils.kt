@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Looper
 import android.util.Log
 import com.sthagios.stopmotion.BuildConfig
+import java.util.*
 
 /**
  * Stopmotion
@@ -24,6 +25,19 @@ inline fun <reified T : Activity> Activity.startActivity(long: Long) {
     val intent = Intent(this, T::class.java)
     intent.putExtra("long_param", long)
     startActivity(intent)
+}
+
+inline fun <reified T : Activity> Activity.startActivity(stringList: ArrayList<String>) {
+    val intent = Intent(this, T::class.java)
+    intent.putStringArrayListExtra("string_list_param", stringList)
+    startActivity(intent)
+}
+
+fun Activity.retrieveStringListParameter(): ArrayList<String> {
+    if (intent != null && intent.extras != null && intent.extras.containsKey("string_list_param"))
+        return intent.extras.getStringArrayList("string_list_param")
+    else
+        return ArrayList()
 }
 
 fun Activity.retrieveLongParameter(): Long {
