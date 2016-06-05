@@ -6,32 +6,27 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.hardware.camera2.params.StreamConfigurationMap
 import android.media.ImageReader
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
 import android.support.design.widget.Snackbar
-import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.Surface
 import android.view.TextureView
 import android.view.View
-import com.bumptech.glide.gifencoder.AnimatedGifEncoder
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.camera.ImageSaver
-import com.sthagios.stopmotion.image.database.Gif
-import com.sthagios.stopmotion.image.database.getRealmInstance
-import com.sthagios.stopmotion.show.ShowGifActivity
-import com.sthagios.stopmotion.utils.*
+import com.sthagios.stopmotion.utils.LogDebug
+import com.sthagios.stopmotion.utils.LogError
+import com.sthagios.stopmotion.utils.LogVerbose
+import com.sthagios.stopmotion.utils.startActivity
 import kotlinx.android.synthetic.main.activity_create_new_image.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Semaphore
@@ -449,7 +444,13 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
             if (mPictureList.size == mBurstAmount) {
                 LogDebug("All images taken, converting to gif")
-                createGif()
+
+
+                val arrayList: ArrayList<String> = ArrayList()
+                for (image in mPictureList)
+                    arrayList.add(image)
+                startActivity<GenerateGifActivity>(arrayList)
+                finish()
             }
         }
         ))
@@ -653,124 +654,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
     private val APP_FOLDER_NAME = "Stopmotion"
 
-    private fun createGif() {
-        var gifName = ""
-
-        runOnUiThread {
-            loading_bar.visibility = View.VISIBLE
-            camera_preview.visibility = View.GONE
-        }
-
-        rx.Observable.just(
-                getGifDirectoryFile())
-                .map {
-                    gifName = "${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}.gif"
-                    "$it/$gifName"
-                }
-                .doOnNext { LogDebug("Gif path $it") }
-                .map { FileOutputStream(it) }
-                .doOnNext { t -> t!!.write(generateGIF()) }
-                .doOnNext { t -> t.close() }
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ LogDebug("Gif created") },
-                        { LogError("${it.message}") },
-                        {
-                            deleteTempFolderContent()
-                            storeInDatabase(gifName)
-                            LogDebug("Done")
-                        }
-                )
-    }
-
-    private fun storeInDatabase(gifName: String) {
-
-
-        val realm = getRealmInstance()
-
-        realm.executeTransaction {
-            val gif = realm.createObject(Gif::class.java)
-            val id = Math.abs(Random().nextLong())
-            gif.id = id
-            gif.fileName = gifName
-            val imagePath = File(filesDir, "gifs");
-            val newFile = File(imagePath, gif.fileName);
-
-            gif.shareUriString = FileProvider.getUriForFile(
-                    this,
-                    "com.sthagios.stopmotion.fileprovider",
-                    newFile).toString()
-
-
-            gif.name = "Stopmotion Gif"
-            gif.fileUriString = Uri.fromFile(newFile).toString()
-
-
-            LogDebug("Stored gif ${gif.toString()}")
-
-            realm.close()
-
-            startActivity<ShowGifActivity>(id)
-            finish()
-        }
-    }
-
-    private fun deleteTempFolderContent() {
-        val directory = File(filesDir, "tmp_images");
-
-        rx.Observable.from(directory.listFiles())
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    file ->
-                    LogDebug("Deleting ${file.name}")
-                    file.delete()
-                }, {
-                    e ->
-                    e.printStackTrace()
-                }, { LogDebug("Deleted all files") })
-
-        for (file in directory.listFiles()) {
-            file.delete()
-        }
-    }
-
-    private fun generateGIF(): ByteArray {
-        Snackbar.make(camera_preview, "Images captured, starting to create a gif",
-                Snackbar.LENGTH_LONG).show()
-
-        showWhichThreadInLogcat()
-        val bos = ByteArrayOutputStream()
-        //Use glide gif encoder
-        val encoder = AnimatedGifEncoder()
-        encoder.start(bos)
-        encoder.setRepeat(0)
-        LogDebug("Start gif encoding")
-        for (path in mPictureList) {
-            val matrix = Matrix()
-
-            val bitmap = BitmapFactory.decodeFile(path)
-            matrix.postRotate(90.toFloat())
-
-            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 800, 600, true)
-
-            val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
-                    scaledBitmap.height, matrix, true)
-
-            LogDebug("Adding Frame: height:${rotatedBitmap.height} + width:${rotatedBitmap.width}")
-            encoder.setDelay(200)
-            encoder.addFrame(rotatedBitmap);
-            bitmap.recycle()
-            scaledBitmap.recycle()
-            rotatedBitmap.recycle()
-            LogDebug(
-                    "Is recycled bitmap:${bitmap.isRecycled} scaledBitmap:${scaledBitmap.isRecycled} rotatedBitmap:${rotatedBitmap.isRecycled}")
-        }
-        LogDebug("Added all")
-        encoder.finish();
-        LogDebug("Encoding finished")
-        return bos.toByteArray();
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -902,19 +785,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
-    }
-
-    private fun getGifDirectoryFile(): File {
-        val mediaStorageDir = File(filesDir, "gifs");
-//                File(filesDir.absolutePath + "/gifs/")
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                LogDebug("failed to create directory")
-                return File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/gifs/")
-            }
-        }
-        return mediaStorageDir
     }
 
 
