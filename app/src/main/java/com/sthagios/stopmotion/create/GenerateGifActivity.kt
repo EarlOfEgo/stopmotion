@@ -160,7 +160,6 @@ class GenerateGifActivity : AppCompatActivity() {
                     newFile).toString()
 
 
-            gif.name = "Stopmotion Gif"
             gif.fileUriString = Uri.fromFile(newFile).toString()
 
             LogDebug("Stored gif ${gif.toString()}")
