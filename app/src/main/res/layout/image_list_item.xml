@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="260dp"
-    android:background="#124567"
     android:orientation="vertical"
-    card_view:cardCornerRadius="4dp">
+    card_view:cardPreventCornerOverlap="false"
+    card_view:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -52,7 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/info_layout"
-            android:layout_alignParentTop="true" />
+            android:layout_alignParentTop="true"
+            android:scaleType="centerCrop" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

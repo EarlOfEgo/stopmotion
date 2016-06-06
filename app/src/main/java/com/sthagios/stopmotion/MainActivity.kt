@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
                     MY_PERMISSIONS_REQUEST_CAMERA);
         } else {
-
             permissionGranted()
         }
     }

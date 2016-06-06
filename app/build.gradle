@@ -51,6 +51,8 @@ dependencies {
 
     compile 'io.realm:android-adapters:1.2.2'
 
+//    compile 'com.makeramen:roundedimageview:2.2.1'
+
 
 }
 buildscript {
