@@ -36,8 +36,8 @@ dependencies {
 
     compile "com.android.support:design:$support_lib_version"
 
-    //Firebase
-    apply plugin: 'com.google.gms.google-services'
+    compile 'com.google.firebase:firebase-core:9.0.2'
+    compile 'com.google.firebase:firebase-crash:9.0.2'
 
     //Rx
     compile 'io.reactivex:rxkotlin:0.55.0'
@@ -50,6 +50,8 @@ dependencies {
     compile 'com.android.support:support-v4:23.4.0'
 
     compile 'io.realm:android-adapters:1.2.2'
+
+
 }
 buildscript {
     ext.kotlin_version = '1.0.1-2'
@@ -66,3 +68,5 @@ buildscript {
 repositories {
     mavenCentral()
 }
+//Firebase
+apply plugin: 'com.google.gms.google-services'

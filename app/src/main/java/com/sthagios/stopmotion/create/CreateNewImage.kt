@@ -319,14 +319,13 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             // Use the same AE and AF modes as the preview.
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
-//            setAutoFlash(captureBuilder)
+            setAutoFlash(captureBuilder)
 
             // Orientation
             val rotation = windowManager.defaultDisplay.rotation
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation))
 
             val CaptureCallback = object : CameraCaptureSession.CaptureCallback() {
-
 
                 override fun onCaptureCompleted(session: CameraCaptureSession?,
                         request: CaptureRequest?, result: TotalCaptureResult?) {
