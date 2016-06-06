@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="34dp"
             android:layout_alignParentBottom="true"
-            android:background="#4D000000"
+            android:background="@color/primary_light"
             android:padding="4dp">
 
             <ImageView
@@ -38,7 +38,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:textColor="#ffffff"
+                android:textColor="@color/secondary_text"
                 tools:text="BLA LBA" />
 
         </RelativeLayout>
