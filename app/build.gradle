@@ -53,8 +53,9 @@ dependencies {
 
     compile "com.android.support:design:$support_lib_version"
 
-    compile 'com.google.firebase:firebase-core:9.0.2'
-    compile 'com.google.firebase:firebase-crash:9.0.2'
+    compile "com.google.firebase:firebase-core:$firebase_version"
+    compile "com.google.firebase:firebase-crash:$firebase_version"
+    compile "com.google.firebase:firebase-messaging:$firebase_version"
 
     //Rx
     compile 'io.reactivex:rxkotlin:0.55.0'
@@ -76,6 +77,7 @@ buildscript {
     ext.kotlin_version = '1.0.1-2'
 
     ext.support_lib_version = '23.4.0'
+    ext.firebase_version = '9.0.2'
     repositories {
         mavenCentral()
     }
