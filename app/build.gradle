@@ -1,11 +1,23 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'realm-android'
 
+def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+def buildTime = {
+    def df = new SimpleDateFormat("HH:mm dd-MM-yyyy")
+    df.setTimeZone(TimeZone.getTimeZone("GMT+2"))
+    return df.format(new Date())
+}()
+
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
+
+
 
     defaultConfig {
         applicationId "com.sthagios.stopmotion"
@@ -13,6 +25,10 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+
+        buildConfigField "String", "GIT_SHA", "\"$gitSha\""
+        buildConfigField "String", "BUILD_TIME", "\"$buildTime\""
     }
     buildTypes {
         release {
@@ -24,6 +40,7 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 }
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
