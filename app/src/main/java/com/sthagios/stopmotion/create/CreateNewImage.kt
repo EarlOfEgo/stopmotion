@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.Surface
@@ -222,6 +223,13 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
     private val mCaptureCallback: CameraCaptureSession.CaptureCallback = object : CameraCaptureSession.CaptureCallback() {
 
+        override fun onCaptureFailed(session: CameraCaptureSession?, request: CaptureRequest?,
+                failure: CaptureFailure?) {
+            LogError("Capture failed ${Thread.currentThread().stackTrace[2]}")
+            Snackbar.make(camera_preview, "Something went wrong, try it again",
+                    Snackbar.LENGTH_LONG).show()
+        }
+
         override fun onCaptureCompleted(session: CameraCaptureSession?, request: CaptureRequest?,
                 result: TotalCaptureResult?) {
             process(result!!)
@@ -233,6 +241,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         }
 
         private fun process(result: CaptureResult) {
+            if (mState != STATE_PREVIEW)
+                Log.d("CreateNewImage", mState.toString())
             when (mState) {
             // We have nothing to do when the camera preview is working normally.
                 STATE_PREVIEW                -> {
@@ -307,6 +317,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
      * {@link #mCaptureCallback} from both {@link #lockFocus()}.
      */
     private fun captureStillPicture() {
+        LogDebug("Capture still picture")
         try {
             if (null == mCameraDevice) {
                 return
@@ -326,6 +337,19 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation))
 
             val CaptureCallback = object : CameraCaptureSession.CaptureCallback() {
+
+                override fun onCaptureFailed(session: CameraCaptureSession?,
+                        request: CaptureRequest?,
+                        failure: CaptureFailure?) {
+                    LogError("Capture failed ${Thread.currentThread().stackTrace[2]}")
+                    Snackbar.make(camera_preview, "Something went wrong, try it again",
+                            Snackbar.LENGTH_LONG).show()
+                }
+
+                override fun onCaptureStarted(session: CameraCaptureSession?,
+                        request: CaptureRequest?, timestamp: Long, frameNumber: Long) {
+                    LogDebug("On capture started")
+                }
 
                 override fun onCaptureCompleted(session: CameraCaptureSession?,
                         request: CaptureRequest?, result: TotalCaptureResult?) {

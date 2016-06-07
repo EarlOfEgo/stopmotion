@@ -78,15 +78,19 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private lateinit var mAdapter: StateAdapter
 
+    private lateinit var mThumbName: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_generate_gif)
 
+        val fileName = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        mGifName = "$fileName.gif"
+        mThumbName = "$fileName.PNG"
 
         mPictureList = retrieveStringListParameter()
 
         mAdapter = StateAdapter(this, mPictureList)
-
 
         image_list_recycler.setHasFixedSize(true)
         image_list_recycler.layoutManager = LinearLayoutManager(this)
@@ -97,17 +101,17 @@ class GenerateGifActivity : AppCompatActivity() {
 
         LogDebug("Generating gifs from ${mPictureList.toString()}")
 
+        storeThumbnail()
         startGifGeneration()
     }
 
 
-    private var mGifName: String = ""
+    private lateinit var mGifName: String
 
     private fun startGifGeneration() {
         rx.Observable.just(
                 getGifDirectoryFile())
                 .map {
-                    mGifName = "${SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())}.gif"
                     "$it/$mGifName"
                 }
                 .doOnNext { LogDebug("Gif path $it") }
@@ -130,14 +134,12 @@ class GenerateGifActivity : AppCompatActivity() {
             Snackbar.make(gif_name, "Gif successfully generated",
                     Snackbar.LENGTH_INDEFINITE).setAction("Save", {
                 deleteTempFolderContent()
-                storeInDatabase(mGifName)
-            })
-                    .show()
+                storeInDatabase()
+            }).show()
         }
-
     }
 
-    private fun storeInDatabase(gifName: String) {
+    private fun storeInDatabase() {
 
         val gifTitle = gif_name.text.toString()
 
@@ -147,7 +149,7 @@ class GenerateGifActivity : AppCompatActivity() {
             val gif = realm.createObject(Gif::class.java)
             val id = Math.abs(Random().nextLong())
             gif.id = id
-            gif.fileName = gifName
+            gif.fileName = mGifName
             if (!TextUtils.isEmpty(gifTitle))
                 gif.name = gifTitle
 
@@ -159,18 +161,52 @@ class GenerateGifActivity : AppCompatActivity() {
                     "com.sthagios.stopmotion.fileprovider",
                     newFile).toString()
 
-
             gif.fileUriString = Uri.fromFile(newFile).toString()
+            gif.thumbnailUriString = mThumbUri
 
             LogDebug("Stored gif ${gif.toString()}")
-
-            realm.close()
 
             startActivity<ShowGifActivity>(id)
             finish()
         }
     }
 
+
+    private var mThumbUri: String = ""
+
+    private fun storeThumbnail() {
+        rx.Observable.from(mPictureList)
+                .first()
+                .flatMap {
+
+                    val imagePath = getThumbDirectoryFile()
+                    val imageFile = File(imagePath, mThumbName)
+
+                    val matrix = Matrix()
+
+                    val bitmap = BitmapFactory.decodeFile(mPictureList[0])
+                    matrix.postRotate(90.toFloat())
+
+                    val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 800, 600, true)
+
+                    val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
+                            scaledBitmap.height, matrix, true)
+
+                    val fos = FileOutputStream(imageFile)
+                    rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                    fos.close()
+
+                    rx.Observable.just(Uri.fromFile(imageFile).toString())
+                }
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    LogDebug("Thumb created under $it")
+                    mThumbUri = it
+                }, {
+                    e ->
+                    LogError(e.message!!)
+                }, { LogDebug("Thumb created") })
+    }
 
     private fun deleteTempFolderContent() {
         val directory = File(filesDir, "tmp_images");
@@ -192,8 +228,7 @@ class GenerateGifActivity : AppCompatActivity() {
     }
 
     private fun getGifDirectoryFile(): File {
-        val mediaStorageDir = File(filesDir, "gifs");
-//                File(filesDir.absolutePath + "/gifs/")
+        val mediaStorageDir = File(filesDir, "gifs")
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 LogDebug("failed to create directory")
@@ -203,6 +238,19 @@ class GenerateGifActivity : AppCompatActivity() {
         }
         return mediaStorageDir
     }
+
+    private fun getThumbDirectoryFile(): File {
+        val mediaStorageDir = File(filesDir, "thumbs")
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                LogDebug("failed to create directory")
+                return File(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES), "Stopmotion" + "/thumbs/")
+            }
+        }
+        return mediaStorageDir
+    }
+
 
     private lateinit var mPictureList: ArrayList<String>
 

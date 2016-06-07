@@ -20,6 +20,8 @@ open class Gif(
         //Gif file uri as string
         open var fileUriString: String = "",
         //Gif share uri as string
-        open var shareUriString: String = ""
+        open var shareUriString: String = "",
+        //Thumbnail file uri as string
+        open var thumbnailUriString: String = ""
 ) : RealmObject() {
 }
