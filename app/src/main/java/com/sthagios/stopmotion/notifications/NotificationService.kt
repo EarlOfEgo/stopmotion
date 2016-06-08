@@ -17,5 +17,8 @@ class NotificationService : FirebaseMessagingService() {
         //TODO
         Log.d(TAG, "From: " + remoteMessage!!.from);
         Log.d(TAG, "Notification Message Body: " + remoteMessage.notification.body);
+        for(data in remoteMessage.data.entries) {
+
+        }
     }
 }
