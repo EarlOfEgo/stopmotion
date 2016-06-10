@@ -22,7 +22,7 @@ import rx.schedulers.Schedulers
 
 class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
     override fun onOk(name: String) {
-        Snackbar.make(share_button, name, Snackbar.LENGTH_LONG).show()
+        saveNewName(name)
     }
 
     lateinit var dialog: EditDialog
@@ -78,5 +78,26 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun saveNewName(name: String) {
+        val id = retrieveLongParameter()
+        val gif = getRealmInstance().where(Gif::class.java).equalTo("id", id).findFirst()
+
+        val oldName = gif.name
+        getRealmInstance().beginTransaction()
+        gif.name = name
+        getRealmInstance().commitTransaction()
+        title = name
+        Snackbar.make(share_button, name, Snackbar.LENGTH_LONG)
+                .setAction("Undo", {
+                    getRealmInstance().beginTransaction()
+                    gif.name = oldName
+                    getRealmInstance().commitTransaction()
+                    title = oldName
+                })
+                .show()
+
+
     }
 }
