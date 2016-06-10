@@ -152,6 +152,8 @@ class GenerateGifActivity : AppCompatActivity() {
             gif.fileName = mGifName
             if (!TextUtils.isEmpty(gifTitle))
                 gif.name = gifTitle
+            else
+                gif.name = "Stopmotion Gif"
 
             val imagePath = File(filesDir, "gifs");
             val newFile = File(imagePath, gif.fileName);

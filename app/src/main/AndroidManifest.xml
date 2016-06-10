@@ -15,10 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <service
-            android:name=".notifications.NotificationService">
+        <service android:name=".notifications.NotificationService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <provider
@@ -52,6 +51,7 @@
         <activity
             android:name=".show.ShowGifActivity"
             android:configChanges="orientation"
+            android:parentActivityName=".list.ImageListActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".create.GenerateGifActivity"
