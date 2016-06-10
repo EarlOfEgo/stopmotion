@@ -1,11 +1,14 @@
 package com.sthagios.stopmotion.show
 
+import android.app.Dialog
+import android.app.DialogFragment
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
@@ -68,6 +71,34 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
             dialog.show(fragmentManager, "EditDialog")
 
         })
+
+        delete_button.setOnClickListener({
+            val dialog = object : DialogFragment() {
+                override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
+
+                    val dialog = MaterialDialog.Builder(activity)
+                            .title("Are you sure?")
+                            .positiveText("Delete")
+                            .negativeText("Cancel")
+                            .onPositive { materialDialog, dialogAction ->
+                                deleteGif()
+                            }
+                            .show()
+                    return dialog
+                }
+
+            }
+            dialog.show(fragmentManager, "DeleteDialog")
+        })
+    }
+
+    private fun deleteGif() {
+        val id = retrieveLongParameter()
+        val gif = getRealmInstance().where(Gif::class.java).equalTo("id", id).findFirst()
+        getRealmInstance().executeTransaction {
+            gif.deleteFromRealm()
+            finish()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -85,19 +116,17 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         val gif = getRealmInstance().where(Gif::class.java).equalTo("id", id).findFirst()
 
         val oldName = gif.name
-        getRealmInstance().beginTransaction()
-        gif.name = name
-        getRealmInstance().commitTransaction()
+        getRealmInstance().executeTransaction {
+            gif.name = name
+        }
         title = name
         Snackbar.make(share_button, name, Snackbar.LENGTH_LONG)
                 .setAction("Undo", {
-                    getRealmInstance().beginTransaction()
-                    gif.name = oldName
-                    getRealmInstance().commitTransaction()
-                    title = oldName
+                    getRealmInstance().executeTransaction {
+                        gif.name = oldName
+                        title = oldName
+                    }
                 })
                 .show()
-
-
     }
 }
