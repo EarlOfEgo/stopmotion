@@ -100,9 +100,9 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
                 override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
 
                     val dialog = MaterialDialog.Builder(activity)
-                            .title("Are you sure?")
-                            .positiveText("Delete")
-                            .negativeText("Cancel")
+                            .title(R.string.dialog_delete_title)
+                            .positiveText(R.string.delete_button)
+                            .negativeText(R.string.cancel_button)
                             .onPositive { materialDialog, dialogAction ->
                                 deleteGif()
                             }
@@ -223,7 +223,7 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         }
         title = name
         Snackbar.make(share_button, name, Snackbar.LENGTH_LONG)
-                .setAction("Undo", {
+                .setAction(R.string.undo_snackbar, {
                     getRealmInstance().executeTransaction {
                         gif.name = oldName
                         title = oldName

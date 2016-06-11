@@ -8,4 +8,11 @@
     <string name="burst_time_4">4 Sec.</string>
     <string name="burst_time_5">5 Sec.</string>
 
+
+    <string name="undo_snackbar">Undo</string>
+    <string name="dialog_delete_title">Are you sure?</string>
+    <string name="delete_button">Delete</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="rename_dialog_title">Edit Gif Name</string>
+    <string name="dialog_input_hint">Give the Gif a Name</string>
 </resources>

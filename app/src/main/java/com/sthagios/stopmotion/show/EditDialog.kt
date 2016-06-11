@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.InputType
 import com.afollestad.materialdialogs.MaterialDialog
+import com.sthagios.stopmotion.R
 
 /**
  * Stopmotion
@@ -56,16 +57,16 @@ class EditDialog() : DialogFragment() {
 
 
         return MaterialDialog.Builder(activity)
-                .title("Edit Gif Name")
+                .title(R.string.rename_dialog_title)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .alwaysCallInputCallback()
-                .input("R.string.input_hint", mValue, { dialog, input ->
+                .input(R.string.dialog_input_hint, mValue, { dialog, input ->
                     mValue = input!!.toString()
                 })
                 .onPositive { materialDialog, dialogAction ->
                     mListener.onOk(mValue.toString())
                 }
-                .negativeText("Cancel")
+                .negativeText(R.string.cancel_button)
                 .build()
     }
 }
