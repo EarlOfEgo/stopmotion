@@ -589,7 +589,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     "Preview size: height=${mPreviewSize!!.height} width=${mPreviewSize!!.width}")
 
             // We fit the aspect ratio of TextureView to the size of preview we picked.
-            val orientation = resources.configuration.orientation
+//            val orientation = resources.configuration.orientation
 //            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
 //                camera_preview.setAspectRatio(mPreviewSize!!.width, mPreviewSize!!.height)
 //            } else {
