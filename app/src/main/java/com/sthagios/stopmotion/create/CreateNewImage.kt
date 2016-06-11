@@ -681,6 +681,9 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        ORIENTATIONS.append(Surface.ROTATION_0, 90);
+        ORIENTATIONS.append(Surface.ROTATION_90, 0);
+
         setContentView(R.layout.activity_create_new_image)
 
         if (savedInstanceState != null) {

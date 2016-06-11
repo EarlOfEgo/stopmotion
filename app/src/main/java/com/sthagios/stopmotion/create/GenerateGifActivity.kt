@@ -3,7 +3,6 @@ package com.sthagios.stopmotion.create
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -50,7 +49,7 @@ class GenerateGifActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
             val image = imageList[position]
             Glide.with(mContext).load(image).into(holder!!.mImageView)
-            holder.mImageView.rotation = 90.toFloat()
+//            holder.mImageView.rotation = 90.toFloat()
             if (imageListLoading.get(image)!!) {
                 holder.mLoadingBar.visibility = View.VISIBLE
                 holder.mConvertedText.visibility = View.GONE
@@ -184,18 +183,18 @@ class GenerateGifActivity : AppCompatActivity() {
                     val imagePath = getThumbDirectoryFile()
                     val imageFile = File(imagePath, mThumbName)
 
-                    val matrix = Matrix()
+//                    val matrix = Matrix()
 
                     val bitmap = BitmapFactory.decodeFile(mPictureList[0])
-                    matrix.postRotate(90.toFloat())
+//                    matrix.postRotate(90.toFloat())
 
-                    val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 800, 600, true)
+                    val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 600, 800, true)
 
-                    val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
-                            scaledBitmap.height, matrix, true)
+//                    val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
+//                            scaledBitmap.height, matrix, true)
 
                     val fos = FileOutputStream(imageFile)
-                    rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                    scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
                     fos.close()
 
                     rx.Observable.just(Uri.fromFile(imageFile).toString())
@@ -272,24 +271,24 @@ class GenerateGifActivity : AppCompatActivity() {
                 mAdapter.notifyDataSetChanged()
             }
 
-            val matrix = Matrix()
+//            val matrix = Matrix()
 
             val bitmap = BitmapFactory.decodeFile(path)
-            matrix.postRotate(90.toFloat())
+//            matrix.postRotate(90.toFloat())
 
-            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 800, 600, true)
+            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 600, 800, true)
 
-            val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
-                    scaledBitmap.height, matrix, true)
+//            val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
+//                    scaledBitmap.height, matrix, true)
 
-            LogDebug("Adding Frame: height:${rotatedBitmap.height} + width:${rotatedBitmap.width}")
+            LogDebug("Adding Frame: height:${scaledBitmap.height} + width:${scaledBitmap.width}")
             encoder.setDelay(200)
-            encoder.addFrame(rotatedBitmap);
+            encoder.addFrame(scaledBitmap);
             bitmap.recycle()
             scaledBitmap.recycle()
-            rotatedBitmap.recycle()
+            scaledBitmap.recycle()
             LogDebug(
-                    "Is recycled bitmap:${bitmap.isRecycled} scaledBitmap:${scaledBitmap.isRecycled} rotatedBitmap:${rotatedBitmap.isRecycled}")
+                    "Is recycled bitmap:${bitmap.isRecycled} scaledBitmap:${scaledBitmap.isRecycled} rotatedBitmap:${scaledBitmap.isRecycled}")
         }
         LogDebug("Added all")
         encoder.finish();
