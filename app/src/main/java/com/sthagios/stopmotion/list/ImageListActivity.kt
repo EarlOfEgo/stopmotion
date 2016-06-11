@@ -1,6 +1,8 @@
 package com.sthagios.stopmotion.list
 
+import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
@@ -28,7 +30,6 @@ class ImageListActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
-
         recyclerViewImageList.setHasFixedSize(true)
         recyclerViewImageList.layoutManager = GridLayoutManager(this, 2)
 
@@ -42,6 +43,21 @@ class ImageListActivity : AppCompatActivity() {
 
         fab.setOnClickListener({ view -> createNewImage() })
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 1 && data != null) {
+                val id = data.getStringExtra("deleted_id")
+                val name = data.getStringExtra("deleted_name")
+                if (name != null && name.length > 0) {
+                    Snackbar.make(recyclerViewImageList, "$name successfully deleted",
+                            Snackbar.LENGTH_LONG).show()
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     private fun createNewImage() {

@@ -2,6 +2,7 @@ package com.sthagios.stopmotion.show
 
 import android.app.Dialog
 import android.app.DialogFragment
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -15,12 +16,14 @@ import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.share.shareGif
 import com.sthagios.stopmotion.utils.LogDebug
+import com.sthagios.stopmotion.utils.LogError
 import com.sthagios.stopmotion.utils.retrieveLongParameter
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import kotlinx.android.synthetic.main.toolbar.*
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.io.File
 
 
 class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
@@ -95,10 +98,34 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
     private fun deleteGif() {
         val id = retrieveLongParameter()
         val gif = getRealmInstance().where(Gif::class.java).equalTo("id", id).findFirst()
+        val gifUri = Uri.parse(gif.fileUriString)
+        val thumbUri = Uri.parse(gif.thumbnailUriString)
+        deleteFile(gifUri)
+        deleteFile(thumbUri)
+
         getRealmInstance().executeTransaction {
+
+            val bundle = Bundle();
+            bundle.putString("deleted_name", gif.name);
+
+            val intent = Intent()
+            intent.putExtras(bundle)
+            setResult(RESULT_OK, intent);
             gif.deleteFromRealm()
             finish()
         }
+    }
+
+    private fun deleteFile(gifUri: Uri?) {
+        LogDebug("Deleting $gifUri")
+        val file = File(gifUri!!.path)
+        Observable.just(file)
+                .subscribe({ it.delete() }, {
+                    e ->
+                    LogError("$e")
+                }, {
+                    LogDebug("Deleted")
+                })
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

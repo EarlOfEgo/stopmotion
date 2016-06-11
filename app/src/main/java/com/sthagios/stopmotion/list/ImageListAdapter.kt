@@ -52,7 +52,7 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
         }
         holder.mShareButton.setOnClickListener({ mContext.shareGif(gif.shareUriString) })
         holder.mImageView.setOnClickListener(
-                { (mContext as Activity).startActivity<ShowGifActivity>(gif.id) })
+                { (mContext as Activity).startActivity<ShowGifActivity>(gif.id, 1) })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {

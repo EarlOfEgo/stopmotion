@@ -27,6 +27,12 @@ inline fun <reified T : Activity> Activity.startActivity(long: Long) {
     startActivity(intent)
 }
 
+inline fun <reified T : Activity> Activity.startActivity(long: Long, resultCode: Int) {
+    val intent = Intent(this, T::class.java)
+    intent.putExtra("long_param", long)
+    startActivityForResult(intent, resultCode)
+}
+
 inline fun <reified T : Activity> Activity.startActivity(stringList: ArrayList<String>) {
     val intent = Intent(this, T::class.java)
     intent.putStringArrayListExtra("string_list_param", stringList)
