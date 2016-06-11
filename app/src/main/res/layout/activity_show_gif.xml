@@ -53,7 +53,8 @@
         android:clipChildren="false"
         android:elevation="4dp"
         app:layout_anchor="@id/cardView"
-        app:layout_anchorGravity="end|bottom">
+        app:layout_anchorGravity="end|bottom"
+        app:layout_behavior="com.sthagios.stopmotion.show.MoveUpwardBehaviour">
 
 
         <android.support.design.widget.FloatingActionButton
