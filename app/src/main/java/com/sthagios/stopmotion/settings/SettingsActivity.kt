@@ -53,7 +53,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setUpVersionInfos() {
-        version_text.text = "Version ${BuildConfig.VERSION_NAME}"
+        version_text.text = "Version: ${BuildConfig.VERSION_NAME}"
 
         if (BuildConfig.DEBUG) {
             debug_info.visibility = View.VISIBLE

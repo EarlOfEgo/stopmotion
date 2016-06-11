@@ -54,7 +54,8 @@ class EditDialog() : DialogFragment() {
             mValue = savedInstanceState.getString(BUNDLE_VALUE, "");
         }
 
-        val dialog = MaterialDialog.Builder(activity)
+
+        return MaterialDialog.Builder(activity)
                 .title("Edit Gif Name")
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .alwaysCallInputCallback()
@@ -62,10 +63,9 @@ class EditDialog() : DialogFragment() {
                     mValue = input!!.toString()
                 })
                 .onPositive { materialDialog, dialogAction ->
-                    mListener.onOk(mValue)
+                    mListener.onOk(mValue.toString())
                 }
-                .show()
-
-        return dialog
+                .negativeText("Cancel")
+                .build()
     }
 }
