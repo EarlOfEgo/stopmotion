@@ -3,6 +3,7 @@ package com.sthagios.stopmotion.create
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.*
+import android.graphics.drawable.Animatable
 import android.hardware.camera2.*
 import android.hardware.camera2.params.StreamConfigurationMap
 import android.media.ImageReader
@@ -704,21 +705,30 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         if (mAvailableCameras.size > 1) {
             button_switch_camera.setOnClickListener({
                 if (mCameraId == mAvailableCameras[0]) {
+                    button_switch_camera.setImageResource(R.drawable.animate_camera_front_to_back)
+                    animateCamereaChange()
                     mCameraId = mAvailableCameras[1]
-                    button_switch_camera.setImageDrawable(
-                            resources.getDrawable(R.drawable.ic_camera_rear_black_48dp))
                 } else {
+                    button_switch_camera.setImageResource(R.drawable.animate_camera_back_to_front)
+                    animateCamereaChange()
                     mCameraId = mAvailableCameras[0]
-                    button_switch_camera.setImageDrawable(
-                            resources.getDrawable(R.drawable.ic_camera_front_black_48dp))
                 }
 
-                closeCamera()
-                if (camera_preview.isAvailable) {
-                    openCamera(camera_preview.width, camera_preview.height)
-                } else {
-                    camera_preview.surfaceTextureListener = mSurfaceTextureListener
-                }
+                rx.Single.just(closeCamera())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            if (camera_preview.isAvailable) {
+                                rx.Single.just(openCamera(camera_preview.width,
+                                        camera_preview.height)).subscribeOn(Schedulers.io())
+                                        .subscribe()
+                            } else {
+                                camera_preview.surfaceTextureListener = mSurfaceTextureListener
+                            }
+                        }, {
+                            LogError("${it.message}")
+                        })
+
             })
         } else {
             button_switch_camera.visibility = View.GONE
@@ -762,10 +772,30 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         })
     }
 
+    private fun animateCamereaChange() {
+        val drawable = button_switch_camera.drawable
+        if (drawable is Animatable) {
+            drawable.start()
+        }
+    }
+
     private var mPictureList = emptyArray<String>()
 
     private fun takePicture() {
-        lockFocus()
+
+        val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+
+        val characteristics = manager.getCameraCharacteristics(mCameraId)
+
+
+        if (CameraCharacteristics.LENS_FACING_FRONT == characteristics.get(
+                CameraCharacteristics.LENS_FACING)) {
+            // front camera selected, so take a picture without focus
+            captureStillPicture();
+        } else {
+            // back camera selected, trigger the focus before creating an image
+            lockFocus();
+        }
     }
 
     /**
