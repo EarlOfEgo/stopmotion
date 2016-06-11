@@ -1,7 +1,6 @@
 package com.sthagios.stopmotion.create
 
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.*
 import android.graphics.drawable.Animatable
 import android.hardware.camera2.*
@@ -591,11 +590,11 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
             // We fit the aspect ratio of TextureView to the size of preview we picked.
             val orientation = resources.configuration.orientation
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                camera_preview.setAspectRatio(mPreviewSize!!.width, mPreviewSize!!.height)
-            } else {
-                camera_preview.setAspectRatio(mPreviewSize!!.height, mPreviewSize!!.width)
-            }
+//            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                camera_preview.setAspectRatio(mPreviewSize!!.width, mPreviewSize!!.height)
+//            } else {
+//                camera_preview.setAspectRatio(mPreviewSize!!.height, mPreviewSize!!.width)
+//            }
 
             // Check if the flash is supported.
             val available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE)

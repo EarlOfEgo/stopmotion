@@ -41,18 +41,20 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val gif = data[position]
-        holder!!.mImageText.text = gif.name
-        if (useThumbs) {
-            val uri = Uri.parse(gif.thumbnailUriString)
-            Glide.with(mContext).load(uri).into(holder.mImageView)
-        } else {
-            val uri = Uri.parse(gif.fileUriString)
-            Glide.with(mContext).load(uri).into(holder.mImageView)
+        if(gif.isValid) {
+            holder!!.mImageText.text = gif.name
+            if (useThumbs) {
+                val uri = Uri.parse(gif.thumbnailUriString)
+                Glide.with(mContext).load(uri).into(holder.mImageView)
+            } else {
+                val uri = Uri.parse(gif.fileUriString)
+                Glide.with(mContext).load(uri).into(holder.mImageView)
 
+            }
+            holder.mShareButton.setOnClickListener({ mContext.shareGif(gif.shareUriString) })
+            holder.mImageView.setOnClickListener(
+                    { (mContext as Activity).startActivity<ShowGifActivity>(gif.id, 1) })
         }
-        holder.mShareButton.setOnClickListener({ mContext.shareGif(gif.shareUriString) })
-        holder.mImageView.setOnClickListener(
-                { (mContext as Activity).startActivity<ShowGifActivity>(gif.id, 1) })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
