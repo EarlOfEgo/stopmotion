@@ -24,6 +24,8 @@ import kotlinx.android.synthetic.main.toolbar.*
  */
 class ImageListActivity : AppCompatActivity() {
 
+    private lateinit var mAdapter: ImageListAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_list)
@@ -35,9 +37,9 @@ class ImageListActivity : AppCompatActivity() {
 
         val realm = getRealmInstance()
 
-        val adapter = ImageListAdapter(this, realm.where(Gif::class.java).findAllAsync())
+        mAdapter = ImageListAdapter(this, realm.where(Gif::class.java).findAllAsync())
 
-        recyclerViewImageList.adapter = adapter
+        recyclerViewImageList.adapter = mAdapter
 
         recyclerViewImageList.addItemDecoration(ItemDecorator())
 
@@ -48,6 +50,7 @@ class ImageListActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK) {
             if (requestCode == 1 && data != null) {
+                mAdapter.notifyDataSetChanged()
                 val id = data.getStringExtra("deleted_id")
                 val name = data.getStringExtra("deleted_name")
                 if (name != null && name.length > 0) {

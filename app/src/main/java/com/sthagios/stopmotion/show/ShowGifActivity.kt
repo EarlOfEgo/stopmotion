@@ -1,14 +1,20 @@
 package com.sthagios.stopmotion.show
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.app.DialogFragment
 import android.content.Intent
+import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewTreeObserver
 import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
@@ -32,6 +38,10 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
     }
 
     lateinit var dialog: EditDialog
+
+    private var mOffset1: Float = 0f
+    private var mOffset2: Float = 0f
+    private var mOffset3: Float = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +76,16 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
 
         dialog = EditDialog.Companion.newInstance("$title")
 
+        expand_button.setOnClickListener({
+            if (mFabExpanded) {
+                collapseFab()
+                mFabExpanded = false
+            } else {
+                expandFab()
+                mFabExpanded = true
+            }
+        })
+
         share_button.setOnClickListener({
             shareGif(gif.shareUriString)
         })
@@ -93,7 +113,62 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
             }
             dialog.show(fragmentManager, "DeleteDialog")
         })
+
+        fab_container.viewTreeObserver.addOnPreDrawListener(
+                object : ViewTreeObserver.OnPreDrawListener {
+                    override fun onPreDraw(): Boolean {
+                        fab_container.viewTreeObserver.removeOnPreDrawListener(this);
+                        mOffset1 = expand_button.y - share_button.y;
+                        share_button.translationY = mOffset1;
+                        mOffset2 = expand_button.y - edit_button.y;
+                        edit_button.translationY = mOffset2;
+                        mOffset3 = expand_button.y - delete_button.y;
+                        delete_button.translationY = mOffset3;
+                        return true
+                    }
+                });
     }
+
+    private fun expandFab() {
+        expand_button.setImageResource(R.drawable.animated_plus_to_x);
+        val animatorSet = AnimatorSet();
+        animatorSet.playTogether(createExpandAnimator(share_button, mOffset1),
+                createExpandAnimator(edit_button, mOffset2),
+                createExpandAnimator(delete_button, mOffset3));
+        animatorSet.start();
+        animateFab();
+    }
+
+    private fun animateFab() {
+        val drawable = expand_button.drawable
+        if (drawable is Animatable) {
+            drawable.start()
+        }
+    }
+
+    private fun createExpandAnimator(view: View, offset: Float): Animator {
+        return ObjectAnimator.ofFloat(view, "translationY", offset, 0f)
+                .setDuration(
+                        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong());
+    }
+
+    private fun collapseFab() {
+        expand_button.setImageResource(R.drawable.animated_x_to_plus);
+        val animatorSet = AnimatorSet();
+        animatorSet.playTogether(createCollapseAnimator(share_button, mOffset1),
+                createCollapseAnimator(edit_button, mOffset2),
+                createCollapseAnimator(delete_button, mOffset3));
+        animatorSet.start();
+        animateFab();
+    }
+
+    private fun createCollapseAnimator(view: View, offset: Float): Animator {
+        return ObjectAnimator.ofFloat(view, "translationY", 0f, offset)
+                .setDuration(
+                        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong());
+    }
+
+    var mFabExpanded = false
 
     private fun deleteGif() {
         val id = retrieveLongParameter()
