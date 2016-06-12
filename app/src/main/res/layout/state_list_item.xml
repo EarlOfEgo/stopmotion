@@ -14,19 +14,21 @@
 
         <ImageView
             android:id="@+id/image_view"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="100dp"
-            android:padding="4dp"
+            android:cropToPadding="true"
             tools:src="@drawable/ic_camera_front_black_48dp" />
 
         <TextView
             android:id="@+id/converted_text"
             style="@style/TextAppearance.AppCompat.Headline"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
             android:text="@string/item_image_converted"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
