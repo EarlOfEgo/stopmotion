@@ -39,14 +39,14 @@ inline fun <reified T : Activity> Activity.startActivity(stringList: ArrayList<S
     startActivity(intent)
 }
 
-fun Activity.retrieveStringListParameter(): ArrayList<String> {
+inline fun Activity.retrieveStringListParameter(): ArrayList<String> {
     if (intent != null && intent.extras != null && intent.extras.containsKey("string_list_param"))
         return intent.extras.getStringArrayList("string_list_param")
     else
         return ArrayList()
 }
 
-fun Activity.retrieveLongParameter(): Long {
+inline fun Activity.retrieveLongParameter(): Long {
     if (intent != null && intent.extras != null)
         return intent.extras.getLong("long_param", 0)
     else
@@ -63,29 +63,29 @@ inline fun <reified T : Activity> Activity.startActivity() {
     startActivity(intent)
 }
 
-fun Activity.retrieveStringParameter(): String {
+inline fun Activity.retrieveStringParameter(): String {
     if (intent != null && intent.extras != null)
         return intent.extras.getString("string_param", "")
     else
         return ""
 }
 
-fun Activity.LogDebug(param: String) {
+inline fun Activity.LogDebug(param: String) {
     if (BuildConfig.DEBUG)
         Log.d("${this.javaClass.simpleName}", param)
 }
 
-fun Activity.LogVerbose(param: String) {
+inline fun Activity.LogVerbose(param: String) {
     if (BuildConfig.DEBUG)
         Log.v("${this.javaClass.simpleName}", param)
 }
 
-fun Activity.LogError(param: String) {
+inline fun Activity.LogError(param: String) {
     if (BuildConfig.DEBUG)
         Log.e("${this.javaClass.simpleName}", param)
 }
 
-fun Activity.showWhichThreadInLogcat() {
+inline fun Activity.showWhichThreadInLogcat() {
 
     val main = Looper.myLooper() == Looper.getMainLooper()
     if (main) {
