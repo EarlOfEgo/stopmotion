@@ -39,7 +39,8 @@ class ImageListActivity : AppCompatActivity() {
 
         mAdapter = ImageListAdapter(this, realm.where(Gif::class.java).findAllAsync())
 
-        recyclerViewImageList.adapter = mAdapter
+        //Use set adapter
+        recyclerViewImageList.setAdapter(mAdapter, empty_image_view)
 
         recyclerViewImageList.addItemDecoration(ItemDecorator())
 
