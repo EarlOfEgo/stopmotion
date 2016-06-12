@@ -68,7 +68,7 @@ dependencies {
     compile "com.android.support:design:$support_lib_version"
 
     compile "com.google.firebase:firebase-core:$firebase_version"
-    compile "com.google.firebase:firebase-crash:$firebase_version"
+//    compile "com.google.firebase:firebase-crash:$firebase_version"
     compile "com.google.firebase:firebase-messaging:$firebase_version"
 
     //Rx
