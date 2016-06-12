@@ -51,7 +51,7 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
                 Glide.with(mContext).load(uri).into(holder.mImageView)
 
             }
-            holder.mShareButton.setOnClickListener({ mContext.shareGif(gif.shareUriString) })
+            holder.mShareButton.setOnClickListener({ mContext.shareGif(gif.shareUriString, gif.name) })
             holder.mImageView.setOnClickListener(
                     { (mContext as Activity).startActivity<ShowGifActivity>(gif.id, 1) })
         }

@@ -14,7 +14,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
  * @since   05.06.16
  */
 
-fun Context.shareGif(shareUriString: String) {
+fun Context.shareGif(shareUriString: String, name: String = "gif_name") {
     val shareIntent = Intent();
     shareIntent.action = Intent.ACTION_SEND;
     shareIntent.putExtra(Intent.EXTRA_TEXT, "Stopmotion");
@@ -28,7 +28,7 @@ fun Context.shareGif(shareUriString: String) {
 
 
         val payload = Bundle();
-        payload.putString(FirebaseAnalytics.Param.VALUE, "sent");
+        payload.putString("image_name", name);
         FirebaseAnalytics.getInstance(this).logEvent(FirebaseAnalytics.Event.SHARE, payload)
 
     } catch (e: Exception) {

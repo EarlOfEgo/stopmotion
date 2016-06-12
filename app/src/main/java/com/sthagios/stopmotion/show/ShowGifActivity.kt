@@ -87,7 +87,7 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         })
 
         share_button.setOnClickListener({
-            shareGif(gif.shareUriString)
+            shareGif(gif.shareUriString, gif.name)
         })
 
         edit_button.setOnClickListener({
