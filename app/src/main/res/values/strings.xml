@@ -36,5 +36,9 @@
     <string name="main_grand_permission_text">You have to grand Camera permissions in order to use Stopmotion</string>
     <string name="main_goto_settings_button">Go to settings</string>
     <string name="item_image_converted">Converted</string>
+    <string name="onboarding_camera_access_title">Camera Access</string>
+    <string name="onboarding_camera_access_content">To continue, give Stopmotion access to the Phone\'s Camera.</string>
+    <string name="onboarding_exit_button">Exit</string>
+    <string name="onboarding_next_button">Next &gt;</string>
 
 </resources>

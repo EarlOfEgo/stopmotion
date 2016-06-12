@@ -3,28 +3,98 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primary"
     tools:context="com.sthagios.stopmotion.MainActivity">
 
+
+    <ImageView
+        android:id="@+id/stopmotion_icon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/stopmotion_icon" />
+
     <TextView
-        android:id="@+id/permissions_denied"
-        style="@style/TextAppearance.AppCompat.Headline"
-        android:layout_width="wrap_content"
+        android:id="@+id/access_title"
+        style="@style/Base.TextAppearance.AppCompat.Headline"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_margin="16dp"
-        android:gravity="center"
-        android:text="@string/main_grand_permission_text"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:layout_centerVertical="true"
+        android:alpha="0"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingEnd="36dp"
+        android:paddingStart="36dp"
+        android:text="@string/onboarding_camera_access_title" />
+
+
+    <TextView
+        android:id="@+id/access_text"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/access_title"
+        android:layout_marginTop="16dp"
+        android:alpha="0"
+        android:ellipsize="end"
+        android:paddingEnd="36dp"
+        android:paddingStart="36dp"
+        android:text="@string/onboarding_camera_access_content" />
 
     <Button
         android:id="@+id/button_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/permissions_denied"
+        android:layout_below="@id/access_text"
         android:layout_centerHorizontal="true"
         android:text="@string/main_goto_settings_button"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/button_container"
+        android:background="@color/accent"
+        android:scaleX="0"
+        android:scaleY="0" />
+
+    <LinearLayout
+        android:id="@+id/button_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/button_exit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="16dp"
+            android:scaleX="0"
+            android:scaleY="0"
+            android:text="@string/onboarding_exit_button"
+            android:textColor="@color/accent" />
+
+        <TextView
+            android:id="@+id/button_next"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="16dp"
+            android:scaleX="0"
+            android:scaleY="0"
+            android:text="@string/onboarding_next_button"
+            android:textColor="@color/accent" />
+
+    </LinearLayout>
 
 </RelativeLayout>

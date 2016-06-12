@@ -16,13 +16,19 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <android.support.v7.widget.RecyclerView
+    <com.sthagios.stopmotion.list.RecyclerViewEmptyView
         android:id="@+id/recyclerViewImageList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/appbar"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <ImageView
+        android:id="@+id/empty_image_view"
+        android:src="@drawable/ic_camera_front_black_48dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
     <android.support.design.widget.FloatingActionButton

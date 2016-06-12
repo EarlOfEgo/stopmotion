@@ -8,8 +8,9 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
-import android.view.View
+import android.view.animation.DecelerateInterpolator
 import com.sthagios.stopmotion.list.ImageListActivity
 import com.sthagios.stopmotion.utils.LogDebug
 import com.sthagios.stopmotion.utils.startActivity
@@ -27,13 +28,83 @@ class MainActivity : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            // No explanation needed, it's a camera app
-            LogDebug("Ask for permission")
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
-                    MY_PERMISSIONS_REQUEST_CAMERA);
+
+            button_exit.setOnClickListener {
+                //TODO track
+                finish()
+            }
+            button_next.setOnClickListener {
+                //TODO track
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+            }
+
+            if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA))
+                showPermissionDenyInfo()
         } else {
             permissionGranted()
         }
+    }
+
+
+    private var mAnimationStarted: Boolean = false
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+
+        if (!hasFocus || mAnimationStarted) {
+            return;
+        }
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            animate()
+        }
+
+        super.onWindowFocusChanged(hasFocus);
+    }
+
+    private val ITEM_DELAY = 300
+
+    private val START_DELAY: Long = 250
+
+    private fun animate() {
+
+        mAnimationStarted = true
+
+        ViewCompat.animate(stopmotion_icon)
+                .translationY((-450).toFloat())
+                .setStartDelay(START_DELAY)
+                .setDuration(500).setInterpolator(DecelerateInterpolator(1.2f)).start();
+
+        ViewCompat.animate(access_title)
+                .alpha(1f)
+                .setStartDelay((START_DELAY + 500).toLong())
+                .setDuration(2500)
+                .setInterpolator(DecelerateInterpolator()).start()
+
+        ViewCompat.animate(access_text)
+                .alpha(1f)
+                .setStartDelay(((START_DELAY * 2) + 500).toLong())
+                .setDuration(2500)
+                .setInterpolator(DecelerateInterpolator()).start()
+
+        ViewCompat.animate(button_exit)
+                .scaleY(1f).scaleX(1f)
+                .setStartDelay(((ITEM_DELAY * 3) + 500).toLong())
+                .setDuration(1000)
+                .setInterpolator(DecelerateInterpolator()).start()
+
+        ViewCompat.animate(button_next)
+                .scaleY(1.toFloat()).scaleX(1.toFloat())
+                .setStartDelay(((ITEM_DELAY * 3) + 500).toLong())
+                .setDuration(1000)
+                .setInterpolator(DecelerateInterpolator()).start()
+
+        ViewCompat.animate(divider)
+                .scaleY(1.toFloat()).scaleX(1.toFloat())
+                .setStartDelay(((ITEM_DELAY * 3) + 500).toLong())
+                .setDuration(1000)
+                .setInterpolator(DecelerateInterpolator()).start()
     }
 
     private fun permissionGranted() {
@@ -49,10 +120,11 @@ class MainActivity : AppCompatActivity() {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.size > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //TODO track
                     permissionGranted()
                 } else {
-                    LogDebug("Permissions granted, starting Gif List")
-                    showPermissionDenyInfo()
+                    if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA))
+                        showPermissionDenyInfo()
                 }
                 return;
             }
@@ -61,9 +133,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPermissionDenyInfo() {
 
-        permissions_denied.visibility = View.VISIBLE
-        button_settings.visibility = View.VISIBLE
-        button_settings.setOnClickListener({
+//        ViewCompat.animate(access_text)
+//                .alpha(0f)
+//                .setDuration(2500)
+//                .setInterpolator(DecelerateInterpolator()).start()
+//        access_text.setText(R.string.main_grand_permission_text)
+//
+//        ViewCompat.animate(access_text)
+//                .alpha(1f)
+//                .setStartDelay(2500)
+//                .setDuration(2500)
+//                .setInterpolator(DecelerateInterpolator()).start()
+
+//        button_settings.visibility = View.VISIBLE
+        button_next.setOnClickListener({
             val i = Intent();
             i.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
             i.addCategory(Intent.CATEGORY_DEFAULT);
