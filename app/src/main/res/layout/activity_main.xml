@@ -8,6 +8,7 @@
 
 
     <ImageView
+        android:layout_centerInParent="true"
         android:id="@+id/stopmotion_icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -79,7 +80,8 @@
             android:scaleX="0"
             android:scaleY="0"
             android:text="@string/onboarding_exit_button"
-            android:textColor="@color/accent" />
+            android:textColor="@color/accent"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/button_next"
@@ -93,7 +95,8 @@
             android:scaleX="0"
             android:scaleY="0"
             android:text="@string/onboarding_next_button"
-            android:textColor="@color/accent" />
+            android:textColor="@color/accent"
+            android:textSize="20sp" />
 
     </LinearLayout>
 

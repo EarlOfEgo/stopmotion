@@ -74,15 +74,17 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.animate(stopmotion_icon)
                 .translationY((-450).toFloat())
                 .setStartDelay(START_DELAY)
-                .setDuration(500).setInterpolator(DecelerateInterpolator(1.2f)).start();
+                .setDuration(1000).setInterpolator(DecelerateInterpolator(1.2f)).start();
 
         ViewCompat.animate(access_title)
+                .translationY(50f)
                 .alpha(1f)
                 .setStartDelay((START_DELAY + 500).toLong())
                 .setDuration(2500)
                 .setInterpolator(DecelerateInterpolator()).start()
 
         ViewCompat.animate(access_text)
+                .translationY(50f)
                 .alpha(1f)
                 .setStartDelay(((START_DELAY * 2) + 500).toLong())
                 .setDuration(2500)
@@ -133,19 +135,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPermissionDenyInfo() {
 
-//        ViewCompat.animate(access_text)
-//                .alpha(0f)
-//                .setDuration(2500)
-//                .setInterpolator(DecelerateInterpolator()).start()
-//        access_text.setText(R.string.main_grand_permission_text)
-//
-//        ViewCompat.animate(access_text)
-//                .alpha(1f)
-//                .setStartDelay(2500)
-//                .setDuration(2500)
-//                .setInterpolator(DecelerateInterpolator()).start()
-
-//        button_settings.visibility = View.VISIBLE
         button_next.setOnClickListener({
             val i = Intent();
             i.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
