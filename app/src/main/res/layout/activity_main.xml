@@ -10,8 +10,8 @@
     <ImageView
         android:layout_centerInParent="true"
         android:id="@+id/stopmotion_icon"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/stopmotion_icon_vector_size"
+        android:layout_height="@dimen/stopmotion_icon_vector_size"
         android:src="@drawable/stopmotion_icon" />
 
     <TextView

@@ -23,6 +23,8 @@
     <string name="snackbar_something_wrong_error">Something went wrong, try it again. Sorry</string>
     <string name="snackbar_undo_action_text">Undo</string>
     <string name="snackbar_renamed_gif">Renamed %1$s to %2$s</string>
+    <string name="snackbar_info_taking_time">Converting to Gif, this can take some time</string>
+    <string name="snackbar_info_loading_time">Loading the animated Gif. Please be patient.</string>
 
     <!--Settings-->
     <string name="settings_title">Settings</string>

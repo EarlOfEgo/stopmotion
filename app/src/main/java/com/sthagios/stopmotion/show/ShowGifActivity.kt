@@ -23,6 +23,7 @@ import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.share.shareGif
 import com.sthagios.stopmotion.utils.LogDebug
 import com.sthagios.stopmotion.utils.LogError
+import com.sthagios.stopmotion.utils.getApproximateAppStarts
 import com.sthagios.stopmotion.utils.retrieveLongParameter
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -57,6 +58,11 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
 
         val uri = Uri.parse(gif.fileUriString)
         val uriThumb = Uri.parse(gif.thumbnailUriString)
+
+        if (getApproximateAppStarts() < 4) {
+            Snackbar.make(preview_gif, R.string.snackbar_info_loading_time,
+                    Snackbar.LENGTH_LONG).show()
+        }
 
         Observable.just(Glide.with(this).load(uriThumb).into(preview))
 //                .subscribeOn(Schedulers.computation())

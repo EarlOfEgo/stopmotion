@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.animation.DecelerateInterpolator
 import com.sthagios.stopmotion.list.ImageListActivity
 import com.sthagios.stopmotion.utils.LogDebug
+import com.sthagios.stopmotion.utils.addAppStart
 import com.sthagios.stopmotion.utils.startActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,29 +21,34 @@ class MainActivity : AppCompatActivity() {
 
     private val MY_PERMISSIONS_REQUEST_CAMERA: Int = 123
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
+    override fun onResume() {
+        super.onResume()
         //permission check
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
+                == PackageManager.PERMISSION_GRANTED) {
 
-            button_exit.setOnClickListener {
-                //TODO track
-                finish()
-            }
-            button_next.setOnClickListener {
-                //TODO track
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
-                        MY_PERMISSIONS_REQUEST_CAMERA);
-            }
-
-            if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA))
-                showPermissionDenyInfo()
-        } else {
             permissionGranted()
+        }
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        //Use default theme and replace start theme
+        setTheme(R.style.AppTheme)
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        //Count this as an approximately app start
+        addAppStart()
+
+        button_exit.setOnClickListener {
+            //TODO track
+            finish()
+        }
+        button_next.setOnClickListener {
+            //TODO track
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
+                    MY_PERMISSIONS_REQUEST_CAMERA);
         }
     }
 

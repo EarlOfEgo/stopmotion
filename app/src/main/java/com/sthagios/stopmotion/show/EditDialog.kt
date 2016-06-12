@@ -55,12 +55,11 @@ class EditDialog() : DialogFragment() {
             mValue = savedInstanceState.getString(BUNDLE_VALUE, "");
         }
 
-
         return MaterialDialog.Builder(activity)
                 .title(R.string.rename_dialog_title)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .alwaysCallInputCallback()
-                .input(getString(R.string.edit_text_hint_gif_name), mValue, { dialog, input ->
+                .input(getString(R.string.edit_text_hint_gif_name), null, { dialog, input ->
                     mValue = input!!.toString()
                 })
                 .onPositive { materialDialog, dialogAction ->

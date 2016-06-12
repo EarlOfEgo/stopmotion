@@ -50,7 +50,7 @@ class GenerateGifActivity : AppCompatActivity() {
             val image = imageList[position]
             Glide.with(mContext).load(image).into(holder!!.mImageView)
 //            holder.mImageView.rotation = 90.toFloat()
-            if (imageListLoading.get(image)!!) {
+            if (imageListLoading[image]!!) {
                 holder.mLoadingBar.visibility = View.VISIBLE
                 holder.mConvertedText.visibility = View.GONE
             } else {
@@ -100,8 +100,16 @@ class GenerateGifActivity : AppCompatActivity() {
 
         LogDebug("Generating gifs from ${mPictureList.toString()}")
 
+        if (getApproximateAppStarts() < 4) {
+            Snackbar.make(image_list_recycler, R.string.snackbar_info_taking_time,
+                    Snackbar.LENGTH_LONG)
+                    .show()
+        }
+
+
         storeThumbnail()
         startGifGeneration()
+
     }
 
 
