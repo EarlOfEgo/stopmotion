@@ -13,7 +13,7 @@
         android:layout_centerInParent="true"
         android:layout_margin="16dp"
         android:gravity="center"
-        android:text="You have to grand Camera permissions in order to use Stopmotion"
+        android:text="@string/main_grand_permission_text"
         android:visibility="gone"
         tools:visibility="visible" />
 
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/permissions_denied"
         android:layout_centerHorizontal="true"
-        android:text="Go to settings"
+        android:text="@string/main_goto_settings_button"
         android:visibility="gone"
         tools:visibility="visible" />
 

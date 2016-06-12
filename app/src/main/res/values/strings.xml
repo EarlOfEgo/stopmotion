@@ -14,7 +14,6 @@
     <string name="delete_button">Delete</string>
     <string name="cancel_button">Cancel</string>
     <string name="rename_dialog_title">Edit Gif Name</string>
-    <string name="dialog_input_hint">Give the Gif a Name</string>
     <string name="dialog_burst_interval_title">Choose Burst Interval</string>
     <string name="confirm_ok">OK</string>
     <string name="dialog_burst_amount_title">Choose Burst Amount</string>
@@ -23,7 +22,7 @@
     <string name="snackbar_no_camera_available_error">No camera available</string>
     <string name="snackbar_something_wrong_error">Something went wrong, try it again. Sorry</string>
     <string name="snackbar_undo_action_text">Undo</string>
-    <string name="snackbar_renamed_gif">Renamed %s to %s</string>
+    <string name="snackbar_renamed_gif">Renamed %1$s to %2$s</string>
 
     <!--Settings-->
     <string name="settings_title">Settings</string>
@@ -33,5 +32,9 @@
     <string name="settings_pushes_description">Receive push notifications from Stopmotion</string>
     <string name="settings_version">Version: %d</string>
 
+    <string name="edit_text_hint_gif_name">Give the gif a name</string>
+    <string name="main_grand_permission_text">You have to grand Camera permissions in order to use Stopmotion</string>
+    <string name="main_goto_settings_button">Go to settings</string>
+    <string name="item_image_converted">Converted</string>
 
 </resources>

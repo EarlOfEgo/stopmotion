@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:hint="Give the gif a name" />
+        android:hint="@string/edit_text_hint_gif_name" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/image_list_recycler"
