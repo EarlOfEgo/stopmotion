@@ -9,10 +9,29 @@
     <string name="burst_time_5">5 Sec.</string>
 
 
-    <string name="undo_snackbar">Undo</string>
+    <!-- Dialogs -->
     <string name="dialog_delete_title">Are you sure?</string>
     <string name="delete_button">Delete</string>
     <string name="cancel_button">Cancel</string>
     <string name="rename_dialog_title">Edit Gif Name</string>
     <string name="dialog_input_hint">Give the Gif a Name</string>
+    <string name="dialog_burst_interval_title">Choose Burst Interval</string>
+    <string name="confirm_ok">OK</string>
+    <string name="dialog_burst_amount_title">Choose Burst Amount</string>
+
+    <!-- Snackbars -->
+    <string name="snackbar_no_camera_available_error">No camera available</string>
+    <string name="snackbar_something_wrong_error">Something went wrong, try it again. Sorry</string>
+    <string name="snackbar_undo_action_text">Undo</string>
+    <string name="snackbar_renamed_gif">Renamed %s to %s</string>
+
+    <!--Settings-->
+    <string name="settings_title">Settings</string>
+    <string name="settings_use_thumbnails_title">Use thumbs in List</string>
+    <string name="settings_use_thumbnails_description">Use thumbnails in the overview instead of playing the Gifs. For a better performance.</string>
+    <string name="settings_pushes_title">Push Notifications</string>
+    <string name="settings_pushes_description">Receive push notifications from Stopmotion</string>
+    <string name="settings_version">Version: %d</string>
+
+
 </resources>

@@ -24,8 +24,17 @@ class CheckBoxPreferenceItem @JvmOverloads constructor(context: Context, attrs: 
         title.text = string
     }
 
+    fun setTitle(id: Int) {
+        title.setText(id)
+    }
+
     fun setSubtitle(string: String) {
         description.text = string
+        description.visibility = View.VISIBLE
+    }
+
+    fun setSubtitle(id: Int) {
+        description.setText(id)
         description.visibility = View.VISIBLE
     }
 

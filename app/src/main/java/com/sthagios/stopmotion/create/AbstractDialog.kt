@@ -65,7 +65,7 @@ class BurstTimeDialog : AbstractDialog() {
         }
 
         val dialog = MaterialDialog.Builder(activity)
-                .title("Choose Burst Interval")
+                .title(R.string.dialog_burst_interval_title)
                 .items(R.array.burst_times)
                 .itemsCallbackSingleChoice(mValue, { materialDialog, view, i, charSequence ->
                     mValue = i
@@ -73,7 +73,7 @@ class BurstTimeDialog : AbstractDialog() {
 
                 })
                 .alwaysCallSingleChoiceCallback()
-                .positiveText("ok")
+                .positiveText(R.string.confirm_ok)
                 .onPositive({ materialDialog, dialogAction -> mListener.timeChosen(mValue) })
                 .show();
 
@@ -107,7 +107,7 @@ class BurstAmountDialog : AbstractDialog() {
         }
 
         val dialog = MaterialDialog.Builder(activity)
-                .title("Choose Burst Amount")
+                .title(R.string.dialog_burst_amount_title)
                 .items(mValues)
                 .itemsCallbackSingleChoice(mValue, { materialDialog, view, i, charSequence ->
                     mValue = i
@@ -115,7 +115,7 @@ class BurstAmountDialog : AbstractDialog() {
 
                 })
                 .alwaysCallSingleChoiceCallback()
-                .positiveText("ok")
+                .positiveText(R.string.confirm_ok)
                 .onPositive(
                         { materialDialog, dialogAction -> mListener.amountChosen(mValues[mValue]) })
                 .show();

@@ -222,8 +222,9 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
             gif.name = name
         }
         title = name
-        Snackbar.make(share_button, name, Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo_snackbar, {
+        Snackbar.make(share_button, getString(R.string.snackbar_renamed_gif, oldName, name),
+                Snackbar.LENGTH_LONG)
+                .setAction(R.string.snackbar_undo_action_text, {
                     getRealmInstance().executeTransaction {
                         gif.name = oldName
                         title = oldName

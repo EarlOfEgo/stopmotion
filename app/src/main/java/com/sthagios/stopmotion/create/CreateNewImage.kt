@@ -12,7 +12,6 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.Surface
@@ -124,7 +123,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 camera_preview.surfaceTextureListener = mSurfaceTextureListener
             }
         } else {
-            Snackbar.make(camera_preview, "No camera available", Snackbar.LENGTH_INDEFINITE).show()
+            Snackbar.make(camera_preview, R.string.snackbar_no_camera_available_error,
+                    Snackbar.LENGTH_INDEFINITE).show()
         }
     }
 
@@ -226,7 +226,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         override fun onCaptureFailed(session: CameraCaptureSession?, request: CaptureRequest?,
                 failure: CaptureFailure?) {
             LogError("Capture failed ${Thread.currentThread().stackTrace[2]}")
-            Snackbar.make(camera_preview, "Something went wrong, try it again",
+            Snackbar.make(camera_preview, R.string.snackbar_something_wrong_error,
                     Snackbar.LENGTH_LONG).show()
         }
 
@@ -242,46 +242,45 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
         private fun process(result: CaptureResult) {
             if (mState != STATE_PREVIEW)
-                Log.d("CreateNewImage", mState.toString())
-            when (mState) {
-            // We have nothing to do when the camera preview is working normally.
-                STATE_PREVIEW                -> {
-                }
-                STATE_WAITING_LOCK           -> {
-                    val afState = result.get(CaptureResult.CONTROL_AF_STATE)
-                    if (afState == null)
-                        captureStillPicture()
-                    else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
-                            CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState) {
+                when (mState) {
+                // We have nothing to do when the camera preview is working normally.
+                    STATE_PREVIEW                -> {
+                    }
+                    STATE_WAITING_LOCK           -> {
+                        val afState = result.get(CaptureResult.CONTROL_AF_STATE)
+                        if (afState == null)
+                            captureStillPicture()
+                        else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
+                                CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState) {
+                            // CONTROL_AE_STATE can be null on some devices
+                            val aeState = result.get(CaptureResult.CONTROL_AE_STATE)
+                            if (aeState == null ||
+                                    aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
+                                mState = STATE_PICTURE_TAKEN
+                                captureStillPicture()
+                            } else {
+                                runPrecaptureSequence()
+                            }
+                        }
+                    }
+                    STATE_WAITING_PRECAPTURE     -> {
                         // CONTROL_AE_STATE can be null on some devices
                         val aeState = result.get(CaptureResult.CONTROL_AE_STATE)
                         if (aeState == null ||
-                                aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
+                                aeState == CaptureResult.CONTROL_AE_STATE_PRECAPTURE ||
+                                aeState == CaptureRequest.CONTROL_AE_STATE_FLASH_REQUIRED) {
+                            mState = STATE_WAITING_NON_PRECAPTURE
+                        }
+                    }
+                    STATE_WAITING_NON_PRECAPTURE -> {
+                        // CONTROL_AE_STATE can be null on some devices
+                        val aeState = result.get(CaptureResult.CONTROL_AE_STATE)
+                        if (aeState == null || aeState != CaptureResult.CONTROL_AE_STATE_PRECAPTURE) {
                             mState = STATE_PICTURE_TAKEN
                             captureStillPicture()
-                        } else {
-                            runPrecaptureSequence()
                         }
                     }
                 }
-                STATE_WAITING_PRECAPTURE     -> {
-                    // CONTROL_AE_STATE can be null on some devices
-                    val aeState = result.get(CaptureResult.CONTROL_AE_STATE)
-                    if (aeState == null ||
-                            aeState == CaptureResult.CONTROL_AE_STATE_PRECAPTURE ||
-                            aeState == CaptureRequest.CONTROL_AE_STATE_FLASH_REQUIRED) {
-                        mState = STATE_WAITING_NON_PRECAPTURE
-                    }
-                }
-                STATE_WAITING_NON_PRECAPTURE -> {
-                    // CONTROL_AE_STATE can be null on some devices
-                    val aeState = result.get(CaptureResult.CONTROL_AE_STATE)
-                    if (aeState == null || aeState != CaptureResult.CONTROL_AE_STATE_PRECAPTURE) {
-                        mState = STATE_PICTURE_TAKEN
-                        captureStillPicture()
-                    }
-                }
-            }
         }
     }
 
@@ -342,7 +341,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                         request: CaptureRequest?,
                         failure: CaptureFailure?) {
                     LogError("Capture failed ${Thread.currentThread().stackTrace[2]}")
-                    Snackbar.make(camera_preview, "Something went wrong, try it again",
+                    Snackbar.make(camera_preview, R.string.snackbar_something_wrong_error,
                             Snackbar.LENGTH_LONG).show()
                 }
 

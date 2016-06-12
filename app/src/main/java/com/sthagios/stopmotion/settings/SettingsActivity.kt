@@ -18,20 +18,19 @@ class SettingsActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar);
         supportActionBar!!.setDisplayHomeAsUpEnabled(true);
-        title = "Settings"
+        title = getString(R.string.settings_title)
 
 
-        use_thumbs.setTitle("Use thumbs in List")
-        use_thumbs.setSubtitle(
-                "Use thumbnails in the overview instead of playing the Gifs. For a better performance.")
+        use_thumbs.setTitle(R.string.settings_use_thumbnails_title)
+        use_thumbs.setSubtitle(R.string.settings_use_thumbnails_description)
         use_thumbs.setChecked(getSettingsPreferences().getBoolean("THUMBS_IN_LIST", false))
         use_thumbs.onCheckChanged { b ->
             //TODO track
             getSettingsPreferences().edit().putBoolean("THUMBS_IN_LIST", b).apply()
         }
 
-        use_pushes.setTitle("Push Notifications")
-        use_pushes.setSubtitle("Receive push notifications from Stopmotion")
+        use_pushes.setTitle(R.string.settings_pushes_title)
+        use_pushes.setSubtitle(R.string.settings_pushes_description)
         use_pushes.setChecked(getSettingsPreferences().getBoolean("PUSHES", true))
 
         use_pushes.onCheckChanged { b ->
@@ -53,7 +52,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setUpVersionInfos() {
-        version_text.text = "Version: ${BuildConfig.VERSION_NAME}"
+        version_text.text = getString(R.string.settings_version, BuildConfig.VERSION_NAME)
 
         if (BuildConfig.DEBUG) {
             debug_info.visibility = View.VISIBLE
