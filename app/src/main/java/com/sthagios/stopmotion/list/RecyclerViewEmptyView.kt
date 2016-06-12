@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 
 /**
  * Stopmotion
@@ -16,6 +17,8 @@ class RecyclerViewEmptyView @JvmOverloads constructor(context: Context, attrs: A
         defStyle: Int = 0) : RecyclerView(context, attrs, defStyle) {
 
     var mEmptyView: View? = null
+    private var mEmptyTextView: TextView? = null
+
 
     private val mEmptyObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onChanged() {
@@ -34,8 +37,9 @@ class RecyclerViewEmptyView @JvmOverloads constructor(context: Context, attrs: A
         }
     }
 
-    fun setAdapter(adapter: Adapter<*>, view : View) {
+    fun setAdapter(adapter: Adapter<*>, view: View, textView: TextView) {
         mEmptyView = view
+        mEmptyTextView = textView
         adapter.registerAdapterDataObserver(mEmptyObserver)
         super.setAdapter(adapter)
         checkForEmptyDataSet()
@@ -45,7 +49,7 @@ class RecyclerViewEmptyView @JvmOverloads constructor(context: Context, attrs: A
         visibility = if (isEmpty()) View.GONE else View.VISIBLE
 
         mEmptyView!!.visibility = if (isEmpty()) View.VISIBLE else View.GONE
-
+        mEmptyTextView!!.visibility = if (isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun isEmpty() = adapter == null || adapter.itemCount <= 0

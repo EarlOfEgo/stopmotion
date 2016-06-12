@@ -14,6 +14,7 @@ import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.settings.SettingsActivity
 import com.sthagios.stopmotion.utils.startActivity
 import kotlinx.android.synthetic.main.activity_image_list.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
 
 /**
@@ -40,7 +41,7 @@ class ImageListActivity : AppCompatActivity() {
         mAdapter = ImageListAdapter(this, realm.where(Gif::class.java).findAllAsync())
 
         //Use set adapter
-        recyclerViewImageList.setAdapter(mAdapter, empty_image_view)
+        recyclerViewImageList.setAdapter(mAdapter, empty_image_view, empty_text_view)
 
         recyclerViewImageList.addItemDecoration(ItemDecorator())
 

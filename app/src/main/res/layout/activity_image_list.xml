@@ -3,13 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <ImageView
         android:id="@+id/empty_image_view"
         android:layout_width="@dimen/stopmotion_icon_vector_size"
         android:layout_height="@dimen/stopmotion_icon_vector_size"
         android:layout_centerInParent="true"
         android:src="@drawable/stopmotion_icon_bw" />
+
+        <TextView
+            android:id="@+id/empty_text_view"
+            android:gravity="center"
+            android:layout_below="@+id/empty_image_view"
+            android:text="Create your first Stopmotion Gif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
