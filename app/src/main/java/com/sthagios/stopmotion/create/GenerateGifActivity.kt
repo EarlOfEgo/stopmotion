@@ -3,6 +3,8 @@ package com.sthagios.stopmotion.create
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -27,9 +29,7 @@ import kotlinx.android.synthetic.main.activity_generate_gif.*
 import kotlinx.android.synthetic.main.state_list_item.view.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
+import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,7 +49,6 @@ class GenerateGifActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
             val image = imageList[position]
             Glide.with(mContext).load(image).into(holder!!.mImageView)
-//            holder.mImageView.rotation = 90.toFloat()
             if (imageListLoading[image]!!) {
                 holder.mLoadingBar.visibility = View.VISIBLE
                 holder.mConvertedText.visibility = View.GONE
@@ -107,7 +106,7 @@ class GenerateGifActivity : AppCompatActivity() {
         }
 
 
-        storeThumbnail()
+//        storeThumbnail()
         startGifGeneration()
 
     }
@@ -183,39 +182,54 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private var mThumbUri: String = ""
 
-    private fun storeThumbnail() {
-        rx.Observable.from(mPictureList)
-                .first()
-                .flatMap {
-
-                    val imagePath = getThumbDirectoryFile()
-                    val imageFile = File(imagePath, mThumbName)
-
-//                    val matrix = Matrix()
-
-                    val bitmap = BitmapFactory.decodeFile(mPictureList[0])
-//                    matrix.postRotate(90.toFloat())
-
-                    val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 600, 800, true)
-
-//                    val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
-//                            scaledBitmap.height, matrix, true)
-
-                    val fos = FileOutputStream(imageFile)
-                    scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-                    fos.close()
-
-                    rx.Observable.just(Uri.fromFile(imageFile).toString())
-                }
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    LogDebug("Thumb created under $it")
-                    mThumbUri = it
-                }, {
-                    e ->
-                    LogError(e.message!!)
-                }, { LogDebug("Thumb created") })
-    }
+//    private fun storeThumbnail() {
+//        rx.Observable.from(mPictureList)
+//                .first()
+//                .flatMap {
+//
+//                    val imagePath = getThumbDirectoryFile()
+//                    val imageFile = File(imagePath, mThumbName)
+//
+////                    val matrix = Matrix()
+//
+//                    val bitmap = BitmapFactory.decodeFile(mPictureList[0])
+////                    matrix.postRotate(90.toFloat())
+//
+////                    val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 600, 800, true)
+//
+////                    val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
+////                            scaledBitmap.height, matrix, true)
+//
+//
+//                    val exif = ExifInterface(mPictureList[0])
+//
+//                    val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+//                            ExifInterface.ORIENTATION_NORMAL)
+//
+//                    var finalBitmap = bitmap!!
+//                    LogDebug("Orientation: $orientation")
+//                    if (orientation != ExifInterface.ORIENTATION_NORMAL) {
+//                        val matrix = Matrix()
+//                        matrix.postRotate(getRotation(orientation))
+//                        finalBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height,
+//                                matrix, true)
+//                    }
+//
+//                    val fos = FileOutputStream(imageFile)
+//                    finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+//                    fos.close()
+//
+//                    rx.Observable.just(Uri.fromFile(imageFile).toString())
+//                }
+//                .subscribeOn(Schedulers.io())
+//                .subscribe({
+//                    LogDebug("Thumb created under $it")
+//                    mThumbUri = it
+//                }, {
+//                    e ->
+//                    LogError(e.message!!)
+//                }, { LogDebug("Thumb created") })
+//    }
 
     private fun deleteTempFolderContent() {
         val directory = File(filesDir, "tmp_images");
@@ -279,28 +293,82 @@ class GenerateGifActivity : AppCompatActivity() {
                 mAdapter.notifyDataSetChanged()
             }
 
-//            val matrix = Matrix()
-
+            val exif = ExifInterface(path)
             val bitmap = BitmapFactory.decodeFile(path)
-//            matrix.postRotate(90.toFloat())
 
-            val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 600, 800, true)
 
-//            val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
-//                    scaledBitmap.height, matrix, true)
+            val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL)
 
-            LogDebug("Adding Frame: height:${scaledBitmap.height} + width:${scaledBitmap.width}")
+            var finalBitmap = Bitmap.createScaledBitmap(bitmap, 600, 800, true)
+
+            LogDebug("Orientation: $orientation")
+            if (orientation != ExifInterface.ORIENTATION_NORMAL) {
+                val matrix = Matrix()
+                matrix.postRotate(getRotation(orientation))
+                //height width are switch since we rotate
+                finalBitmap = Bitmap.createBitmap(finalBitmap, 0, 0, finalBitmap.width, finalBitmap.height, matrix,
+                        true)
+            }
+
+            if (path === mPictureList[0]) {
+                val imagePath = getThumbDirectoryFile()
+                val imageFile = File(imagePath, mThumbName)
+                val fos = FileOutputStream(imageFile)
+                finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                fos.close()
+                mThumbUri = Uri.fromFile(imageFile).toString()
+                LogDebug("Thumb created under ${mThumbUri.toString()}")
+            }
+
+            LogDebug("Adding Frame: height:${finalBitmap.height} + width:${finalBitmap.width}")
             encoder.setDelay(200)
-            encoder.addFrame(scaledBitmap);
+            encoder.addFrame(finalBitmap);
             bitmap.recycle()
-            scaledBitmap.recycle()
-            scaledBitmap.recycle()
+            finalBitmap.recycle()
             LogDebug(
-                    "Is recycled bitmap:${bitmap.isRecycled} scaledBitmap:${scaledBitmap.isRecycled} rotatedBitmap:${scaledBitmap.isRecycled}")
+                    "Is recycled bitmap:${bitmap.isRecycled} scaledBitmap:${finalBitmap.isRecycled}")
         }
         LogDebug("Added all")
         encoder.finish();
         LogDebug("Encoding finished")
         return bos.toByteArray();
     }
+
+    private fun getRotation(exif: Int): Float {
+        when (exif) {
+            ExifInterface.ORIENTATION_ROTATE_90  -> return 90f
+            ExifInterface.ORIENTATION_ROTATE_180 -> return 180f
+            ExifInterface.ORIENTATION_ROTATE_270 -> return 270f
+        }
+        return 0f
+    }
+
+    fun decodeFile(f: File): Bitmap? {
+        try {
+            // Decode image size
+            val options = BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(FileInputStream(f), null, options);
+
+            // The new size we want to scale to
+            val REQUIRED_SIZE = 70;
+
+            // Find the correct scale value. It should be the power of 2.
+            var scale = 1;
+            while (options.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    options.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            // Decode with inSampleSize
+            val options2 = BitmapFactory.Options();
+            options2.inSampleSize = scale;
+            return BitmapFactory.decodeStream(FileInputStream(f), null, options2);
+        } catch (e: FileNotFoundException) {
+
+        }
+        return null;
+    }
+
 }
