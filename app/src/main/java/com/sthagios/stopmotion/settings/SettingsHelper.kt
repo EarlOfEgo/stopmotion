@@ -11,3 +11,6 @@ import android.content.Context
 inline fun Context.getSettingsPreferences() = getSharedPreferences("SETTINGS", 0)
 
 inline fun Context.isPushOn() = getSettingsPreferences().getBoolean("PUSHES", true)
+
+inline fun Context.getCompressionRate(): Float = getSettingsPreferences().getFloat(
+        "COMPRESSION_RATE", 0.2f)

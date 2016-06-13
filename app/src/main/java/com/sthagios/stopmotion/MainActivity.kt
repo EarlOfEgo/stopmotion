@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         button_exit.setOnClickListener {
             //TODO track
+
             finish()
         }
         button_next.setOnClickListener {

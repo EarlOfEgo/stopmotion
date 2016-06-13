@@ -23,6 +23,7 @@ import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.list.ItemDecorator
+import com.sthagios.stopmotion.settings.getCompressionRate
 import com.sthagios.stopmotion.show.ShowGifActivity
 import com.sthagios.stopmotion.utils.*
 import kotlinx.android.synthetic.main.activity_generate_gif.*
@@ -86,6 +87,8 @@ class GenerateGifActivity : AppCompatActivity() {
         mGifName = "$fileName.gif"
         mThumbName = "$fileName.PNG"
 
+        mCompressRate = getCompressionRate()
+
         mPictureList = retrieveStringListParameter()
 
         mAdapter = StateAdapter(this, mPictureList)
@@ -105,8 +108,6 @@ class GenerateGifActivity : AppCompatActivity() {
                     .show()
         }
 
-
-//        storeThumbnail()
         startGifGeneration()
 
     }
@@ -182,55 +183,6 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private var mThumbUri: String = ""
 
-//    private fun storeThumbnail() {
-//        rx.Observable.from(mPictureList)
-//                .first()
-//                .flatMap {
-//
-//                    val imagePath = getThumbDirectoryFile()
-//                    val imageFile = File(imagePath, mThumbName)
-//
-////                    val matrix = Matrix()
-//
-//                    val bitmap = BitmapFactory.decodeFile(mPictureList[0])
-////                    matrix.postRotate(90.toFloat())
-//
-////                    val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 600, 800, true)
-//
-////                    val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width,
-////                            scaledBitmap.height, matrix, true)
-//
-//
-//                    val exif = ExifInterface(mPictureList[0])
-//
-//                    val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-//                            ExifInterface.ORIENTATION_NORMAL)
-//
-//                    var finalBitmap = bitmap!!
-//                    LogDebug("Orientation: $orientation")
-//                    if (orientation != ExifInterface.ORIENTATION_NORMAL) {
-//                        val matrix = Matrix()
-//                        matrix.postRotate(getRotation(orientation))
-//                        finalBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height,
-//                                matrix, true)
-//                    }
-//
-//                    val fos = FileOutputStream(imageFile)
-//                    finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-//                    fos.close()
-//
-//                    rx.Observable.just(Uri.fromFile(imageFile).toString())
-//                }
-//                .subscribeOn(Schedulers.io())
-//                .subscribe({
-//                    LogDebug("Thumb created under $it")
-//                    mThumbUri = it
-//                }, {
-//                    e ->
-//                    LogError(e.message!!)
-//                }, { LogDebug("Thumb created") })
-//    }
-
     private fun deleteTempFolderContent() {
         val directory = File(filesDir, "tmp_images");
 
@@ -277,6 +229,8 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private lateinit var mPictureList: ArrayList<String>
 
+    private var mCompressRate = 0.2f
+
     private fun generateGIF(): ByteArray {
 
         showWhichThreadInLogcat()
@@ -294,20 +248,31 @@ class GenerateGifActivity : AppCompatActivity() {
             }
 
             val exif = ExifInterface(path)
+            val imgWidth = exif.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, 600)
+            val imgLength = exif.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, 800)
+            val compressedImageWidth = (imgWidth * mCompressRate).toInt()
+            val compressedImageHeight = (imgLength * mCompressRate).toInt()
+
+            LogDebug(
+                    "ImgWidth $imgWidth mgLength:$imgLength CompressedWidth:$compressedImageWidth CompressedHeight:$compressedImageHeight")
+
             val bitmap = BitmapFactory.decodeFile(path)
 
 
             val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_NORMAL)
 
-            var finalBitmap = Bitmap.createScaledBitmap(bitmap, 600, 800, true)
+            var finalBitmap = Bitmap.createScaledBitmap(bitmap, compressedImageWidth,
+                    compressedImageHeight,
+                    true)
 
             LogDebug("Orientation: $orientation")
             if (orientation != ExifInterface.ORIENTATION_NORMAL) {
                 val matrix = Matrix()
+
                 matrix.postRotate(getRotation(orientation))
-                //height width are switch since we rotate
-                finalBitmap = Bitmap.createBitmap(finalBitmap, 0, 0, finalBitmap.width, finalBitmap.height, matrix,
+                finalBitmap = Bitmap.createBitmap(finalBitmap, 0, 0, finalBitmap.width,
+                        finalBitmap.height, matrix,
                         true)
             }
 
