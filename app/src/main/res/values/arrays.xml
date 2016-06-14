@@ -7,4 +7,10 @@
         <item>@string/burst_time_4</item>
         <item>@string/burst_time_5</item>
     </string-array>
+
+    <string-array name="compression_rate">
+        <item>@string/compression_rate_high</item>
+        <item>@string/compression_rate_medium</item>
+        <item>@string/compression_rate_low</item>
+    </string-array>
 </resources>

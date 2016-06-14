@@ -14,7 +14,6 @@ import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.settings.SettingsActivity
 import com.sthagios.stopmotion.utils.startActivity
 import kotlinx.android.synthetic.main.activity_image_list.*
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
 
 /**
@@ -47,6 +46,11 @@ class ImageListActivity : AppCompatActivity() {
 
         fab.setOnClickListener({ view -> createNewImage() })
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mAdapter.notifyDataSetChanged()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

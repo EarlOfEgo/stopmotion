@@ -14,3 +14,7 @@ inline fun Context.isPushOn() = getSettingsPreferences().getBoolean("PUSHES", tr
 
 inline fun Context.getCompressionRate(): Float = getSettingsPreferences().getFloat(
         "COMPRESSION_RATE", 0.2f)
+
+inline fun Context.setCompressionRate(value: Float) {
+    getSettingsPreferences().edit().putFloat("COMPRESSION_RATE", value).apply()
+}

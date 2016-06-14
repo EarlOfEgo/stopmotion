@@ -10,7 +10,23 @@ import com.sthagios.stopmotion.R
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.toolbar.*
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
+    override fun onRateChosen(value: Int) {
+        when (value) {
+            0 -> {
+                setCompressionRate(0.2f)
+                gif_compression.setValueText(R.string.compression_rate_high)
+            }
+            1 -> {
+                setCompressionRate(0.4f)
+                gif_compression.setValueText(R.string.compression_rate_medium)
+            }
+            2 -> {
+                setCompressionRate(0.6f)
+                gif_compression.setValueText(R.string.compression_rate_low)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +53,18 @@ class SettingsActivity : AppCompatActivity() {
             //TODO track
             getSettingsPreferences().edit().putBoolean("PUSHES", b).apply()
         }
+
+        gif_compression.setTitle(R.string.settings_gif_compression_rate_title)
+        gif_compression.setSubtitle(R.string.settings_gif_compression_rate_description)
+        when (getCompressionRate()) {
+            0.2f -> gif_compression.setValueText(R.string.compression_rate_high)
+            0.4f -> gif_compression.setValueText(R.string.compression_rate_medium)
+            0.6f -> gif_compression.setValueText(R.string.compression_rate_low)
+        }
+        gif_compression.setOnClickListener({
+            val dialog = CompressionDialog.newInstance(getCompressionRate())
+            dialog.show(fragmentManager, "CompressionDialog")
+        })
 
         setUpVersionInfos()
     }

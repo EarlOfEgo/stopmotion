@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/preferences_item_padding_bottom"
-    android:paddingTop="@dimen/preferences_item_padding_top">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/settings_margin_side"
-        android:layout_marginStart="@dimen/settings_margin_side"
-        android:orientation="horizontal">
+        android:layout_marginStart="@dimen/settings_margin_side">
 
         <TextView
             android:id="@+id/title"
@@ -20,16 +16,20 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/checkBox"
-            tools:text="Settings 1"
+            android:layout_toStartOf="@+id/content_text"
             android:textColor="@color/primary_text"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            tools:text="Settings 1" />
 
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true" />
+        <TextView
+            android:id="@+id/content_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/accent"
+            android:textSize="20sp"
+            tools:text="80%" />
 
     </RelativeLayout>
 
@@ -41,10 +41,10 @@
         android:layout_marginStart="@dimen/settings_margin_side"
         android:ellipsize="end"
         android:maxLines="2"
+        android:paddingEnd="4dp"
+        android:paddingStart="0dp"
         android:textColor="@color/secondary_text"
         android:visibility="gone"
-        android:paddingStart="0dp"
-        android:paddingEnd="4dp"
         tools:text="Description\nSecond line which is longer than the first and therefore not fully displayed"
         tools:visibility="visible" />
 
@@ -54,4 +54,4 @@
         android:layout_marginTop="8dp"
         android:background="@color/divider" />
 
-</LinearLayout>
+</merge>
