@@ -1,6 +1,7 @@
 package com.sthagios.stopmotion.settings
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -14,16 +15,29 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
     override fun onRateChosen(value: Int) {
         when (value) {
             0 -> {
-                setCompressionRate(0.2f)
-                gif_compression.setValueText(R.string.compression_rate_high)
+                setCompressionRate(COMPRESSION_HIGH)
+                setCompressionRateText(COMPRESSION_HIGH)
             }
             1 -> {
-                setCompressionRate(0.4f)
-                gif_compression.setValueText(R.string.compression_rate_medium)
+                setCompressionRate(COMPRESSION_MEDIUM)
+                setCompressionRateText(COMPRESSION_MEDIUM)
             }
             2 -> {
-                setCompressionRate(0.6f)
-                gif_compression.setValueText(R.string.compression_rate_low)
+                val oldCompression = getCompressionRate()
+                Snackbar.make(gif_compression, R.string.snackbar_warning_low_compression,
+                        Snackbar.LENGTH_LONG)
+                        .setAction(R.string.snackbar_undo_action_text, {
+                            if (oldCompression != COMPRESSION_LOW) {
+                                setCompressionRate(oldCompression)
+                                setCompressionRateText(oldCompression)
+                            } else {
+                                setCompressionRate(COMPRESSION_HIGH)
+                                setCompressionRateText(COMPRESSION_HIGH)
+                            }
+                        })
+                        .show()
+                setCompressionRate(COMPRESSION_LOW)
+                setCompressionRateText(COMPRESSION_LOW)
             }
         }
     }
@@ -56,11 +70,8 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
 
         gif_compression.setTitle(R.string.settings_gif_compression_rate_title)
         gif_compression.setSubtitle(R.string.settings_gif_compression_rate_description)
-        when (getCompressionRate()) {
-            0.2f -> gif_compression.setValueText(R.string.compression_rate_high)
-            0.4f -> gif_compression.setValueText(R.string.compression_rate_medium)
-            0.6f -> gif_compression.setValueText(R.string.compression_rate_low)
-        }
+        val compressionRate = getCompressionRate()
+        setCompressionRateText(compressionRate)
         gif_compression.setOnClickListener({
             val dialog = CompressionDialog.newInstance(getCompressionRate())
             dialog.show(fragmentManager, "CompressionDialog")
@@ -89,4 +100,13 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
             build_time.text = "Build time: ${BuildConfig.BUILD_TIME}"
         }
     }
+
+    private fun setCompressionRateText(compressionRate: Float) {
+        when (compressionRate) {
+            COMPRESSION_HIGH   -> gif_compression.setValueText(R.string.compression_rate_high)
+            COMPRESSION_MEDIUM -> gif_compression.setValueText(R.string.compression_rate_medium)
+            COMPRESSION_LOW -> gif_compression.setValueText(R.string.compression_rate_low)
+        }
+    }
 }
+

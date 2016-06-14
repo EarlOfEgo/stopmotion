@@ -23,6 +23,7 @@ import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.list.ItemDecorator
+import com.sthagios.stopmotion.settings.COMPRESSION_HIGH
 import com.sthagios.stopmotion.settings.getCompressionRate
 import com.sthagios.stopmotion.show.ShowGifActivity
 import com.sthagios.stopmotion.utils.*
@@ -78,6 +79,8 @@ class GenerateGifActivity : AppCompatActivity() {
     private lateinit var mAdapter: StateAdapter
 
     private lateinit var mThumbName: String
+
+    private var mCompressRate: Float = COMPRESSION_HIGH
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -229,7 +232,6 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private lateinit var mPictureList: ArrayList<String>
 
-    private var mCompressRate = 0.2f
 
     private fun generateGIF(): ByteArray {
 

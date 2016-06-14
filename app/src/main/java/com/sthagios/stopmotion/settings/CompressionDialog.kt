@@ -34,10 +34,10 @@ class CompressionDialog : DialogFragment() {
 
         fun newInstance(value: Float): CompressionDialog {
             val args = Bundle();
-            when(value) {
-                0.2f -> args.putInt(BUNDLE_VALUE, 0);
-                0.4f -> args.putInt(BUNDLE_VALUE, 1);
-                0.6f -> args.putInt(BUNDLE_VALUE, 2);
+            when (value) {
+                COMPRESSION_HIGH   -> args.putInt(BUNDLE_VALUE, 0);
+                COMPRESSION_MEDIUM -> args.putInt(BUNDLE_VALUE, 1);
+                COMPRESSION_LOW    -> args.putInt(BUNDLE_VALUE, 2);
             }
 
             val fragment = CompressionDialog()
