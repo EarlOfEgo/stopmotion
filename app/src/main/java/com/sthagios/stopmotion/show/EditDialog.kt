@@ -1,8 +1,10 @@
 package com.sthagios.stopmotion.show
 
+import android.app.Activity
 import android.app.Dialog
 import android.app.DialogFragment
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import com.afollestad.materialdialogs.MaterialDialog
@@ -43,6 +45,15 @@ class EditDialog() : DialogFragment() {
             mListener = context
         } else
             throw Exception("${context.toString()} must implement Callback")
+    }
+
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (activity is EditDialog.Callback) {
+                mListener = activity
+            }
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

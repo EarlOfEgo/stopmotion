@@ -1,8 +1,10 @@
 package com.sthagios.stopmotion.create
 
+import android.app.Activity
 import android.app.Dialog
 import android.app.DialogFragment
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import com.afollestad.materialdialogs.MaterialDialog
 import com.sthagios.stopmotion.R
@@ -19,6 +21,15 @@ open class AbstractDialog() : DialogFragment() {
         fun timeChosen(time: Int)
 
         fun amountChosen(amount: Int)
+    }
+
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (activity is Callback) {
+                mListener = activity
+            }
+        }
     }
 
     override fun onAttach(context: Context?) {
