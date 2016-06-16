@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
+import android.transition.Transition
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
@@ -45,6 +46,8 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
     private var mOffset2: Float = 0f
     private var mOffset3: Float = 0f
 
+    private lateinit var mGifUri: Uri
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_gif)
@@ -65,7 +68,7 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
 
         val gif = getRealmInstance().where(Gif::class.java).equalTo("id", id).findFirst()
 
-        val uri = Uri.parse(gif.fileUriString)
+        mGifUri = Uri.parse(gif.fileUriString)
         val uriThumb = Uri.parse(gif.thumbnailUriString)
 
         if (getApproximateAppStarts() < 4) {
@@ -73,18 +76,21 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
                     Snackbar.LENGTH_LONG).show()
         }
 
-        Observable.just(Glide.with(this).load(uriThumb).into(preview))
-//                .subscribeOn(Schedulers.computation())
-                .flatMap {
-                    LogDebug("Loaded, loading gif")
-                    Observable.just(Glide.with(this).load(uri).into(preview_gif))
-                            .subscribeOn(Schedulers.computation())
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({}, {
-                    e ->
-                    e.printStackTrace()
-                }, { })
+        Glide.with(this).load(uriThumb).into(preview)
+//        Observable.just()
+////                .subscribeOn(Schedulers.computation())
+//                .flatMap {
+//                    LogDebug("Loaded, loading gif")
+//                    Observable.just(Glide.with(this).load(uri).into(preview_gif))
+//                            .subscribeOn(Schedulers.computation())
+//                }
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe({}, {
+//                    e ->
+//                    e.printStackTrace()
+//                }, { })
+
+        doOnTransitionFinished()
 
 
         title = gif.name
@@ -142,6 +148,37 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
                         return true
                     }
                 });
+    }
+
+    private fun doOnTransitionFinished() {
+
+        if (window.sharedElementEnterTransition != null) {
+            window.sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
+                override fun onTransitionEnd(transition: Transition?) {
+                    Observable.just(Glide.with(baseContext).load(mGifUri).into(preview_gif))
+                            .subscribeOn(Schedulers.computation())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({}, {
+                                e ->
+                                e.printStackTrace()
+                            }, { })
+                    window.sharedElementEnterTransition.removeListener(this)
+                }
+
+                override fun onTransitionResume(transition: Transition?) {
+                }
+
+                override fun onTransitionPause(transition: Transition?) {
+                }
+
+                override fun onTransitionCancel(transition: Transition?) {
+                }
+
+                override fun onTransitionStart(transition: Transition?) {
+                }
+
+            })
+        }
     }
 
     private fun expandFab() {
