@@ -10,11 +10,12 @@ import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.app.NavUtils
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
@@ -49,6 +50,14 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         setContentView(R.layout.activity_show_gif)
 
         setSupportActionBar(toolbar);
+
+        for (i in 0..toolbar.childCount) {
+            val view = toolbar.getChildAt(i)
+            if (view is TextView) {
+                ViewCompat.setTransitionName(view, "shared_text");
+            }
+        }
+
         supportActionBar!!.setDisplayHomeAsUpEnabled(true);
 
         val id = retrieveLongParameter()
@@ -212,7 +221,8 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             android.R.id.home -> {
-                NavUtils.navigateUpFromSameTask(this)
+                supportFinishAfterTransition()
+//                NavUtils.navigateUpFromSameTask(this)
                 return true;
             }
         }
@@ -238,4 +248,5 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
                 })
                 .show()
     }
+
 }

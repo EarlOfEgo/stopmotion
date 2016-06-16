@@ -35,7 +35,8 @@
             android:id="@+id/preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:transitionName="shared_image" />
 
         <ImageView
             android:id="@+id/preview_gif"

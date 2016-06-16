@@ -3,6 +3,8 @@ package com.sthagios.stopmotion.list
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
+import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.util.Pair
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -41,7 +43,7 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val gif = data[position]
-        if(gif.isValid) {
+        if (gif.isValid) {
             holder!!.mImageText.text = gif.name
             if (useThumbs) {
                 val uri = Uri.parse(gif.thumbnailUriString)
@@ -51,9 +53,15 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
                 Glide.with(mContext).load(uri).into(holder.mImageView)
 
             }
-            holder.mShareButton.setOnClickListener({ mContext.shareGif(gif.shareUriString, gif.name) })
-            holder.mImageView.setOnClickListener(
-                    { (mContext as Activity).startActivity<ShowGifActivity>(gif.id, 1) })
+            holder.mShareButton.setOnClickListener(
+                    { mContext.shareGif(gif.shareUriString, gif.name) })
+            holder.mImageView.setOnClickListener({
+                val p1: Pair<View, String> = Pair.create(holder.mImageView, "shared_image")
+                val p2: Pair<View, String> = Pair.create(holder.mImageText!!, "shared_text")
+                val trans = ActivityOptionsCompat.makeSceneTransitionAnimation(mContext as Activity,
+                        p1, p2)
+                mContext.startActivity<ShowGifActivity>(gif.id, 1, trans.toBundle())
+            })
         }
     }
 

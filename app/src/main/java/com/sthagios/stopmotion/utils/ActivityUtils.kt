@@ -2,6 +2,7 @@ package com.sthagios.stopmotion.utils
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import com.sthagios.stopmotion.BuildConfig
@@ -31,6 +32,13 @@ inline fun <reified T : Activity> Activity.startActivity(long: Long, resultCode:
     val intent = Intent(this, T::class.java)
     intent.putExtra("long_param", long)
     startActivityForResult(intent, resultCode)
+}
+
+inline fun <reified T : Activity> Activity.startActivity(long: Long, resultCode: Int,
+        bundle: Bundle) {
+    val intent = Intent(this, T::class.java)
+    intent.putExtra("long_param", long)
+    startActivityForResult(intent, resultCode, bundle)
 }
 
 inline fun <reified T : Activity> Activity.startActivity(stringList: ArrayList<String>) {
