@@ -19,6 +19,7 @@ import android.view.TextureView
 import android.view.View
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.camera.ImageSaver
+import com.sthagios.stopmotion.tracking.logCameraEvent
 import com.sthagios.stopmotion.utils.LogDebug
 import com.sthagios.stopmotion.utils.LogError
 import com.sthagios.stopmotion.utils.LogVerbose
@@ -748,7 +749,16 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
             mPictureList = emptyArray()
 
-//            cameraSubscription =
+            //Tracking
+            val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+            val characteristics = manager.getCameraCharacteristics(mCameraId)
+            if (CameraCharacteristics.LENS_FACING_FRONT == characteristics.get(
+                    CameraCharacteristics.LENS_FACING)) {
+                logCameraEvent("take_picture_front", mBurstAmount, mBurstTime)
+            } else {
+                logCameraEvent("take_picture_back", mBurstAmount, mBurstTime)
+            }
+
             rx.Observable
                     .interval(0, mBurstTime.toLong() + 1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())

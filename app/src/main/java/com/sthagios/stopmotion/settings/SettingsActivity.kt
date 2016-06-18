@@ -10,6 +10,7 @@ import com.sthagios.stopmotion.BuildConfig
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.settings.dialogs.CompressionDialog
 import com.sthagios.stopmotion.settings.dialogs.LicensesDialog
+import com.sthagios.stopmotion.tracking.logSettingsEvent
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.toolbar.*
 
@@ -19,16 +20,19 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
             0 -> {
                 setCompressionRate(COMPRESSION_HIGH)
                 setCompressionRateText(COMPRESSION_HIGH)
+                logSettingsEvent("gif_compression", "COMPRESSION_HIGH")
             }
             1 -> {
                 setCompressionRate(COMPRESSION_MEDIUM)
                 setCompressionRateText(COMPRESSION_MEDIUM)
+                logSettingsEvent("gif_compression", "COMPRESSION_MEDIUM")
             }
             2 -> {
                 val oldCompression = getCompressionRate()
                 Snackbar.make(gif_compression, R.string.snackbar_warning_low_compression,
                         Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_undo_action_text, {
+                            logSettingsEvent("gif_compression", "undo")
                             if (oldCompression != COMPRESSION_LOW) {
                                 setCompressionRate(oldCompression)
                                 setCompressionRateText(oldCompression)
@@ -40,6 +44,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
                         .show()
                 setCompressionRate(COMPRESSION_LOW)
                 setCompressionRateText(COMPRESSION_LOW)
+                logSettingsEvent("gif_compression", "COMPRESSION_LOW")
             }
         }
     }
@@ -57,7 +62,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
         use_thumbs.setSubtitle(R.string.settings_use_thumbnails_description)
         use_thumbs.setChecked(getSettingsPreferences().getBoolean("THUMBS_IN_LIST", false))
         use_thumbs.onCheckChanged { b ->
-            //TODO track
+            logSettingsEvent("use_thumbs", b)
             getSettingsPreferences().edit().putBoolean("THUMBS_IN_LIST", b).apply()
         }
 
@@ -66,7 +71,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
         use_pushes.setChecked(getSettingsPreferences().getBoolean("PUSHES", true))
 
         use_pushes.onCheckChanged { b ->
-            //TODO track
+            logSettingsEvent("use_pushes", b)
             getSettingsPreferences().edit().putBoolean("PUSHES", b).apply()
         }
 
@@ -82,6 +87,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
         licenses.setTitle(R.string.settings_licences_title)
         licenses.setSubtitle(R.string.settings_licences_description)
         licenses.setOnClickListener({
+            logSettingsEvent("license")
             val dialog = LicensesDialog()
             dialog.show(fragmentManager, "LicensesDialog")
         })
@@ -115,7 +121,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
         when (compressionRate) {
             COMPRESSION_HIGH   -> gif_compression.setValueText(R.string.compression_rate_high)
             COMPRESSION_MEDIUM -> gif_compression.setValueText(R.string.compression_rate_medium)
-            COMPRESSION_LOW -> gif_compression.setValueText(R.string.compression_rate_low)
+            COMPRESSION_LOW    -> gif_compression.setValueText(R.string.compression_rate_low)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.sthagios.stopmotion.tracking
 
 import android.content.Context
+import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 
 /**
@@ -11,3 +12,34 @@ import com.google.firebase.analytics.FirebaseAnalytics
  */
 
 inline fun Context.getFirebaseInstance() = FirebaseAnalytics.getInstance(this)
+
+inline fun Context.logSettingsEvent(type: String) {
+    val bundle = Bundle();
+    bundle.putString("type", type);
+    getFirebaseInstance().logEvent("settings", bundle);
+}
+
+inline fun Context.logSettingsEvent(type: String, enabled: Boolean) {
+    val bundle = Bundle();
+
+    bundle.putString("enabled", "$enabled");
+    bundle.putString("type", type);
+    getFirebaseInstance().logEvent("settings", bundle);
+}
+
+inline fun Context.logCameraEvent(type: String, burstAmount: Int, burstTime: Int) {
+    val bundle = Bundle();
+
+    bundle.putString("burst_amount", "$burstAmount");
+    bundle.putString("burst_time", "$burstTime");
+    bundle.putString("type", type);
+    getFirebaseInstance().logEvent("camera", bundle);
+}
+
+inline fun Context.logSettingsEvent(type: String, content: String) {
+    val bundle = Bundle();
+
+    bundle.putString("content", content);
+    bundle.putString("type", type);
+    getFirebaseInstance().logEvent("settings", bundle);
+}
