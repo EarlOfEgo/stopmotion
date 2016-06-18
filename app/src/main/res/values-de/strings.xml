@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Stopmotion</string>
+
+
+    <string name="burst_time_1">1 Sek.</string>
+    <string name="burst_time_2">2 Sek.</string>
+    <string name="burst_time_3">3 Sek.</string>
+    <string name="burst_time_4">4 Sek.</string>
+    <string name="burst_time_5">5 Sek.</string>
+
+    <string name="compression_rate_low">Gering</string>
+    <string name="compression_rate_medium">Mittel</string>
+    <string name="compression_rate_high">Hoch</string>
+
+    <!-- Empty list-->
+    <string name="empty_list_text">Erstelle dein erstes Stopmotion Gif</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_delete_title">Bist du sicher?</string>
+    <string name="delete_button">Löschen</string>
+    <string name="cancel_button">Abbrechen</string>
+    <string name="rename_dialog_title">Gif Name ändern</string>
+    <string name="dialog_burst_interval_title">Burst Interval wählen</string>
+    <string name="confirm_ok">OK</string>
+    <string name="dialog_burst_amount_title">Burst Anzahl wählen</string>
+
+    <!-- Snackbars -->
+    <string name="snackbar_no_camera_available_error">Keine Kamer verfügbar</string>
+    <string name="snackbar_something_wrong_error">Etwas ist schiefgelaufen, versuche es später noch einmal</string>
+    <string name="snackbar_undo_action_text">Rückgängig</string>
+    <string name="snackbar_renamed_gif">%1$s in %2$s umbenannt</string>
+    <string name="snackbar_info_taking_time">Gif erstellen, dies kann eine Weile dauern</string>
+    <string name="snackbar_info_loading_time">Laden des Gifs, dies kann ein bisschen dauern</string>
+    <string name="snackbar_warning_low_compression">Niedrige Kompressionsrate gewählt. Wir empfehlen eine hoche Kompressionsrate.</string>
+
+    <!--Settings-->
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_use_thumbnails_title">Bilder in der Liste nutzen</string>
+    <string name="settings_use_thumbnails_description">Benutze Bilder anstatt Gifs in der Übersicht. Dies ist für eine bessere Performance.</string>
+    <string name="settings_pushes_title">Push Nachrichten</string>
+    <string name="settings_pushes_description">Push Nachrichten von Stopmotion empfangen.</string>
+    <string name="settings_version">Version: %1$s</string>
+    <string name="settings_gif_compression_rate_title">Gif Kompressionsrate</string>
+    <string name="settings_gif_compression_rate_description">Eine höhre Kompressionsrate verringert die Gif Erstellungszeit.</string>
+    <string name="settings_licences_title">Lizenzen</string>
+    <string name="settings_licences_description">Eine Übersicht der Open Source Lizenzen.</string>
+
+
+    <string name="edit_text_hint_gif_name">Benne das Gif</string>
+    <string name="main_grand_permission_text">Um Stopmotion benutzen zu können, musst du Kamerazugriff gewähren.</string>
+    <string name="main_goto_settings_button">Zu den Einstellungen</string>
+    <string name="item_image_converted">Konvertiert</string>
+    <string name="onboarding_camera_access_title">Kamerazugriff</string>
+    <string name="onboarding_camera_access_content">Um fortzufahren gebe Stopmotion Zugriff auf die Kamera.</string>
+    <string name="onboarding_exit_button">Abbrechen</string>
+    <string name="onboarding_next_button">Weiter &gt;</string>
+
+</resources>

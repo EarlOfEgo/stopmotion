@@ -14,7 +14,7 @@
             android:id="@+id/empty_text_view"
             android:gravity="center"
             android:layout_below="@+id/empty_image_view"
-            android:text="Create your first Stopmotion Gif"
+            android:text="@string/empty_list_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

@@ -12,6 +12,9 @@
     <string name="compression_rate_medium">Medium</string>
     <string name="compression_rate_high">High</string>
 
+    <!-- Empty list-->
+    <string name="empty_list_text">Create your first Stopmotion Gif</string>
+
     <!-- Dialogs -->
     <string name="dialog_delete_title">Are you sure?</string>
     <string name="delete_button">Delete</string>
