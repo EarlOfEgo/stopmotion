@@ -1,4 +1,4 @@
-package com.sthagios.stopmotion.settings
+package com.sthagios.stopmotion.settings.items
 
 import android.content.Context
 import android.util.AttributeSet

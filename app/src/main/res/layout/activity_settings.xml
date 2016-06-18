@@ -26,20 +26,25 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.sthagios.stopmotion.settings.CheckBoxPreferenceItem
+            <com.sthagios.stopmotion.settings.items.CheckBoxPreferenceItem
                 android:id="@+id/use_thumbs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.sthagios.stopmotion.settings.ValuePreferenceItem
+            <com.sthagios.stopmotion.settings.items.ValuePreferenceItem
                 android:id="@+id/gif_compression"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true" />
 
-            <com.sthagios.stopmotion.settings.CheckBoxPreferenceItem
+            <com.sthagios.stopmotion.settings.items.CheckBoxPreferenceItem
                 android:id="@+id/use_pushes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.sthagios.stopmotion.settings.items.TextPreferenceItem
+                android:id="@+id/licenses"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

@@ -8,6 +8,8 @@ import android.view.MenuItem
 import android.view.View
 import com.sthagios.stopmotion.BuildConfig
 import com.sthagios.stopmotion.R
+import com.sthagios.stopmotion.settings.dialogs.CompressionDialog
+import com.sthagios.stopmotion.settings.dialogs.LicensesDialog
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.toolbar.*
 
@@ -76,6 +78,14 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
             val dialog = CompressionDialog.newInstance(getCompressionRate())
             dialog.show(fragmentManager, "CompressionDialog")
         })
+
+        licenses.setTitle(R.string.settings_licences_title)
+        licenses.setSubtitle(R.string.settings_licences_description)
+        licenses.setOnClickListener({
+            val dialog = LicensesDialog()
+            dialog.show(fragmentManager, "LicensesDialog")
+        })
+
 
         setUpVersionInfos()
     }

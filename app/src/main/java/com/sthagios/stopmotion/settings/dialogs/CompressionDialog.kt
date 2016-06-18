@@ -1,4 +1,4 @@
-package com.sthagios.stopmotion.settings
+package com.sthagios.stopmotion.settings.dialogs
 
 import android.app.Activity
 import android.app.Dialog
@@ -8,6 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import com.afollestad.materialdialogs.MaterialDialog
 import com.sthagios.stopmotion.R
+import com.sthagios.stopmotion.settings.COMPRESSION_HIGH
+import com.sthagios.stopmotion.settings.COMPRESSION_LOW
+import com.sthagios.stopmotion.settings.COMPRESSION_MEDIUM
 
 /**
  * Stopmotion
@@ -23,7 +26,7 @@ class CompressionDialog : DialogFragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is CompressionDialog.Callback) {
+        if (context is Callback) {
             mListener = context
         } else
             throw Exception("${context.toString()} must implement Callback")
@@ -32,7 +35,7 @@ class CompressionDialog : DialogFragment() {
     override fun onAttach(activity: Activity?) {
         super.onAttach(activity)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            if (activity is CompressionDialog.Callback) {
+            if (activity is Callback) {
                 mListener = activity
             }
         }
