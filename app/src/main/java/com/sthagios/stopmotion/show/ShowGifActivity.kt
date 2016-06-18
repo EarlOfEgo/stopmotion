@@ -77,21 +77,8 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         }
 
         Glide.with(this).load(uriThumb).into(preview)
-//        Observable.just()
-////                .subscribeOn(Schedulers.computation())
-//                .flatMap {
-//                    LogDebug("Loaded, loading gif")
-//                    Observable.just(Glide.with(this).load(uri).into(preview_gif))
-//                            .subscribeOn(Schedulers.computation())
-//                }
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({}, {
-//                    e ->
-//                    e.printStackTrace()
-//                }, { })
 
         doOnTransitionFinished()
-
 
         title = gif.name
 
@@ -155,13 +142,7 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         if (window.sharedElementEnterTransition != null) {
             window.sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
                 override fun onTransitionEnd(transition: Transition?) {
-                    Observable.just(Glide.with(baseContext).load(mGifUri).into(preview_gif))
-                            .subscribeOn(Schedulers.computation())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({}, {
-                                e ->
-                                e.printStackTrace()
-                            }, { })
+                    loadGif()
                     window.sharedElementEnterTransition.removeListener(this)
                 }
 
@@ -178,7 +159,19 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
                 }
 
             })
+        } else {
+            loadGif()
         }
+    }
+
+    private fun loadGif() {
+        Observable.just(Glide.with(baseContext).load(mGifUri).into(preview_gif))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({}, {
+                    e ->
+                    e.printStackTrace()
+                }, { })
     }
 
     private fun expandFab() {

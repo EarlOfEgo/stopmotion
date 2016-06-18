@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -48,6 +49,8 @@ class GenerateGifActivity : AppCompatActivity() {
             }
         }
 
+        var first: View? = null
+
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
             val image = imageList[position]
             Glide.with(mContext).load(image).into(holder!!.mImageView)
@@ -58,6 +61,8 @@ class GenerateGifActivity : AppCompatActivity() {
                 holder.mLoadingBar.visibility = View.GONE
                 holder.mConvertedText.visibility = View.VISIBLE
             }
+            if (position == 0)
+                first = holder.mImageView
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
@@ -178,7 +183,10 @@ class GenerateGifActivity : AppCompatActivity() {
 
             LogDebug("Stored gif ${gif.toString()}")
 
-            startActivity<ShowGifActivity>(id)
+            //TODO think of another solution for this
+            val trans = ActivityOptionsCompat.makeSceneTransitionAnimation(this, mAdapter.first,
+                    "shared_image")
+            startActivity<ShowGifActivity>(gif.id, 1, trans.toBundle())
             finish()
         }
     }
