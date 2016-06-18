@@ -68,7 +68,7 @@ dependencies {
     compile "com.android.support:design:$support_lib_version"
 
     compile "com.google.firebase:firebase-core:$firebase_version"
-//    compile "com.google.firebase:firebase-crash:$firebase_version"
+    compile "com.google.firebase:firebase-crash:$firebase_version"
     compile "com.google.firebase:firebase-messaging:$firebase_version"
 
     //Rx
@@ -82,7 +82,6 @@ dependencies {
     compile 'com.android.support:support-v4:23.4.0'
 
     compile 'io.realm:android-adapters:1.2.2'
-
 
 
 }
