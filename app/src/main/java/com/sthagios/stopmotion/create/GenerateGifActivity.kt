@@ -58,8 +58,8 @@ class GenerateGifActivity : AppCompatActivity() {
                 holder.mLoadingBar.visibility = View.VISIBLE
                 holder.mConvertedText.visibility = View.GONE
             } else {
-                holder.mLoadingBar.visibility = View.GONE
                 holder.mConvertedText.visibility = View.VISIBLE
+                holder.mLoadingBar.visibility = View.GONE
             }
             if (position == 0)
                 first = holder.mImageView
@@ -250,11 +250,12 @@ class GenerateGifActivity : AppCompatActivity() {
         encoder.start(bos)
         encoder.setRepeat(0)
         LogDebug("Start gif encoding")
+        var i = 0
         for (path in mPictureList) {
 
             runOnUiThread {
                 mAdapter.imageListLoading.put(path, false)
-                mAdapter.notifyDataSetChanged()
+                mAdapter.notifyItemChanged(i++)
             }
 
             val exif = ExifInterface(path)
