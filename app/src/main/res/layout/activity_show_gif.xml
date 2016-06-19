@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
     tools:context="com.sthagios.stopmotion.show.ShowGifActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -20,6 +21,7 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
+        android:clipChildren="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="8dp"
