@@ -65,5 +65,7 @@
     <string name="rating_rate_text">Awesome, would you mind rating Stopmotion?</string>
     <string name="rating_rate_positive">OK, let\'s do it</string>
     <string name="rating_rate_negative">No, thanks</string>
+    <string name="rating_feedback_email_title">Stopmotion App Feedback</string>
+    <string name="rating_email_choose_text">Send email using…</string>
 
 </resources>
