@@ -120,7 +120,6 @@ class GenerateGifActivity : AppCompatActivity() {
 
     }
 
-
     private lateinit var mGifName: String
 
     private fun startGifGeneration() {
