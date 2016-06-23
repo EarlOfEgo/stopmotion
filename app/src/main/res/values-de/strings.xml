@@ -54,5 +54,17 @@
     <string name="onboarding_camera_access_content">Um fortzufahren gebe Stopmotion Zugriff auf die Kamera.</string>
     <string name="onboarding_exit_button">Abbrechen</string>
     <string name="onboarding_next_button">Weiter &gt;</string>
+    <string name="rating_email_choose_text">Email Programm</string>
+    <string name="rating_feedback_email_title">Stopmotion App Feedback</string>
+    <string name="rating_feedback_negative">Nein, Danke</string>
+    <string name="rating_feedback_positive">Okay, los geht\'s</string>
+    <string name="rating_feedback_title">Das ist schade, willst du uns Feedback geben?</string>
+    <string name="rating_first_question_negative">Nicht so sehr</string>
+    <string name="rating_first_question_positive">Ja</string>
+    <string name="rating_first_question_title">Gefällt dir Stopmotion?</string>
+    <string name="rating_rate_negative">Nein, Danke</string>
+    <string name="rating_rate_positive">Okay, los geht\'s</string>
+    <string name="rating_rate_text">Super, willst du Stopmotion im Play Store bewerten?</string>
+    <string name="rating_toast_no_action">Trotzdem Danke</string>
 
 </resources>
