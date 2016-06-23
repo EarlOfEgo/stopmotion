@@ -16,6 +16,11 @@ import com.sthagios.stopmotion.tracking.logRatingEvent
  * @since   20.06.16
  */
 class RatingActivity : AppCompatActivity(), RatingDialog.Callback {
+    override fun canceled() {
+        logRatingEvent("canceled", true)
+        finish()
+    }
+
     override fun giveFeedback(feedback: Boolean) {
         logRatingEvent("feedback", feedback)
         if (feedback) {
@@ -28,11 +33,13 @@ class RatingActivity : AppCompatActivity(), RatingDialog.Callback {
             try {
                 startActivity(Intent.createChooser(emailIntent,
                         getString(R.string.rating_email_choose_text)))
+                setUserFeedback()
             } catch (ex: android.content.ActivityNotFoundException) {
                 //TODO might add toast
             }
         } else {
-            Toast.makeText(this, "Thanks anyway", Toast.LENGTH_SHORT).show()
+            setUserWontFeedback()
+            Toast.makeText(this, R.string.rating_toast_no_action, Toast.LENGTH_SHORT).show()
         }
         finish()
     }
@@ -46,6 +53,7 @@ class RatingActivity : AppCompatActivity(), RatingDialog.Callback {
             // to taken back to our application, we need to add following flags to intent.
             goToMarket.addFlags(
                     Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            setUserRated()
             try {
                 startActivity(goToMarket);
             } catch (e: ActivityNotFoundException) {
@@ -53,7 +61,8 @@ class RatingActivity : AppCompatActivity(), RatingDialog.Callback {
                         Uri.parse("http://play.google.com/store/apps/details?id=$packageName")))
             }
         } else {
-            Toast.makeText(this, "Thanks anyway", Toast.LENGTH_SHORT).show()
+            setUserWontRate()
+            Toast.makeText(this, R.string.rating_toast_no_action, Toast.LENGTH_SHORT).show()
         }
         finish()
     }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.app.DialogFragment
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import com.afollestad.materialdialogs.MaterialDialog
@@ -15,6 +16,7 @@ import com.sthagios.stopmotion.R
  * @author  stephan
  * @since   20.06.16
  */
+@Suppress("OverridingDeprecatedMember")
 open class RatingDialog : DialogFragment() {
 
     interface Callback {
@@ -23,6 +25,13 @@ open class RatingDialog : DialogFragment() {
         fun giveFeedback(feedback: Boolean)
 
         fun rateTheApp(rate: Boolean)
+
+        fun canceled()
+    }
+
+    override fun onCancel(dialog: DialogInterface?) {
+        super.onCancel(dialog)
+        mCallback.canceled()
     }
 
     override fun onAttach(activity: Activity?) {
@@ -30,7 +39,8 @@ open class RatingDialog : DialogFragment() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             if (activity is RatingDialog.Callback) {
                 mCallback = activity
-            }
+            } else
+                throw Exception("${context.toString()} must implement Callback")
         }
     }
 
@@ -57,10 +67,12 @@ class RatingDialogFirst : RatingDialog() {
                 .onNegative { materialDialog, dialogAction ->
                     mCallback.enjoyTheApp(false)
                 }
+                .cancelable(false)
                 .build()
 
         return dialog
     }
+
 }
 
 class RatingDialogFeedback : RatingDialog() {
@@ -75,6 +87,7 @@ class RatingDialogFeedback : RatingDialog() {
                 .onNegative { materialDialog, dialogAction ->
                     mCallback.giveFeedback(false)
                 }
+                .cancelable(false)
                 .build()
 
         return dialog
@@ -93,6 +106,7 @@ class RatingDialogRate : RatingDialog() {
                 .onNegative { materialDialog, dialogAction ->
                     mCallback.rateTheApp(false)
                 }
+                .cancelable(false)
                 .build()
 
         return dialog
