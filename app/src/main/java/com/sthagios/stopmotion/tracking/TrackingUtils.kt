@@ -27,6 +27,14 @@ inline fun Context.logSettingsEvent(type: String, enabled: Boolean) {
     getFirebaseInstance().logEvent("settings", bundle);
 }
 
+inline fun Context.logRatingEvent(type: String, enabled: Boolean) {
+    val bundle = Bundle();
+
+    bundle.putString("enabled", "$enabled");
+    bundle.putString("type", type);
+    getFirebaseInstance().logEvent("rating", bundle);
+}
+
 inline fun Context.logCameraEvent(type: String, burstAmount: Int, burstTime: Int) {
     val bundle = Bundle();
 

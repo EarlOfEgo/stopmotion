@@ -55,4 +55,18 @@
     <string name="onboarding_exit_button">Exit</string>
     <string name="onboarding_next_button">Next &gt;</string>
 
+    <!-- Rating dialogs -->
+    <string name="rating_first_question_title">Do you enjoy using Stopmotion?</string>
+    <string name="rating_first_question_positive">Yes</string>
+    <string name="rating_first_question_negative">Not so much</string>
+    <string name="rating_feedback_title">That\'s unfortunate, mind to give some Feedback?</string>
+    <string name="rating_feedback_positive">OK, let\'s do it</string>
+    <string name="rating_feedback_negative">No, thanks</string>
+    <string name="rating_rate_text">Awesome, would you mind rating Stopmotion?</string>
+    <string name="rating_rate_positive">OK, let\'s do it</string>
+    <string name="rating_rate_negative">No, thanks</string>
+    <string name="rating_feedback_email_title">Stopmotion App Feedback</string>
+    <string name="rating_email_choose_text">Send email using…</string>
+    <string name="rating_toast_no_action">Thanks anyway</string>
+
 </resources>

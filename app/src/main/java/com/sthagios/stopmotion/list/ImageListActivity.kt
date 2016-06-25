@@ -11,6 +11,8 @@ import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.create.CreateNewImage
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
+import com.sthagios.stopmotion.rating.RatingActivity
+import com.sthagios.stopmotion.rating.shouldShowRating
 import com.sthagios.stopmotion.settings.SettingsActivity
 import com.sthagios.stopmotion.utils.startActivity
 import kotlinx.android.synthetic.main.activity_image_list.*
@@ -46,6 +48,8 @@ class ImageListActivity : AppCompatActivity() {
 
         fab.setOnClickListener({ view -> createNewImage() })
 
+        if (shouldShowRating())
+            startActivity<RatingActivity>()
     }
 
     override fun onResume() {

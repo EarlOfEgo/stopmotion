@@ -12,7 +12,8 @@ import android.content.Context
 
 inline fun Context.getAppStartPreferences() = getSharedPreferences("APP_START", 0)
 
-inline fun Context.getApproximateAppStarts() = getAppStartPreferences().getInt("APP_START_AMOUNT", 0)
+inline fun Context.getApproximateAppStarts() = getAppStartPreferences().getInt("APP_START_AMOUNT",
+        0)
 
 inline fun Context.addAppStart() {
     val appstarts = getApproximateAppStarts() + 1

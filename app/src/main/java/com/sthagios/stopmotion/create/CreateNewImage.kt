@@ -710,11 +710,11 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             button_switch_camera.setOnClickListener({
                 if (mCameraId == mAvailableCameras[0]) {
                     button_switch_camera.setImageResource(R.drawable.animate_camera_front_to_back)
-                    animateCamereaChange()
+                    animateCameraChange()
                     mCameraId = mAvailableCameras[1]
                 } else {
                     button_switch_camera.setImageResource(R.drawable.animate_camera_back_to_front)
-                    animateCamereaChange()
+                    animateCameraChange()
                     mCameraId = mAvailableCameras[0]
                 }
 
@@ -785,7 +785,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         })
     }
 
-    private fun animateCamereaChange() {
+    private fun animateCameraChange() {
         val drawable = button_switch_camera.drawable
         if (drawable is Animatable) {
             drawable.start()
