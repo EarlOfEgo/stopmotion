@@ -19,6 +19,7 @@ import android.view.TextureView
 import android.view.View
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.camera.ImageSaver
+import com.sthagios.stopmotion.create.edit.EditImagesActivity
 import com.sthagios.stopmotion.tracking.logCameraEvent
 import com.sthagios.stopmotion.utils.LogDebug
 import com.sthagios.stopmotion.utils.LogError
@@ -474,7 +475,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 val arrayList: ArrayList<String> = ArrayList()
                 for (image in mPictureList)
                     arrayList.add(image)
-                startActivity<GenerateGifActivity>(arrayList)
+                startActivity<EditImagesActivity>(arrayList)
                 finish()
             }
         }
