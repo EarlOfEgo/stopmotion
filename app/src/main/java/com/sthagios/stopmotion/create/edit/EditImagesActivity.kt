@@ -30,7 +30,8 @@ class EditImagesActivity : AppCompatActivity() {
 
         image_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-                mAdapter = StateAdapter(this, mPictureList, {Glide.with(this).load(it).into(image_preview)})
+        mAdapter = StateAdapter(this, mPictureList,
+                { Glide.with(this).load(it).into(image_preview) })
 
         image_list.adapter = mAdapter
         Glide.with(this).load(mPictureList.first()).into(image_preview)
@@ -38,21 +39,32 @@ class EditImagesActivity : AppCompatActivity() {
         ItemTouchHelper(mItemTouch).attachToRecyclerView(image_list)
     }
 
-    val mItemTouch = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+    val mItemTouch = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
         override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?,
                 target: RecyclerView.ViewHolder?): Boolean {
-            viewHolder!!.adapterPosition
+            Collections.swap(mAdapter.imageList, viewHolder!!.adapterPosition,
+                    target!!.adapterPosition)
+            mAdapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition);
             return true;
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
             val pos = viewHolder!!.adapterPosition
+
             mAdapter.remove(pos)
+        }
+
+        override fun getMovementFlags(recyclerView: RecyclerView?,
+                viewHolder: RecyclerView.ViewHolder?): Int {
+            return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
+                    ItemTouchHelper.DOWN or ItemTouchHelper.UP or ItemTouchHelper.START or ItemTouchHelper.END);
         }
 
     }
 
-    class StateAdapter(val mContext: Context, val imageList: ArrayList<String>, val itemClick: (String) -> Unit) : RecyclerView.Adapter<StateAdapter.ViewHolder>() {
+    class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val itemClick: (String) -> Unit) : RecyclerView.Adapter<StateAdapter.ViewHolder>() {
 
         var first: View? = null
 
