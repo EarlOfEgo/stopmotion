@@ -1,6 +1,7 @@
 package com.sthagios.stopmotion.create.edit
 
 import android.content.Context
+import android.graphics.Canvas
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -14,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.utils.retrieveStringListParameter
 import kotlinx.android.synthetic.main.activity_edit_images.*
-import kotlinx.android.synthetic.main.state_list_item.view.*
+import kotlinx.android.synthetic.main.image_list_item_new.view.*
 import java.util.*
 
 class EditImagesActivity : AppCompatActivity() {
@@ -65,6 +66,39 @@ class EditImagesActivity : AppCompatActivity() {
                     ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.START or ItemTouchHelper.END)
         }
 
+        override fun clearView(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?) {
+            getDefaultUIUtil().clearView((viewHolder as StateAdapter.ViewHolder).mCardView);
+        }
+
+        override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+            if (viewHolder != null && actionState == ItemTouchHelper.ACTION_STATE_SWIPE)
+                getDefaultUIUtil().onSelected((viewHolder as StateAdapter.ViewHolder).mCardView)
+            else
+                super.onSelectedChanged(viewHolder, actionState)
+        }
+
+        override fun onChildDraw(c: Canvas?, recyclerView: RecyclerView?,
+                viewHolder: RecyclerView.ViewHolder?, dX: Float, dY: Float, actionState: Int,
+                isCurrentlyActive: Boolean) {
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE)
+                getDefaultUIUtil().onDraw(c, recyclerView,
+                        (viewHolder as StateAdapter.ViewHolder).mCardView, dX, dY, actionState,
+                        isCurrentlyActive)
+            else
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        }
+
+        override fun onChildDrawOver(c: Canvas?, recyclerView: RecyclerView?,
+                viewHolder: RecyclerView.ViewHolder?, dX: Float, dY: Float, actionState: Int,
+                isCurrentlyActive: Boolean) {
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE)
+                getDefaultUIUtil().onDrawOver(c, recyclerView,
+                        (viewHolder as StateAdapter.ViewHolder).mCardView, dX, dY, actionState,
+                        isCurrentlyActive)
+            else
+                super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        }
+
     }
 
     private fun showUndo(remove: String, pos: Int) {
@@ -101,6 +135,7 @@ class EditImagesActivity : AppCompatActivity() {
         class ViewHolder(itemView: View?, val itemClick: (String) -> Unit) : RecyclerView.ViewHolder(
                 itemView) {
             var mImageView = itemView!!.image_view
+            var mCardView = itemView!!.card_view
         }
 
         fun addItem(pos: Int, toAdd: String) {
