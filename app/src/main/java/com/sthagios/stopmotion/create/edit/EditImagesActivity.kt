@@ -2,6 +2,7 @@ package com.sthagios.stopmotion.create.edit
 
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -53,8 +54,9 @@ class EditImagesActivity : AppCompatActivity() {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
             val pos = viewHolder!!.adapterPosition
 
-            mAdapter.remove(pos)
+            showUndo(mAdapter.remove(pos), pos)
         }
+
 
         override fun getMovementFlags(recyclerView: RecyclerView?,
                 viewHolder: RecyclerView.ViewHolder?): Int {
@@ -65,14 +67,19 @@ class EditImagesActivity : AppCompatActivity() {
 
     }
 
+    private fun showUndo(remove: String, pos: Int) {
+        Snackbar.make(image_preview, "Image deleted", Snackbar.LENGTH_LONG)
+                .setAction(R.string.snackbar_undo_action_text, { mAdapter.addItem(pos, remove) })
+                .show()
+    }
+
     class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val itemClick: (String) -> Unit) : RecyclerView.Adapter<StateAdapter.ViewHolder>() {
 
-        var first: View? = null
-
-        fun remove(position: Int) {
-            val item = imageList.get(position)
+        fun remove(position: Int): String {
+            val item = imageList[position]
             imageList.remove(item)
             notifyItemRemoved(position)
+            return item
         }
 
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
@@ -94,6 +101,11 @@ class EditImagesActivity : AppCompatActivity() {
         class ViewHolder(itemView: View?, val itemClick: (String) -> Unit) : RecyclerView.ViewHolder(
                 itemView) {
             var mImageView = itemView!!.image_view
+        }
+
+        fun addItem(pos: Int, toAdd: String) {
+            imageList.add(pos, toAdd)
+            notifyItemInserted(pos)
         }
     }
 
