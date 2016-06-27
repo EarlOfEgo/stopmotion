@@ -58,8 +58,9 @@ class EditImagesActivity : AppCompatActivity() {
 
         override fun getMovementFlags(recyclerView: RecyclerView?,
                 viewHolder: RecyclerView.ViewHolder?): Int {
-            return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
-                    ItemTouchHelper.DOWN or ItemTouchHelper.UP or ItemTouchHelper.START or ItemTouchHelper.END);
+            return makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE,
+                    ItemTouchHelper.DOWN or ItemTouchHelper.UP) or makeFlag(
+                    ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.START or ItemTouchHelper.END)
         }
 
     }
