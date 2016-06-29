@@ -24,11 +24,17 @@ class EditImagesActivity : AppCompatActivity() {
 
     private lateinit var mAdapter: StateAdapter
 
+    private val sSavedStateKey = "SAVED_STATE_IMAGE_LIST"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_images)
 
         mPictureList = retrieveStringListParameter()
+
+        if(savedInstanceState != null) {
+            mPictureList = savedInstanceState.getStringArrayList(sSavedStateKey)
+        }
 
         image_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
@@ -58,7 +64,6 @@ class EditImagesActivity : AppCompatActivity() {
             showUndo(mAdapter.remove(pos), pos)
         }
 
-
         override fun getMovementFlags(recyclerView: RecyclerView?,
                 viewHolder: RecyclerView.ViewHolder?): Int {
             return makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE,
@@ -85,7 +90,8 @@ class EditImagesActivity : AppCompatActivity() {
                         (viewHolder as StateAdapter.ViewHolder).mCardView, dX, dY, actionState,
                         isCurrentlyActive)
             else
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState,
+                        isCurrentlyActive)
         }
 
         override fun onChildDrawOver(c: Canvas?, recyclerView: RecyclerView?,
@@ -96,7 +102,8 @@ class EditImagesActivity : AppCompatActivity() {
                         (viewHolder as StateAdapter.ViewHolder).mCardView, dX, dY, actionState,
                         isCurrentlyActive)
             else
-                super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState,
+                        isCurrentlyActive)
         }
 
     }
@@ -105,6 +112,11 @@ class EditImagesActivity : AppCompatActivity() {
         Snackbar.make(image_preview, "Image deleted", Snackbar.LENGTH_LONG)
                 .setAction(R.string.snackbar_undo_action_text, { mAdapter.addItem(pos, remove) })
                 .show()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState!!.putStringArrayList(sSavedStateKey, mPictureList)
     }
 
     class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val itemClick: (String) -> Unit) : RecyclerView.Adapter<StateAdapter.ViewHolder>() {
