@@ -32,7 +32,7 @@ class EditImagesActivity : AppCompatActivity() {
 
         mPictureList = retrieveStringListParameter()
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mPictureList = savedInstanceState.getStringArrayList(sSavedStateKey)
         }
 
@@ -155,7 +155,6 @@ class EditImagesActivity : AppCompatActivity() {
             notifyItemInserted(pos)
         }
     }
-
 }
 
 
