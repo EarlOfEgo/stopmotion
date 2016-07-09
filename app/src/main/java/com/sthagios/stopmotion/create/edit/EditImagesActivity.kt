@@ -75,8 +75,7 @@ class EditImagesActivity : AppCompatActivity() {
         if (newPos != -1)
             Glide.with(this).load(mAdapter.imageList[newPos]).into(image_preview)
         else {
-            //TODO empty view
-            Glide.with(this).load(R.drawable.abc_ab_share_pack_mtrl_alpha).into(image_preview)
+            image_preview.setImageResource(R.drawable.stopmotion_icon_bw)
         }
         return newPos
     }

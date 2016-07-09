@@ -16,8 +16,11 @@ class ItemTouchHelperCallback(val mAdapter: StateAdapter, val onRemove: (Int) ->
         ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
     override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?,
             target: RecyclerView.ViewHolder?): Boolean {
-        Collections.swap(mAdapter.imageList, viewHolder!!.adapterPosition,
-                target!!.adapterPosition)
+
+        if (target!!.adapterPosition >= mAdapter.imageList.size)
+            return false
+
+        Collections.swap(mAdapter.imageList, viewHolder!!.adapterPosition, target.adapterPosition)
         mAdapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition);
         return true;
     }
@@ -29,18 +32,20 @@ class ItemTouchHelperCallback(val mAdapter: StateAdapter, val onRemove: (Int) ->
 
     override fun getMovementFlags(recyclerView: RecyclerView?,
             viewHolder: RecyclerView.ViewHolder?): Int {
+        if (mAdapter.isEmptyView(viewHolder))
+            return 0
         return makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE,
                 ItemTouchHelper.DOWN or ItemTouchHelper.UP) or makeFlag(
                 ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.START or ItemTouchHelper.END)
     }
 
     override fun clearView(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?) {
-        getDefaultUIUtil().clearView((viewHolder as StateAdapter.ViewHolder).mCardView);
+        getDefaultUIUtil().clearView((viewHolder as StateAdapter.NormalViewHolder).mCardView);
     }
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         if (viewHolder != null && actionState == ItemTouchHelper.ACTION_STATE_SWIPE)
-            getDefaultUIUtil().onSelected((viewHolder as StateAdapter.ViewHolder).mCardView)
+            getDefaultUIUtil().onSelected((viewHolder as StateAdapter.NormalViewHolder).mCardView)
         else
             super.onSelectedChanged(viewHolder, actionState)
     }
@@ -50,7 +55,7 @@ class ItemTouchHelperCallback(val mAdapter: StateAdapter, val onRemove: (Int) ->
             isCurrentlyActive: Boolean) {
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE)
             getDefaultUIUtil().onDraw(c, recyclerView,
-                    (viewHolder as StateAdapter.ViewHolder).mCardView, dX, dY, actionState,
+                    (viewHolder as StateAdapter.NormalViewHolder).mCardView, dX, dY, actionState,
                     isCurrentlyActive)
         else
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState,
@@ -62,7 +67,7 @@ class ItemTouchHelperCallback(val mAdapter: StateAdapter, val onRemove: (Int) ->
             isCurrentlyActive: Boolean) {
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE)
             getDefaultUIUtil().onDrawOver(c, recyclerView,
-                    (viewHolder as StateAdapter.ViewHolder).mCardView, dX, dY, actionState,
+                    (viewHolder as StateAdapter.NormalViewHolder).mCardView, dX, dY, actionState,
                     isCurrentlyActive)
         else
             super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState,

@@ -16,7 +16,7 @@ import java.util.*
  * @author  stephan
  * @since   09.07.16
  */
-class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val itemClick: (String) -> Unit) : RecyclerView.Adapter<StateAdapter.ViewHolder>() {
+class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val itemClick: (String) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun remove(position: Int): String {
         val item = imageList[position]
@@ -25,12 +25,18 @@ class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val 
         return item
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        with(imageList[position]) {
-            Glide.with(mContext).load(this).into(holder!!.mImageView)
-            holder.mImageView.setOnClickListener {
-                itemClick.invoke(this)
-                mSelectedItemId = this.hashCode().toLong()
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+        if (holder is NormalViewHolder) {
+            with(imageList[position]) {
+                Glide.with(mContext).load(this).into(holder.mImageView)
+                holder.mImageView.setOnClickListener {
+                    itemClick.invoke(this)
+                    mSelectedItemId = this.hashCode().toLong()
+                }
+            }
+        } else if (holder is EmptyViewHolder) {
+            holder.mCardView.setOnClickListener {
+                //TODO
             }
         }
     }
@@ -39,18 +45,45 @@ class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val 
         return imageList[position].hashCode().toLong()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
+    private val EMPTY_VIEW = 1
+
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
+
+        if (viewType == EMPTY_VIEW) {
+            val view = LayoutInflater.from(parent!!.context).inflate(R.layout.image_list_item_empty,
+                    parent,
+                    false);
+            return EmptyViewHolder(view, itemClick)
+        }
         val view = LayoutInflater.from(parent!!.context).inflate(R.layout.image_list_item_new,
                 parent,
                 false);
-        return StateAdapter.ViewHolder(view, itemClick)
+        return NormalViewHolder(view, itemClick)
     }
 
-    override fun getItemCount() = imageList.size
+    fun isEmptyView(viewHolder: RecyclerView.ViewHolder?) = viewHolder is EmptyViewHolder
 
-    class ViewHolder(itemView: View?, val itemClick: (String) -> Unit) : RecyclerView.ViewHolder(
+    override fun getItemCount(): Int {
+        if (imageList.size == 0) {
+            return 1;
+        }
+        return imageList.size + 1
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if (position == imageList.size)
+            return EMPTY_VIEW
+        return super.getItemViewType(position)
+    }
+
+    class NormalViewHolder(itemView: View?, val itemClick: (String) -> Unit) : RecyclerView.ViewHolder(
             itemView) {
         var mImageView = itemView!!.image_view
+        var mCardView = itemView!!.card_view
+    }
+
+    class EmptyViewHolder(itemView: View?, val itemClick: (String) -> Unit) : RecyclerView.ViewHolder(
+            itemView) {
         var mCardView = itemView!!.card_view
     }
 
