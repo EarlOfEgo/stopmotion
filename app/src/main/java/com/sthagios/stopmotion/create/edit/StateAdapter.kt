@@ -16,7 +16,7 @@ import java.util.*
  * @author  stephan
  * @since   09.07.16
  */
-class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val itemClick: (String) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val itemClick: (String) -> Unit, val onEmptyClick: () -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun remove(position: Int): String {
         val item = imageList[position]
@@ -36,7 +36,7 @@ class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val 
             }
         } else if (holder is EmptyViewHolder) {
             holder.mCardView.setOnClickListener {
-                //TODO
+                onEmptyClick.invoke()
             }
         }
     }

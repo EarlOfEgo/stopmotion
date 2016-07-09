@@ -34,7 +34,10 @@ class EditImagesActivity : AppCompatActivity() {
         image_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         mAdapter = StateAdapter(this, mPictureList,
-                { Glide.with(this).load(it).into(image_preview) })
+                { Glide.with(this).load(it).into(image_preview) },
+                {
+                    //TODO
+                })
 
         image_list.adapter = mAdapter
         Glide.with(this).load(mAdapter.imageList[0]).into(image_preview)

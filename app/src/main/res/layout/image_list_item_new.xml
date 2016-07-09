@@ -8,6 +8,8 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true">
 
@@ -22,5 +24,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:padding="8dp"
         android:src="@drawable/ic_delete_grey_36dp" />
 </FrameLayout>
