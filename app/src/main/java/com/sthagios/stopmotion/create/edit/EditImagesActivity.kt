@@ -42,9 +42,36 @@ class EditImagesActivity : AppCompatActivity() {
                 { Glide.with(this).load(it).into(image_preview) })
 
         image_list.adapter = mAdapter
-        Glide.with(this).load(mPictureList.first()).into(image_preview)
+        Glide.with(this).load(mAdapter.imageList[0]).into(image_preview)
 
         ItemTouchHelper(mItemTouch).attachToRecyclerView(image_list)
+    }
+
+    private fun switchPreviewImage(pos: Int): Int {
+        var newPos = -1
+        val size = mAdapter.imageList.size
+        //first image selected
+        if (pos == 0) {
+            if (size > 0) {
+                newPos = 0
+            }
+            //last image selected
+        } else if (pos == size - 1) {
+            if (pos > 0) {
+                newPos = pos - 1
+            }
+            //somewhere in the middle
+        } else {
+            newPos = pos - 1
+        }
+
+        if (newPos != -1)
+            Glide.with(this).load(mAdapter.imageList[newPos]).into(image_preview)
+        else {
+            //TODO empty view
+            Glide.with(this).load(R.drawable.abc_ab_share_pack_mtrl_alpha).into(image_preview)
+        }
+        return newPos
     }
 
     val mItemTouch = object : ItemTouchHelper.SimpleCallback(
@@ -61,8 +88,16 @@ class EditImagesActivity : AppCompatActivity() {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
             val pos = viewHolder!!.adapterPosition
 
+            val itemId = mAdapter.getItemId(pos)
+
             showUndo(mAdapter.remove(pos), pos)
+            if (mAdapter.mSelectedItemId == itemId) {
+                val newPos = switchPreviewImage(pos)
+                if (newPos != -1)
+                    mAdapter.mSelectedItemId = mAdapter.getItemId(newPos)
+            }
         }
+
 
         override fun getMovementFlags(recyclerView: RecyclerView?,
                 viewHolder: RecyclerView.ViewHolder?): Int {
@@ -131,8 +166,15 @@ class EditImagesActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
             with(imageList[position]) {
                 Glide.with(mContext).load(this).into(holder!!.mImageView)
-                holder.mImageView.setOnClickListener { itemClick.invoke(this) }
+                holder.mImageView.setOnClickListener {
+                    itemClick.invoke(this)
+                    mSelectedItemId = this.hashCode().toLong()
+                }
             }
+        }
+
+        override fun getItemId(position: Int): Long {
+            return imageList[position].hashCode().toLong()
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
@@ -154,6 +196,8 @@ class EditImagesActivity : AppCompatActivity() {
             imageList.add(pos, toAdd)
             notifyItemInserted(pos)
         }
+
+        var mSelectedItemId: Long = getItemId(0)
     }
 }
 
