@@ -19,6 +19,8 @@ class EditImagesActivity : AppCompatActivity() {
 
     private val sSavedStateKey = "SAVED_STATE_IMAGE_LIST"
 
+    private var mUndoPreviewLoadLast: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_images)
@@ -42,8 +44,10 @@ class EditImagesActivity : AppCompatActivity() {
             showUndo(mAdapter.remove(it), it)
             if (mAdapter.mSelectedItemId == itemId) {
                 val newPos = switchPreviewImage(it)
-                if (newPos != -1)
+                if (newPos != -1) {
                     mAdapter.mSelectedItemId = mAdapter.getItemId(newPos)
+                }
+                mUndoPreviewLoadLast = true
             }
         })
 
@@ -80,7 +84,13 @@ class EditImagesActivity : AppCompatActivity() {
 
     private fun showUndo(remove: String, pos: Int) {
         Snackbar.make(image_preview, "Image deleted", Snackbar.LENGTH_LONG)
-                .setAction(R.string.snackbar_undo_action_text, { mAdapter.addItem(pos, remove) })
+                .setAction(R.string.snackbar_undo_action_text, {
+                    mAdapter.addItem(pos, remove)
+                    if (mUndoPreviewLoadLast) {
+                        Glide.with(this).load(remove).into(image_preview)
+                        mUndoPreviewLoadLast = false
+                    }
+                })
                 .show()
     }
 
