@@ -71,6 +71,14 @@ inline fun <reified T : Activity> Activity.startActivity() {
     startActivity(intent)
 }
 
+/**
+ * Starts an activity without a parameter with a request code
+ */
+inline fun <reified T : Activity> Activity.startActivityForResult(requestCode: Int) {
+    val intent = Intent(this, T::class.java)
+    startActivityForResult(intent, requestCode)
+}
+
 inline fun Activity.retrieveStringParameter(): String {
     if (intent != null && intent.extras != null)
         return intent.extras.getString("string_param", "")
