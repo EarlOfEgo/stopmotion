@@ -1,5 +1,6 @@
 package com.sthagios.stopmotion.create.edit
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -7,7 +8,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
 import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
+import com.sthagios.stopmotion.create.CreateNewImage
 import com.sthagios.stopmotion.utils.retrieveStringListParameter
+import com.sthagios.stopmotion.utils.startActivityForResultWithArgument
 import kotlinx.android.synthetic.main.activity_edit_images.*
 import java.util.*
 
@@ -20,6 +23,8 @@ class EditImagesActivity : AppCompatActivity() {
     private val sSavedStateKey = "SAVED_STATE_IMAGE_LIST"
 
     private var mUndoPreviewLoadLast: Boolean = false
+
+    private val sNewImageTake: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +41,7 @@ class EditImagesActivity : AppCompatActivity() {
         mAdapter = StateAdapter(this, mPictureList,
                 { Glide.with(this).load(it).into(image_preview) },
                 {
-                    //TODO
+                    startActivityForResultWithArgument<CreateNewImage>(true, sNewImageTake)
                 })
 
         image_list.adapter = mAdapter
@@ -55,6 +60,16 @@ class EditImagesActivity : AppCompatActivity() {
         })
 
         ItemTouchHelper(itemTouch).attachToRecyclerView(image_list)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode == RESULT_OK && requestCode == sNewImageTake && data != null) {
+//            mPictureList =
+            //TODO add new image
+            mAdapter.appendItem(data.getStringExtra("param_result"))
+
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun switchPreviewImage(pos: Int): Int {

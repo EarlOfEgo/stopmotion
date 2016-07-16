@@ -28,9 +28,17 @@ inline fun <reified T : Activity> Activity.startActivity(long: Long) {
     startActivity(intent)
 }
 
-inline fun <reified T : Activity> Activity.startActivity(long: Long, resultCode: Int) {
+inline fun <reified T : Activity> Activity.startActivityForResultWithArgument(long: Long,
+        resultCode: Int) {
     val intent = Intent(this, T::class.java)
     intent.putExtra("long_param", long)
+    startActivityForResult(intent, resultCode)
+}
+
+inline fun <reified T : Activity> Activity.startActivityForResultWithArgument(boolean: Boolean,
+        resultCode: Int) {
+    val intent = Intent(this, T::class.java)
+    intent.putExtra("boolean_param", boolean)
     startActivityForResult(intent, resultCode)
 }
 
@@ -52,6 +60,13 @@ inline fun Activity.retrieveStringListParameter(): ArrayList<String> {
         return intent.extras.getStringArrayList("string_list_param")
     else
         return ArrayList()
+}
+
+inline fun Activity.retrieveBooleanParameter(): Boolean {
+    if (intent != null && intent.extras != null && intent.extras.containsKey("boolean_param"))
+        return intent.extras.getBoolean("boolean_param", false)
+    else
+        return false
 }
 
 inline fun Activity.retrieveLongParameter(): Long {

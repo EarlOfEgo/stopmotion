@@ -1,6 +1,8 @@
 package com.sthagios.stopmotion.create
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.Animatable
 import android.hardware.camera2.*
@@ -21,10 +23,7 @@ import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.camera.ImageSaver
 import com.sthagios.stopmotion.create.edit.EditImagesActivity
 import com.sthagios.stopmotion.tracking.logCameraEvent
-import com.sthagios.stopmotion.utils.LogDebug
-import com.sthagios.stopmotion.utils.LogError
-import com.sthagios.stopmotion.utils.LogVerbose
-import com.sthagios.stopmotion.utils.startActivity
+import com.sthagios.stopmotion.utils.*
 import kotlinx.android.synthetic.main.activity_create_new_image.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -468,15 +467,25 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             LogDebug("Saved $it")
             mPictureList = mPictureList.plus(it)
 
-            if (mPictureList.size == mBurstAmount) {
-                LogDebug("All images taken, converting to gif")
-
-
-                val arrayList: ArrayList<String> = ArrayList()
-                for (image in mPictureList)
-                    arrayList.add(image)
-                startActivity<EditImagesActivity>(arrayList)
+            if (mTakeOne) {
+                val bundle = Bundle()
+                bundle.putString("param_result", it)
+                val intent = Intent()
+                intent.putExtras(bundle)
+                setResult(Activity.RESULT_OK, intent)
                 finish()
+            } else {
+
+                if (mPictureList.size == mBurstAmount) {
+                    LogDebug("All images taken, converting to gif")
+
+
+                    val arrayList: ArrayList<String> = ArrayList()
+                    for (image in mPictureList)
+                        arrayList.add(image)
+                    startActivity<EditImagesActivity>(arrayList)
+                    finish()
+                }
             }
         }
         ))
@@ -681,6 +690,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private val APP_FOLDER_NAME = "Stopmotion"
 
 
+    private var mTakeOne = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -689,10 +700,15 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
         setContentView(R.layout.activity_create_new_image)
 
+        mTakeOne = retrieveBooleanParameter()
+
         if (savedInstanceState != null) {
             mBurstTime = savedInstanceState.getInt(BUNDLE_BURST_TIME, 0)
             mBurstAmount = savedInstanceState.getInt(BUNDLE_BURST_AMOUNT, 0)
         }
+
+        container_time.visibility = if (mTakeOne) View.GONE else View.VISIBLE
+        container_amount.visibility = if (mTakeOne) View.GONE else View.VISIBLE
 
         container_time.setOnClickListener({
             onTimeClicked()
@@ -700,6 +716,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         container_amount.setOnClickListener({
             onAmountClicked()
         })
+        setBurstTexts()
 
         setUpCameraInfos()
 
@@ -739,7 +756,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             button_switch_camera.visibility = View.GONE
         }
 
-        setBurstTexts()
+
 
         button_capture.setOnClickListener({
 
@@ -784,6 +801,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     })
 
         })
+
     }
 
     private fun animateCameraChange() {

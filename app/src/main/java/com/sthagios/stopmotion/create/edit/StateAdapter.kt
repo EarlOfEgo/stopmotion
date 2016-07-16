@@ -91,4 +91,9 @@ class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val 
     }
 
     var mSelectedItemId: Long = getItemId(0)
+
+    fun appendItem(item: String) {
+        imageList.add(item)
+        notifyItemInserted(itemCount)
+    }
 }
