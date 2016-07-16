@@ -6,13 +6,18 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.view.Menu
+import android.view.MenuItem
 import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.create.CreateNewImage
+import com.sthagios.stopmotion.create.GenerateGifActivity
 import com.sthagios.stopmotion.tracking.logEditEvent
 import com.sthagios.stopmotion.utils.retrieveStringListParameter
+import com.sthagios.stopmotion.utils.startActivity
 import com.sthagios.stopmotion.utils.startActivityForResultWithArgument
 import kotlinx.android.synthetic.main.activity_edit_images.*
+import kotlinx.android.synthetic.main.toolbar.*
 import java.util.*
 
 class EditImagesActivity : AppCompatActivity() {
@@ -27,9 +32,29 @@ class EditImagesActivity : AppCompatActivity() {
 
     private val sNewImageTake: Int = 1
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.edit, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            R.id.save -> {
+                startActivity<GenerateGifActivity>(mAdapter.imageList)
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_images)
+
+        setSupportActionBar(toolbar)
+        title = null
 
         mPictureList = retrieveStringListParameter()
 

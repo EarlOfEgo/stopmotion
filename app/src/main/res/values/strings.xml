@@ -69,4 +69,8 @@
     <string name="rating_email_choose_text">Send email using…</string>
     <string name="rating_toast_no_action">Thanks anyway</string>
 
+
+    <!-- Edit Images -->
+    <string name="menu_entry_save">Save</string>
+
 </resources>
