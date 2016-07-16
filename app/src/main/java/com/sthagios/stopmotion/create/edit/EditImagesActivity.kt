@@ -41,10 +41,12 @@ class EditImagesActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.save -> {
-                if(mAdapter.itemCount <= 2){
-                    Snackbar.make(image_preview, R.string.snackbar_image_required, Snackbar.LENGTH_LONG)
+                if (mAdapter.itemCount <= 2) {
+                    Snackbar.make(image_preview, R.string.snackbar_image_required,
+                            Snackbar.LENGTH_LONG)
                             .setAction(R.string.snackbar_take_picture_action, {
-                                startActivityForResultWithArgument<CreateNewImage>(true, sNewImageTake)
+                                startActivityForResultWithArgument<CreateNewImage>(true,
+                                        sNewImageTake)
                             })
                             .show()
                 } else {
@@ -75,13 +77,15 @@ class EditImagesActivity : AppCompatActivity() {
         mAdapter = StateAdapter(this, mPictureList,
                 {
                     logEditEvent("delete_image", "DELETE")
-                    Glide.with(this).load(it).into(image_preview) },
+                    Glide.with(this).load(it).into(image_preview)
+                },
                 {
                     startActivityForResultWithArgument<CreateNewImage>(true, sNewImageTake)
                 })
 
         image_list.adapter = mAdapter
-        Glide.with(this).load(mAdapter.imageList[0]).into(image_preview)
+        if (mAdapter.itemCount > 1)
+            Glide.with(this).load(mAdapter.imageList[0]).into(image_preview)
 
         val itemTouch = ItemTouchHelperCallback(mAdapter, {
             val itemId = mAdapter.getItemId(it)
@@ -99,9 +103,11 @@ class EditImagesActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode == RESULT_OK && requestCode == sNewImageTake && data != null) {
+        if (resultCode == RESULT_OK && requestCode == sNewImageTake && data != null) {
             logEditEvent("add_image", "IMAGE_TAKEN")
             mAdapter.appendItem(data.getStringExtra("param_result"))
+            if (mAdapter.itemCount == 2)
+                Glide.with(this).load(mAdapter.imageList[0]).into(image_preview)
 
         }
         super.onActivityResult(requestCode, resultCode, data)
