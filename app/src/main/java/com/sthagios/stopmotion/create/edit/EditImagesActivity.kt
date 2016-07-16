@@ -9,6 +9,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.create.CreateNewImage
+import com.sthagios.stopmotion.tracking.logEditEvent
 import com.sthagios.stopmotion.utils.retrieveStringListParameter
 import com.sthagios.stopmotion.utils.startActivityForResultWithArgument
 import kotlinx.android.synthetic.main.activity_edit_images.*
@@ -39,7 +40,9 @@ class EditImagesActivity : AppCompatActivity() {
         image_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         mAdapter = StateAdapter(this, mPictureList,
-                { Glide.with(this).load(it).into(image_preview) },
+                {
+                    logEditEvent("delete_image", "DELETE")
+                    Glide.with(this).load(it).into(image_preview) },
                 {
                     startActivityForResultWithArgument<CreateNewImage>(true, sNewImageTake)
                 })
@@ -64,8 +67,7 @@ class EditImagesActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(resultCode == RESULT_OK && requestCode == sNewImageTake && data != null) {
-//            mPictureList =
-            //TODO add new image
+            logEditEvent("add_image", "IMAGE_TAKEN")
             mAdapter.appendItem(data.getStringExtra("param_result"))
 
         }
@@ -102,6 +104,7 @@ class EditImagesActivity : AppCompatActivity() {
     private fun showUndo(remove: String, pos: Int) {
         Snackbar.make(image_preview, "Image deleted", Snackbar.LENGTH_LONG)
                 .setAction(R.string.snackbar_undo_action_text, {
+                    logEditEvent("delete_image", "UNDO")
                     mAdapter.addItem(pos, remove)
                     if (mUndoPreviewLoadLast) {
                         Glide.with(this).load(remove).into(image_preview)
