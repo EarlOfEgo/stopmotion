@@ -139,7 +139,6 @@ class EditImagesActivity : AppCompatActivity() {
         return newPos
     }
 
-
     private fun showUndo(remove: String, pos: Int) {
         Snackbar.make(image_preview, "Image deleted", Snackbar.LENGTH_LONG)
                 .setAction(R.string.snackbar_undo_action_text, {
