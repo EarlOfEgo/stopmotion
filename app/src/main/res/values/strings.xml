@@ -32,6 +32,8 @@
     <string name="snackbar_info_taking_time">Converting to Gif, this can take some time</string>
     <string name="snackbar_info_loading_time">Loading the animated Gif. Please be patient.</string>
     <string name="snackbar_warning_low_compression">Set Low compression rate. We recommend a higher compression rate</string>
+    <string name="snackbar_image_required">You need more Images to generate a Gif</string>
+    <string name="snackbar_take_picture_action">Take Picture</string>
 
     <!--Settings-->
     <string name="settings_title">Settings</string>

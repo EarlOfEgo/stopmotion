@@ -41,8 +41,16 @@ class EditImagesActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.save -> {
-                startActivity<GenerateGifActivity>(mAdapter.imageList)
-                finish()
+                if(mAdapter.itemCount <= 2){
+                    Snackbar.make(image_preview, R.string.snackbar_image_required, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.snackbar_take_picture_action, {
+                                startActivityForResultWithArgument<CreateNewImage>(true, sNewImageTake)
+                            })
+                            .show()
+                } else {
+                    startActivity<GenerateGifActivity>(mAdapter.imageList)
+                    finish()
+                }
                 return true
             }
         }
