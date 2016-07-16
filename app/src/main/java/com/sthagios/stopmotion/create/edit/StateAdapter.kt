@@ -51,21 +51,19 @@ class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val 
 
         if (viewType == EMPTY_VIEW) {
             val view = LayoutInflater.from(parent!!.context).inflate(R.layout.image_list_item_empty,
-                    parent,
-                    false);
-            return EmptyViewHolder(view, itemClick)
+                    parent, false)
+            return EmptyViewHolder(view)
         }
         val view = LayoutInflater.from(parent!!.context).inflate(R.layout.image_list_item_new,
-                parent,
-                false);
-        return NormalViewHolder(view, itemClick)
+                parent, false)
+        return NormalViewHolder(view)
     }
 
     fun isEmptyView(viewHolder: RecyclerView.ViewHolder?) = viewHolder is EmptyViewHolder
 
     override fun getItemCount(): Int {
         if (imageList.size == 0) {
-            return 1;
+            return 1
         }
         return imageList.size + 1
     }
@@ -76,13 +74,13 @@ class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val 
         return super.getItemViewType(position)
     }
 
-    class NormalViewHolder(itemView: View?, val itemClick: (String) -> Unit) : RecyclerView.ViewHolder(
+    class NormalViewHolder(itemView: View?) : RecyclerView.ViewHolder(
             itemView) {
         var mImageView = itemView!!.image_view
         var mCardView = itemView!!.card_view
     }
 
-    class EmptyViewHolder(itemView: View?, val itemClick: (String) -> Unit) : RecyclerView.ViewHolder(
+    class EmptyViewHolder(itemView: View?) : RecyclerView.ViewHolder(
             itemView) {
         var mCardView = itemView!!.card_view
     }
