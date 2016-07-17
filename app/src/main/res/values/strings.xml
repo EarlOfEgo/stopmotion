@@ -73,6 +73,6 @@
 
 
     <!-- Edit Images -->
-    <string name="menu_entry_save">Save</string>
+    <string name="menu_entry_generate">Generate</string>
 
 </resources>
