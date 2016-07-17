@@ -74,5 +74,7 @@
 
     <!-- Edit Images -->
     <string name="menu_entry_generate">Generate</string>
+    <string name="converting_images_amount_state">Converting image %1$s</string>
+    <string name="converting_images_magic_state">Applying some magic</string>
 
 </resources>
