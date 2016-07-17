@@ -53,10 +53,8 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        setSupportActionBar(toolbar);
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar)
         title = getString(R.string.settings_title)
-
 
         use_thumbs.setTitle(R.string.settings_use_thumbnails_title)
         use_thumbs.setSubtitle(R.string.settings_use_thumbnails_description)

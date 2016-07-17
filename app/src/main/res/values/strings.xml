@@ -77,4 +77,7 @@
     <string name="converting_images_amount_state">Converting image %1$s</string>
     <string name="converting_images_magic_state">Applying some magic</string>
 
+    <!-- Generate Gif -->
+    <string name="generate_title">Generating Gif</string>
+
 </resources>

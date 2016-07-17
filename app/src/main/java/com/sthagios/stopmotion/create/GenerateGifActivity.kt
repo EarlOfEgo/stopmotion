@@ -21,6 +21,7 @@ import com.sthagios.stopmotion.settings.getCompressionRate
 import com.sthagios.stopmotion.show.ShowGifActivity
 import com.sthagios.stopmotion.utils.*
 import kotlinx.android.synthetic.main.activity_generate_gif.*
+import kotlinx.android.synthetic.main.toolbar.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.io.ByteArrayOutputStream
@@ -40,6 +41,10 @@ class GenerateGifActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_generate_gif)
+
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        title = getString(R.string.generate_title)
 
         val fileName = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         mGifName = "$fileName.gif"
@@ -187,6 +192,32 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private lateinit var mPictureList: ArrayList<String>
 
+    private fun getCompressedWidthHeight(list: List<String>): Pair<Int, Int> {
+        var compressedImageWidth = 0
+        var compressedImageHeight = 0
+
+        for (path in list) {
+
+            val exif = ExifInterface(path)
+            val imgWidth = exif.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, 600)
+            val imgLength = exif.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, 800)
+            val tmpWidth = (imgWidth * mCompressRate).toInt()
+            val tmpHeight = (imgLength * mCompressRate).toInt()
+            if (tmpWidth > compressedImageWidth)
+                compressedImageWidth = tmpWidth
+
+            if (tmpHeight > compressedImageHeight)
+                compressedImageHeight = tmpHeight
+
+            LogDebug(
+                    "ImgWidth $imgWidth mgLength:$imgLength CompressedWidth:$compressedImageWidth CompressedHeight:$compressedImageHeight")
+
+
+        }
+
+        return Pair(compressedImageWidth, compressedImageHeight)
+    }
+
 
     private fun generateGIF(): ByteArray {
 
@@ -196,6 +227,11 @@ class GenerateGifActivity : AppCompatActivity() {
         val encoder = AnimatedGifEncoder()
         encoder.start(bos)
         encoder.setRepeat(0)
+
+        val compressedImageSize = getCompressedWidthHeight(mPictureList)
+        val compressedImageWidth = compressedImageSize.first
+        val compressedImageHeight = compressedImageSize.second
+
         LogDebug("Start gif encoding")
         var i = 1
         for (path in mPictureList) {
@@ -205,18 +241,9 @@ class GenerateGifActivity : AppCompatActivity() {
             }
 
 
-            val exif = ExifInterface(path)
-            val imgWidth = exif.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, 600)
-            val imgLength = exif.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, 800)
-            val compressedImageWidth = (imgWidth * mCompressRate).toInt()
-            val compressedImageHeight = (imgLength * mCompressRate).toInt()
-
-            LogDebug(
-                    "ImgWidth $imgWidth mgLength:$imgLength CompressedWidth:$compressedImageWidth CompressedHeight:$compressedImageHeight")
-
             val bitmap = BitmapFactory.decodeFile(path)
 
-
+            val exif = ExifInterface(path)
             val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_NORMAL)
 
