@@ -1,6 +1,7 @@
 package com.sthagios.stopmotion.create.edit
 
 import android.graphics.Canvas
+import android.graphics.drawable.Animatable
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import java.util.*
@@ -22,13 +23,14 @@ class ItemTouchHelperCallback(val mAdapter: StateAdapter, val onRemove: (Int) ->
 
         Collections.swap(mAdapter.imageList, viewHolder!!.adapterPosition, target.adapterPosition)
         mAdapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition);
-        return true;
+        return true
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
         val pos = viewHolder!!.adapterPosition
         onRemove.invoke(pos)
     }
+
 
     override fun getMovementFlags(recyclerView: RecyclerView?,
             viewHolder: RecyclerView.ViewHolder?): Int {
@@ -44,9 +46,12 @@ class ItemTouchHelperCallback(val mAdapter: StateAdapter, val onRemove: (Int) ->
     }
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
-        if (viewHolder != null && actionState == ItemTouchHelper.ACTION_STATE_SWIPE)
+        if (viewHolder != null && actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
             getDefaultUIUtil().onSelected((viewHolder as StateAdapter.NormalViewHolder).mCardView)
-        else
+            val drawable = viewHolder.mEmptyImageView.drawable
+            if (drawable is Animatable)
+                drawable.start()
+        } else
             super.onSelectedChanged(viewHolder, actionState)
     }
 

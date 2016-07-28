@@ -78,6 +78,7 @@ class StateAdapter(val mContext: Context, var imageList: ArrayList<String>, val 
             itemView) {
         var mImageView = itemView!!.image_view
         var mCardView = itemView!!.card_view
+        var mEmptyImageView = itemView!!.empty_image
     }
 
     class EmptyViewHolder(itemView: View?) : RecyclerView.ViewHolder(
