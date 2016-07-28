@@ -131,7 +131,7 @@ class EditImagesActivity : AppCompatActivity() {
             newPos = pos - 1
         }
 
-        if (newPos != -1)
+        if (newPos >= 0)
             Glide.with(this).load(mAdapter.imageList[newPos]).into(image_preview)
         else {
             image_preview.setImageResource(R.drawable.stopmotion_icon_bw)
