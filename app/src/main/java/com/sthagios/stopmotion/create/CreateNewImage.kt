@@ -484,7 +484,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     for (image in mPictureList)
                         arrayList.add(image)
                     startActivity<EditImagesActivity>(arrayList)
-                    finish()
                 }
             }
         }

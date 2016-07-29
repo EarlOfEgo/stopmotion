@@ -3,6 +3,7 @@ package com.sthagios.stopmotion.create
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.graphics.drawable.Animatable
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
@@ -62,8 +63,13 @@ class GenerateGifActivity : AppCompatActivity() {
                     .show()
         }
 
-        container_magic.visibility = View.GONE
+        container_magic.visibility = View.INVISIBLE
         startGifGeneration()
+
+        loading_view.setImageResource(R.drawable.animate_delete_open_container)
+        val drawable = loading_view.drawable
+        if (drawable is Animatable)
+            drawable.start()
 
     }
 
@@ -139,7 +145,7 @@ class GenerateGifActivity : AppCompatActivity() {
 //                    "shared_image")
 //            startActivity<ShowGifActivity>(gif.id, 1, trans.toBundle())
             startActivity<ShowGifActivity>(gif.id)
-            finish()
+            finishAffinity()
         }
     }
 

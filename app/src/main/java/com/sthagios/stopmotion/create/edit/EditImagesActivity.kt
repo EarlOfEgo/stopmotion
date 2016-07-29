@@ -51,7 +51,6 @@ class EditImagesActivity : AppCompatActivity() {
                             .show()
                 } else {
                     startActivity<GenerateGifActivity>(mAdapter.imageList)
-                    finish()
                 }
                 return true
             }

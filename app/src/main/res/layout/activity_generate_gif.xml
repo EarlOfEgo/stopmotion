@@ -116,5 +116,11 @@
 
         </RelativeLayout>
 
+        <ImageView
+            android:src="@drawable/animate_delete_open_container"
+            android:id="@+id/loading_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 </RelativeLayout>
