@@ -63,13 +63,14 @@ class GenerateGifActivity : AppCompatActivity() {
                     .show()
         }
 
-        container_magic.visibility = View.INVISIBLE
-        startGifGeneration()
-
-        loading_view.setImageResource(R.drawable.animate_delete_open_container)
+        loading_view.setImageResource(R.drawable.animate_generate_gif)
         val drawable = loading_view.drawable
         if (drawable is Animatable)
             drawable.start()
+
+
+        container_magic.visibility = View.INVISIBLE
+        startGifGeneration()
 
     }
 
@@ -110,6 +111,10 @@ class GenerateGifActivity : AppCompatActivity() {
                 deleteTempFolderContent()
                 storeInDatabase()
             }).show()
+            val drawable = loading_view.drawable
+            if (drawable is Animatable)
+                drawable.stop()
+            loading_view.setImageResource(R.drawable.ic_tag_faces_black_24dp)
         }
     }
 
