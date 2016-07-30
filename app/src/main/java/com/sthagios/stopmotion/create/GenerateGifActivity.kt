@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.view.MenuItem
 import android.view.View
 import com.bumptech.glide.gifencoder.AnimatedGifEncoder
 import com.sthagios.stopmotion.R
@@ -100,6 +101,16 @@ class GenerateGifActivity : AppCompatActivity() {
                             LogDebug("Done")
                         }
                 )
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun onGifGenerated() {

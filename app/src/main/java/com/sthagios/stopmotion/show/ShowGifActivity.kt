@@ -253,7 +253,7 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
             android.R.id.home -> {
                 supportFinishAfterTransition()
 //                NavUtils.navigateUpFromSameTask(this)
-                return true;
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
