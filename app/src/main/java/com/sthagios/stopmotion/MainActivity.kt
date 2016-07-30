@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                return;
+                return
             }
         }
     }
