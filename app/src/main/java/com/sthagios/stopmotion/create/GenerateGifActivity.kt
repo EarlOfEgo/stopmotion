@@ -10,10 +10,12 @@ import android.os.Bundle
 import android.os.Environment
 import android.support.design.widget.Snackbar
 import android.support.v4.content.FileProvider
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import com.bumptech.glide.gifencoder.AnimatedGifEncoder
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
@@ -82,7 +84,10 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private lateinit var mGifName: String
 
+    private var mGenerationTime = 0
+
     private fun startGifGeneration() {
+        val startTime = System.currentTimeMillis()
         rx.Observable.just(
                 getGifDirectoryFile())
                 .map { "$it/$mGifName" }
@@ -97,6 +102,8 @@ class GenerateGifActivity : AppCompatActivity() {
                 .subscribe({ LogDebug("Gif created") },
                         { LogError("${it.message}") },
                         {
+                            val difference = System.currentTimeMillis() - startTime
+                            mGenerationTime = (difference / 1000).toInt()
                             onGifGenerated()
                             LogDebug("Done")
                         }
@@ -114,18 +121,41 @@ class GenerateGifActivity : AppCompatActivity() {
     }
 
     private fun onGifGenerated() {
+
+        val imagePath = File(filesDir, "gifs")
+        val newFile = File(imagePath, mGifName)
+        val fileSize = newFile.length()
+
+        val sideNodes = resources.getStringArray(R.array.generated_with)
+        val bla = sideNodes[Random().nextInt(sideNodes.size)]
+
         runOnUiThread {
+
+            gif_generated_info.text = "Your gif has been generated* in $mGenerationTime seconds. " +
+                    "It has the size of $fileSize bytes. It has ${mPictureList.size} single images, displaying every 1/4th second one of them and therefore has a total playtime of ${mPictureList.size * 0.25} seconds." +
+                    "\n\n*$bla"
+
             magic_progressbar.visibility = View.INVISIBLE
             magic_checkmark.visibility = View.VISIBLE
-            Snackbar.make(gif_name, "Gif successfully generated",
-                    Snackbar.LENGTH_INDEFINITE).setAction("Save", {
+            button_save_gif.setOnClickListener {
                 deleteTempFolderContent()
                 storeInDatabase()
-            }).show()
+            }
             val drawable = loading_view.drawable
-            if (drawable is Animatable)
-                drawable.stop()
-            loading_view.setImageResource(R.drawable.ic_tag_faces_black_24dp)
+            if (drawable is Animatable) {
+                ViewCompat.animate(loading_container)
+                        .scaleY(0.toFloat())
+                        .scaleX(0.toFloat())
+                        .setDuration(750)
+                        .setInterpolator(DecelerateInterpolator())
+                        .start()
+                ViewCompat.animate(container_finished)
+                        .scaleY(1.toFloat()).scaleX(1.toFloat())
+                        .setDuration(750)
+                        .setStartDelay(750)
+                        .setInterpolator(DecelerateInterpolator())
+                        .start()
+            }
         }
     }
 
@@ -146,7 +176,7 @@ class GenerateGifActivity : AppCompatActivity() {
                 gif.name = "Stopmotion Gif"
 
             val imagePath = File(filesDir, "gifs");
-            val newFile = File(imagePath, gif.fileName);
+            val newFile = File(imagePath, gif.fileName)
 
             gif.shareUriString = FileProvider.getUriForFile(this,
                     "com.sthagios.stopmotion.fileprovider", newFile).toString()
@@ -294,7 +324,7 @@ class GenerateGifActivity : AppCompatActivity() {
             }
 
             LogDebug("Adding Frame: height:${finalBitmap.height} + width:${finalBitmap.width}")
-            encoder.setDelay(200)
+            encoder.setDelay(250)
             encoder.addFrame(finalBitmap)
             bitmap.recycle()
             finalBitmap.recycle()
@@ -307,7 +337,7 @@ class GenerateGifActivity : AppCompatActivity() {
             container_magic.visibility = View.VISIBLE
         }
         LogDebug("Added all")
-        encoder.finish();
+        encoder.finish()
         LogDebug("Encoding finished")
         return bos.toByteArray()
     }

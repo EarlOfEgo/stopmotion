@@ -52,75 +52,122 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:paddingEnd="4dp"
-            android:paddingStart="4dp">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/converting_info_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:text="@string/converting_images_amount_state"
-                android:textSize="16sp" />
+            <LinearLayout
+                android:id="@+id/loading_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:visibility="gone">
 
-            <ImageView
-                android:id="@+id/converted_checkmark"
-                android:layout_width="48sp"
-                android:layout_height="48sp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_check_tint_24dp"
-                android:visibility="gone" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:paddingEnd="4dp"
+                    android:paddingStart="4dp">
 
-            <ProgressBar
-                android:id="@+id/converting_progressbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true" />
+                    <TextView
+                        android:id="@+id/converting_info_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/converting_images_amount_state"
+                        android:textSize="16sp" />
 
+                    <ImageView
+                        android:id="@+id/converted_checkmark"
+                        android:layout_width="48sp"
+                        android:layout_height="48sp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_check_tint_24dp"
+                        android:visibility="gone" />
+
+                    <ProgressBar
+                        android:id="@+id/converting_progressbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/container_magic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:paddingEnd="4dp"
+                    android:paddingStart="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/converting_images_magic_state"
+                        android:textSize="16sp" />
+
+                    <ProgressBar
+                        android:id="@+id/magic_progressbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true" />
+
+                    <ImageView
+                        android:id="@+id/magic_checkmark"
+                        android:layout_width="48sp"
+                        android:layout_height="48sp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_check_tint_24dp"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/loading_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="24dp"
+                    android:src="@drawable/animate_generate_gif" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/container_finished"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:scaleX="0"
+                android:scaleY="0"
+                tools:scaleX="0"
+                tools:scaleY="0">
+
+                <TextView
+                    android:padding="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/generate_successfully_generated_info"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:padding="4dp"
+                    android:id="@+id/gif_generated_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp" />
+
+                <Button
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:id="@+id/button_save_gif"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Save" />
+            </LinearLayout>
         </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/container_magic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:paddingEnd="4dp"
-            android:paddingStart="4dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:text="@string/converting_images_magic_state"
-                android:textSize="16sp" />
-
-            <ProgressBar
-                android:id="@+id/magic_progressbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true" />
-
-            <ImageView
-                android:id="@+id/magic_checkmark"
-                android:layout_width="48sp"
-                android:layout_height="48sp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_check_tint_24dp"
-                android:visibility="gone" />
-
-        </RelativeLayout>
-
-        <ImageView
-            android:src="@drawable/animate_delete_open_container"
-            android:id="@+id/loading_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
     </LinearLayout>
 </RelativeLayout>

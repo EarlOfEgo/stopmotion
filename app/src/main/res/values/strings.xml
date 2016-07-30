@@ -79,5 +79,12 @@
 
     <!-- Generate Gif -->
     <string name="generate_title">Generating Gif</string>
+    <string name="generate_successfully_generated_info">Gif successfully generated</string>
+
+
+    <string name="generated_with_text_1">No Unicorns where harmed during this process</string>
+    <string name="generated_with_text_2">12% magic applied for this process</string>
+    <string name="generated_with_text_3">Worked like a charm</string>
+
 
 </resources>
