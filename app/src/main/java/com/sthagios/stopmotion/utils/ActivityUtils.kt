@@ -28,9 +28,17 @@ inline fun <reified T : Activity> Activity.startActivity(long: Long) {
     startActivity(intent)
 }
 
-inline fun <reified T : Activity> Activity.startActivity(long: Long, resultCode: Int) {
+inline fun <reified T : Activity> Activity.startActivityForResultWithArgument(long: Long,
+        resultCode: Int) {
     val intent = Intent(this, T::class.java)
     intent.putExtra("long_param", long)
+    startActivityForResult(intent, resultCode)
+}
+
+inline fun <reified T : Activity> Activity.startActivityForResultWithArgument(boolean: Boolean,
+        resultCode: Int) {
+    val intent = Intent(this, T::class.java)
+    intent.putExtra("boolean_param", boolean)
     startActivityForResult(intent, resultCode)
 }
 
@@ -54,6 +62,13 @@ inline fun Activity.retrieveStringListParameter(): ArrayList<String> {
         return ArrayList()
 }
 
+inline fun Activity.retrieveBooleanParameter(): Boolean {
+    if (intent != null && intent.extras != null && intent.extras.containsKey("boolean_param"))
+        return intent.extras.getBoolean("boolean_param", false)
+    else
+        return false
+}
+
 inline fun Activity.retrieveLongParameter(): Long {
     if (intent != null && intent.extras != null)
         return intent.extras.getLong("long_param", 0)
@@ -69,6 +84,14 @@ inline fun <reified T : Activity> Activity.startActivity() {
     Log.v(this.javaClass.simpleName, "Starting activity: ${T::class.java.simpleName}")
     val intent = Intent(this, T::class.java)
     startActivity(intent)
+}
+
+/**
+ * Starts an activity without a parameter with a request code
+ */
+inline fun <reified T : Activity> Activity.startActivityForResult(requestCode: Int) {
+    val intent = Intent(this, T::class.java)
+    startActivityForResult(intent, requestCode)
 }
 
 inline fun Activity.retrieveStringParameter(): String {

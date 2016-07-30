@@ -1,87 +1,42 @@
 package com.sthagios.stopmotion.create
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.graphics.drawable.Animatable
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.FileProvider
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import com.bumptech.glide.Glide
+import android.view.animation.DecelerateInterpolator
 import com.bumptech.glide.gifencoder.AnimatedGifEncoder
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
-import com.sthagios.stopmotion.list.ItemDecorator
 import com.sthagios.stopmotion.settings.COMPRESSION_HIGH
 import com.sthagios.stopmotion.settings.getCompressionRate
 import com.sthagios.stopmotion.show.ShowGifActivity
 import com.sthagios.stopmotion.utils.*
 import kotlinx.android.synthetic.main.activity_generate_gif.*
-import kotlinx.android.synthetic.main.state_list_item.view.*
+import kotlinx.android.synthetic.main.toolbar.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class GenerateGifActivity : AppCompatActivity() {
 
-
-    class StateAdapter(val mContext: Context, val imageList: ArrayList<String>) : RecyclerView.Adapter<StateAdapter.ViewHolder>() {
-
-        val imageListLoading = HashMap<String, Boolean>()
-
-        init {
-            for (image in imageList) {
-                imageListLoading.put(image, true)
-            }
-        }
-
-        var first: View? = null
-
-        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-            val image = imageList[position]
-            Glide.with(mContext).load(image).into(holder!!.mImageView)
-            if (imageListLoading[image]!!) {
-                holder.mLoadingBar.visibility = View.VISIBLE
-                holder.mConvertedText.visibility = View.GONE
-            } else {
-                holder.mConvertedText.visibility = View.VISIBLE
-                holder.mLoadingBar.visibility = View.GONE
-            }
-            if (position == 0)
-                first = holder.mImageView
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
-            val view = LayoutInflater.from(parent!!.context).inflate(R.layout.state_list_item,
-                    parent,
-                    false);
-            return StateAdapter.ViewHolder(view)
-        }
-
-        override fun getItemCount() = imageList.size
-
-        class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
-            var mImageView = itemView!!.image_view
-            var mLoadingBar = itemView!!.progress_bar
-            val mConvertedText = itemView!!.converted_text
-        }
-    }
-
-    private lateinit var mAdapter: StateAdapter
 
     private lateinit var mThumbName: String
 
@@ -91,6 +46,10 @@ class GenerateGifActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_generate_gif)
 
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        title = getString(R.string.generate_title)
+
         val fileName = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         mGifName = "$fileName.gif"
         mThumbName = "$fileName.PNG"
@@ -99,57 +58,108 @@ class GenerateGifActivity : AppCompatActivity() {
 
         mPictureList = retrieveStringListParameter()
 
-        mAdapter = StateAdapter(this, mPictureList)
-
-        image_list_recycler.setHasFixedSize(true)
-        image_list_recycler.layoutManager = LinearLayoutManager(this)
-
-        image_list_recycler.adapter = mAdapter
-
-        image_list_recycler.addItemDecoration(ItemDecorator())
-
         LogDebug("Generating gifs from ${mPictureList.toString()}")
 
         if (getApproximateAppStarts() < 4) {
-            Snackbar.make(image_list_recycler, R.string.snackbar_info_taking_time,
+            Snackbar.make(gif_name, R.string.snackbar_info_taking_time,
                     Snackbar.LENGTH_LONG)
                     .show()
         }
 
+        loading_view.setImageResource(R.drawable.animate_generate_gif)
+        val drawable = loading_view.drawable
+        if (drawable is Animatable)
+            drawable.start()
+
+
+        container_magic.visibility = View.INVISIBLE
         startGifGeneration()
 
     }
 
+
+    private fun getAmountString(amount: Int): String {
+        return getString(R.string.converting_images_amount_state, "$amount/${mPictureList.size}")
+    }
+
     private lateinit var mGifName: String
 
+    private var mGenerationTime = 0
+
     private fun startGifGeneration() {
+        val startTime = System.currentTimeMillis()
         rx.Observable.just(
                 getGifDirectoryFile())
-                .map {
-                    "$it/$mGifName"
-                }
+                .map { "$it/$mGifName" }
                 .doOnNext { LogDebug("Gif path $it") }
                 .map { FileOutputStream(it) }
                 .doOnNext { t -> t!!.write(generateGIF()) }
                 .doOnNext { t -> t.close() }
                 .subscribeOn(Schedulers.computation())
+                //One second for magic
+                .delay(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ LogDebug("Gif created") },
                         { LogError("${it.message}") },
                         {
+                            val difference = System.currentTimeMillis() - startTime
+                            mGenerationTime = (difference / 1000).toInt()
                             onGifGenerated()
                             LogDebug("Done")
                         }
                 )
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun onGifGenerated() {
+
+        val imagePath = File(filesDir, "gifs")
+        val newFile = File(imagePath, mGifName)
+        val fileSize = newFile.length()
+
+        val sideNodes = resources.getStringArray(R.array.generated_with)
+        val sideNode = sideNodes[Random().nextInt(sideNodes.size)]
+
         runOnUiThread {
-            Snackbar.make(gif_name, "Gif successfully generated",
-                    Snackbar.LENGTH_INDEFINITE).setAction("Save", {
+
+            gif_generated_info.text = resources.getString(
+                    R.string.generate_successfully_generated_info_1, "$mGenerationTime") +
+                    " " + resources.getString(R.string.generate_successfully_generated_info_2,
+                    "$fileSize") +
+                    " " + resources.getString(R.string.generate_successfully_generated_info_3,
+                    "${mPictureList.size}", "${mPictureList.size * 0.25}") +
+                    "\n\n*$sideNode"
+
+            magic_progressbar.visibility = View.INVISIBLE
+            magic_checkmark.visibility = View.VISIBLE
+            button_save_gif.setOnClickListener {
                 deleteTempFolderContent()
                 storeInDatabase()
-            }).show()
+            }
+            val drawable = loading_view.drawable
+            if (drawable is Animatable) {
+                ViewCompat.animate(loading_container)
+                        .scaleY(0.toFloat())
+                        .scaleX(0.toFloat())
+                        .setDuration(750)
+                        .setInterpolator(DecelerateInterpolator())
+                        .start()
+                ViewCompat.animate(container_finished)
+                        .scaleY(1.toFloat()).scaleX(1.toFloat())
+                        .setDuration(750)
+                        .setStartDelay(750)
+                        .setInterpolator(DecelerateInterpolator())
+                        .start()
+            }
         }
     }
 
@@ -170,23 +180,18 @@ class GenerateGifActivity : AppCompatActivity() {
                 gif.name = "Stopmotion Gif"
 
             val imagePath = File(filesDir, "gifs");
-            val newFile = File(imagePath, gif.fileName);
+            val newFile = File(imagePath, gif.fileName)
 
-            gif.shareUriString = FileProvider.getUriForFile(
-                    this,
-                    "com.sthagios.stopmotion.fileprovider",
-                    newFile).toString()
+            gif.shareUriString = FileProvider.getUriForFile(this,
+                    "com.sthagios.stopmotion.fileprovider", newFile).toString()
 
             gif.fileUriString = Uri.fromFile(newFile).toString()
             gif.thumbnailUriString = mThumbUri
 
             LogDebug("Stored gif ${gif.toString()}")
 
-            //TODO think of another solution for this
-            val trans = ActivityOptionsCompat.makeSceneTransitionAnimation(this, mAdapter.first,
-                    "shared_image")
-            startActivity<ShowGifActivity>(gif.id, 1, trans.toBundle())
-            finish()
+            startActivity<ShowGifActivity>(gif.id)
+            finishAffinity()
         }
     }
 
@@ -194,7 +199,7 @@ class GenerateGifActivity : AppCompatActivity() {
     private var mThumbUri: String = ""
 
     private fun deleteTempFolderContent() {
-        val directory = File(filesDir, "tmp_images");
+        val directory = File(filesDir, "tmp_images")
 
         rx.Observable.from(directory.listFiles())
                 .subscribeOn(Schedulers.io())
@@ -239,6 +244,32 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private lateinit var mPictureList: ArrayList<String>
 
+    private fun getCompressedWidthHeight(list: List<String>): Pair<Int, Int> {
+        var compressedImageWidth = 0
+        var compressedImageHeight = 0
+
+        for (path in list) {
+
+            val exif = ExifInterface(path)
+            val imgWidth = exif.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, 600)
+            val imgLength = exif.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, 800)
+            val tmpWidth = (imgWidth * mCompressRate).toInt()
+            val tmpHeight = (imgLength * mCompressRate).toInt()
+            if (tmpWidth > compressedImageWidth)
+                compressedImageWidth = tmpWidth
+
+            if (tmpHeight > compressedImageHeight)
+                compressedImageHeight = tmpHeight
+
+            LogDebug(
+                    "ImgWidth $imgWidth mgLength:$imgLength CompressedWidth:$compressedImageWidth CompressedHeight:$compressedImageHeight")
+
+
+        }
+
+        return Pair(compressedImageWidth, compressedImageHeight)
+    }
+
 
     private fun generateGIF(): ByteArray {
 
@@ -248,27 +279,23 @@ class GenerateGifActivity : AppCompatActivity() {
         val encoder = AnimatedGifEncoder()
         encoder.start(bos)
         encoder.setRepeat(0)
+
+        val compressedImageSize = getCompressedWidthHeight(mPictureList)
+        val compressedImageWidth = compressedImageSize.first
+        val compressedImageHeight = compressedImageSize.second
+
         LogDebug("Start gif encoding")
-        var i = 0
+        var i = 1
         for (path in mPictureList) {
 
             runOnUiThread {
-                mAdapter.imageListLoading.put(path, false)
-                mAdapter.notifyItemChanged(i++)
+                converting_info_text.text = getAmountString(i++)
             }
 
-            val exif = ExifInterface(path)
-            val imgWidth = exif.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, 600)
-            val imgLength = exif.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, 800)
-            val compressedImageWidth = (imgWidth * mCompressRate).toInt()
-            val compressedImageHeight = (imgLength * mCompressRate).toInt()
-
-            LogDebug(
-                    "ImgWidth $imgWidth mgLength:$imgLength CompressedWidth:$compressedImageWidth CompressedHeight:$compressedImageHeight")
 
             val bitmap = BitmapFactory.decodeFile(path)
 
-
+            val exif = ExifInterface(path)
             val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_NORMAL)
 
@@ -297,17 +324,22 @@ class GenerateGifActivity : AppCompatActivity() {
             }
 
             LogDebug("Adding Frame: height:${finalBitmap.height} + width:${finalBitmap.width}")
-            encoder.setDelay(200)
-            encoder.addFrame(finalBitmap);
+            encoder.setDelay(250)
+            encoder.addFrame(finalBitmap)
             bitmap.recycle()
             finalBitmap.recycle()
             LogDebug(
                     "Is recycled bitmap:${bitmap.isRecycled} scaledBitmap:${finalBitmap.isRecycled}")
         }
+        runOnUiThread {
+            converting_progressbar.visibility = View.INVISIBLE
+            converted_checkmark.visibility = View.VISIBLE
+            container_magic.visibility = View.VISIBLE
+        }
         LogDebug("Added all")
-        encoder.finish();
+        encoder.finish()
         LogDebug("Encoding finished")
-        return bos.toByteArray();
+        return bos.toByteArray()
     }
 
     private fun getRotation(exif: Int): Float {
@@ -318,32 +350,4 @@ class GenerateGifActivity : AppCompatActivity() {
         }
         return 0f
     }
-
-    fun decodeFile(f: File): Bitmap? {
-        try {
-            // Decode image size
-            val options = BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(FileInputStream(f), null, options);
-
-            // The new size we want to scale to
-            val REQUIRED_SIZE = 70;
-
-            // Find the correct scale value. It should be the power of 2.
-            var scale = 1;
-            while (options.outWidth / scale / 2 >= REQUIRED_SIZE &&
-                    options.outHeight / scale / 2 >= REQUIRED_SIZE) {
-                scale *= 2;
-            }
-
-            // Decode with inSampleSize
-            val options2 = BitmapFactory.Options();
-            options2.inSampleSize = scale;
-            return BitmapFactory.decodeStream(FileInputStream(f), null, options2);
-        } catch (e: FileNotFoundException) {
-
-        }
-        return null;
-    }
-
 }

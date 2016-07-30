@@ -66,5 +66,11 @@
     <string name="rating_rate_positive">Okay, los geht\'s</string>
     <string name="rating_rate_text">Super, willst du Stopmotion im Play Store bewerten?</string>
     <string name="rating_toast_no_action">Trotzdem Danke</string>
+    <string name="menu_entry_generate">Generieren</string>
+    <string name="snackbar_image_required">Du brauchst mehr Bilder um ein Gif zu erstellen</string>
+    <string name="snackbar_take_picture_action">Foto aufnehmen</string>
+    <string name="converting_images_amount_state">Konvertiere Bild %1$s</string>
+    <string name="generate_title">Gif erstellen</string>
+    <string name="converting_images_magic_state">Benutze ein bisschen Magie</string>
 
 </resources>
