@@ -61,8 +61,6 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
             }
         }
 
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true);
-
         val id = retrieveLongParameter()
         LogDebug(id.toString())
 
@@ -125,16 +123,16 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         fab_container.viewTreeObserver.addOnPreDrawListener(
                 object : ViewTreeObserver.OnPreDrawListener {
                     override fun onPreDraw(): Boolean {
-                        fab_container.viewTreeObserver.removeOnPreDrawListener(this);
-                        mOffset1 = expand_button.y - share_button.y;
-                        share_button.translationY = mOffset1;
-                        mOffset2 = expand_button.y - edit_button.y;
-                        edit_button.translationY = mOffset2;
-                        mOffset3 = expand_button.y - delete_button.y;
-                        delete_button.translationY = mOffset3;
+                        fab_container.viewTreeObserver.removeOnPreDrawListener(this)
+                        mOffset1 = expand_button.y - share_button.y
+                        share_button.translationY = mOffset1
+                        mOffset2 = expand_button.y - edit_button.y
+                        edit_button.translationY = mOffset2
+                        mOffset3 = expand_button.y - delete_button.y
+                        delete_button.translationY = mOffset3
                         return true
                     }
-                });
+                })
     }
 
     private fun doOnTransitionFinished() {
@@ -175,13 +173,13 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
     }
 
     private fun expandFab() {
-        expand_button.setImageResource(R.drawable.animated_plus_to_x);
-        val animatorSet = AnimatorSet();
+        expand_button.setImageResource(R.drawable.animated_plus_to_x)
+        val animatorSet = AnimatorSet()
         animatorSet.playTogether(createExpandAnimator(share_button, mOffset1),
                 createExpandAnimator(edit_button, mOffset2),
-                createExpandAnimator(delete_button, mOffset3));
-        animatorSet.start();
-        animateFab();
+                createExpandAnimator(delete_button, mOffset3))
+        animatorSet.start()
+        animateFab()
     }
 
     private fun animateFab() {
@@ -194,23 +192,23 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
     private fun createExpandAnimator(view: View, offset: Float): Animator {
         return ObjectAnimator.ofFloat(view, "translationY", offset, 0f)
                 .setDuration(
-                        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong());
+                        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong())
     }
 
     private fun collapseFab() {
-        expand_button.setImageResource(R.drawable.animated_x_to_plus);
-        val animatorSet = AnimatorSet();
+        expand_button.setImageResource(R.drawable.animated_x_to_plus)
+        val animatorSet = AnimatorSet()
         animatorSet.playTogether(createCollapseAnimator(share_button, mOffset1),
                 createCollapseAnimator(edit_button, mOffset2),
-                createCollapseAnimator(delete_button, mOffset3));
-        animatorSet.start();
-        animateFab();
+                createCollapseAnimator(delete_button, mOffset3))
+        animatorSet.start()
+        animateFab()
     }
 
     private fun createCollapseAnimator(view: View, offset: Float): Animator {
         return ObjectAnimator.ofFloat(view, "translationY", 0f, offset)
                 .setDuration(
-                        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong());
+                        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong())
     }
 
     var mFabExpanded = false
@@ -225,12 +223,12 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
 
         getRealmInstance().executeTransaction {
 
-            val bundle = Bundle();
-            bundle.putString("deleted_name", gif.name);
+            val bundle = Bundle()
+            bundle.putString("deleted_name", gif.name)
 
             val intent = Intent()
             intent.putExtras(bundle)
-            setResult(RESULT_OK, intent);
+            setResult(RESULT_OK, intent)
             gif.deleteFromRealm()
             finish()
         }
