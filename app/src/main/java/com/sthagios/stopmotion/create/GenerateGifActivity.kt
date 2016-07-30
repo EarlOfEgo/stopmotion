@@ -127,13 +127,17 @@ class GenerateGifActivity : AppCompatActivity() {
         val fileSize = newFile.length()
 
         val sideNodes = resources.getStringArray(R.array.generated_with)
-        val bla = sideNodes[Random().nextInt(sideNodes.size)]
+        val sideNode = sideNodes[Random().nextInt(sideNodes.size)]
 
         runOnUiThread {
 
-            gif_generated_info.text = "Your gif has been generated* in $mGenerationTime seconds. " +
-                    "It has the size of $fileSize bytes. It has ${mPictureList.size} single images, displaying every 1/4th second one of them and therefore has a total playtime of ${mPictureList.size * 0.25} seconds." +
-                    "\n\n*$bla"
+            gif_generated_info.text = resources.getString(
+                    R.string.generate_successfully_generated_info_1, "$mGenerationTime") +
+                    " " + resources.getString(R.string.generate_successfully_generated_info_2,
+                    "$fileSize") +
+                    " " + resources.getString(R.string.generate_successfully_generated_info_3,
+                    "${mPictureList.size}", "${mPictureList.size * 0.25}") +
+                    "\n\n*$sideNode"
 
             magic_progressbar.visibility = View.INVISIBLE
             magic_checkmark.visibility = View.VISIBLE

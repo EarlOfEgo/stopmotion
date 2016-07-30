@@ -79,9 +79,10 @@
 
     <!-- Generate Gif -->
     <string name="generate_title">Generating Gif</string>
-    <string name="generate_successfully_generated_info">Gif successfully generated</string>
-
-
+    <string name="generate_successfully_generated_title">Gif successfully generated</string>
+    <string name="generate_successfully_generated_info_1">Your gif has been generated* in %1$s seconds.</string>
+    <string name="generate_successfully_generated_info_2">It has the size of %1$s bytes.</string>
+    <string name="generate_successfully_generated_info_3">It has %1$s single images, displaying every 1/4th second one of them and therefore has a total playtime of %2$s seconds.</string>
     <string name="generated_with_text_1">No Unicorns where harmed during this process</string>
     <string name="generated_with_text_2">12% magic applied for this process</string>
     <string name="generated_with_text_3">Worked like a charm</string>
