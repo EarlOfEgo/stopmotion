@@ -189,11 +189,7 @@ class GenerateGifActivity : AppCompatActivity() {
             gif.thumbnailUriString = mThumbUri
 
             LogDebug("Stored gif ${gif.toString()}")
-//
-//            //TODO think of another solution for this
-//            val trans = ActivityOptionsCompat.makeSceneTransitionAnimation(this, mAdapter.first,
-//                    "shared_image")
-//            startActivity<ShowGifActivity>(gif.id, 1, trans.toBundle())
+
             startActivity<ShowGifActivity>(gif.id)
             finishAffinity()
         }
@@ -203,7 +199,7 @@ class GenerateGifActivity : AppCompatActivity() {
     private var mThumbUri: String = ""
 
     private fun deleteTempFolderContent() {
-        val directory = File(filesDir, "tmp_images");
+        val directory = File(filesDir, "tmp_images")
 
         rx.Observable.from(directory.listFiles())
                 .subscribeOn(Schedulers.io())
