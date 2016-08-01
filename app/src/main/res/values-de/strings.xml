@@ -46,7 +46,7 @@
     <string name="settings_licences_description">Eine Übersicht der Open Source Lizenzen.</string>
 
 
-    <string name="edit_text_hint_gif_name">Benne das Gif</string>
+    <string name="edit_text_hint_gif_name">Benenne das Gif</string>
     <string name="main_grand_permission_text">Um Stopmotion benutzen zu können, musst du Kamerazugriff gewähren.</string>
     <string name="main_goto_settings_button">Zu den Einstellungen</string>
     <string name="item_image_converted">Konvertiert</string>
