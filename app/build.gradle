@@ -85,6 +85,8 @@ dependencies {
 
     compile 'io.realm:android-adapters:1.2.2'
 
+    compile 'com.github.wooplr:Spotlight:1.2.2'
+
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
     androidTestCompile "com.android.support:support-annotations:$support_lib_version"
     androidTestCompile 'tools.fastlane:screengrab:0.3.2'
