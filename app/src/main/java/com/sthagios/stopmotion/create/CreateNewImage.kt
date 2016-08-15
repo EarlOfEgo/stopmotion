@@ -24,6 +24,7 @@ import com.sthagios.stopmotion.camera.ImageSaver
 import com.sthagios.stopmotion.create.edit.EditImagesActivity
 import com.sthagios.stopmotion.tracking.logCameraEvent
 import com.sthagios.stopmotion.utils.*
+import com.wooplr.spotlight.SpotlightView
 import kotlinx.android.synthetic.main.activity_create_new_image.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -800,6 +801,56 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     })
 
         })
+
+
+        //TODO make this beautiful
+        if (shouldShowTutorial()) {
+            SpotlightView.Builder(this)
+                    .target(container_amount)
+                    .setConfiguration(getSpotlightConfiguration())
+                    .usageId("camera1")
+                    .headingTvText(getString(R.string.tutorial_camera_burst_amount_title))
+                    .subHeadingTvText(getString(R.string.tutorial_camera_burst_amount_info))
+                    .setListener {
+                        SpotlightView.Builder(this)
+                                .target(container_time)
+                                .setConfiguration(getSpotlightConfiguration())
+                                .headingTvText(getString(R.string.tutorial_camera_burst_time_title))
+                                .subHeadingTvText(
+                                        getString(R.string.tutorial_camera_burst_time_info))
+                                .usageId("camera2")
+                                .setListener {
+                                    SpotlightView.Builder(this)
+                                            .target(button_switch_camera)
+                                            .setConfiguration(getSpotlightConfiguration())
+                                            .headingTvText(getString(
+                                                    R.string.tutorial_camera_switch_title))
+                                            .subHeadingTvText(
+                                                    getString(R.string.tutorial_camera_switch_info))
+                                            .usageId("camera3")
+                                            .setListener {
+                                                SpotlightView.Builder(this)
+                                                        .target(button_capture)
+                                                        .setConfiguration(
+                                                                getSpotlightConfiguration())
+                                                        .headingTvText(getString(
+                                                                R.string.tutorial_camera_take_image_title))
+                                                        .subHeadingTvText(getString(
+                                                                R.string.tutorial_camera_take_image_info))
+                                                        .usageId("camera4")
+                                                        .show()
+
+                                            }
+                                            .show()
+
+                                }
+                                .show()
+
+                    }
+                    .show()
+            //only show it once
+            showedTutorial()
+        }
 
     }
 
