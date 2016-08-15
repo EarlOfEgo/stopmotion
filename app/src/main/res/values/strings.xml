@@ -72,6 +72,18 @@
     <string name="rating_toast_no_action">Thanks anyway</string>
 
 
+    <!-- Tutorial views -->
+    <string name="tutorial_edit_title">Edit Gif</string>
+    <string name="tutorial_edit_info">Swipe up/down for deletion, or long press for drag and drop.</string>
+    <string name="tutorial_camera_burst_amount_title">Burst Amount</string>
+    <string name="tutorial_camera_burst_amount_info">Choose how many pictures you want to take.</string>
+    <string name="tutorial_camera_burst_time_title">Interval</string>
+    <string name="tutorial_camera_burst_time_info">Choose the time between the pictures are taken.</string>
+    <string name="tutorial_camera_switch_title">Switch Camera</string>
+    <string name="tutorial_camera_switch_info">Switch between your front and back camera.</string>
+    <string name="tutorial_camera_take_image_title">Take Pictures</string>
+    <string name="tutorial_camera_take_image_info">Start taking your pictures.</string>
+
     <!-- Edit Images -->
     <string name="menu_entry_generate">Generate</string>
     <string name="converting_images_amount_state">Converting image %1$s</string>

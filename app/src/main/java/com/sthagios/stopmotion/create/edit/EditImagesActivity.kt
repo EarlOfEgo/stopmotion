@@ -13,9 +13,8 @@ import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.create.CreateNewImage
 import com.sthagios.stopmotion.create.GenerateGifActivity
 import com.sthagios.stopmotion.tracking.logEditEvent
-import com.sthagios.stopmotion.utils.retrieveStringListParameter
-import com.sthagios.stopmotion.utils.startActivity
-import com.sthagios.stopmotion.utils.startActivityForResultWithArgument
+import com.sthagios.stopmotion.utils.*
+import com.wooplr.spotlight.SpotlightView
 import kotlinx.android.synthetic.main.activity_edit_images.*
 import kotlinx.android.synthetic.main.toolbar.*
 import java.util.*
@@ -99,6 +98,18 @@ class EditImagesActivity : AppCompatActivity() {
         })
 
         ItemTouchHelper(itemTouch).attachToRecyclerView(image_list)
+
+        if (shouldShowTutorial()) {
+            SpotlightView.Builder(this)
+                    .target(image_list)
+                    .setConfiguration(getSpotlightConfiguration())
+                    .headingTvText(getString(R.string.tutorial_edit_title))
+                    .subHeadingTvText(getString(R.string.tutorial_edit_info))
+                    .show()
+            //only show it once
+            showedTutorial()
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

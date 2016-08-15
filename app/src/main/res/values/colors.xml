@@ -9,5 +9,8 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
 
+    <color name="white">#FFFFFF</color>
+    <color name="tutorial_background">#DC000000</color>
+
     <color name="animation_second">#a4a4a4</color>
 </resources>
