@@ -82,5 +82,15 @@
     <string name="generated_with_text_3">Hat super funktioniert</string>
     <string name="generated_with_text_4">Keine Magie gebraucht</string>
     <string name="generated_with_text_5">Wegen den schönen Motivieven hat es ein bisschen länger gedauert</string>
+    <string name="tutorial_camera_burst_amount_info">Wähle wieviele Fotos du aufnehmen möchtest.</string>
+    <string name="tutorial_camera_burst_amount_title">Burst-Frequenz</string>
+    <string name="tutorial_camera_burst_time_info">Wähle wieviele Bilder hintereinander aufgenommen werden.</string>
+    <string name="tutorial_camera_burst_time_title">Interval</string>
+    <string name="tutorial_camera_switch_info">Wechsle zwischen Vorder- und Rückcamera.</string>
+    <string name="tutorial_camera_switch_title">Kamerawechsel</string>
+    <string name="tutorial_camera_take_image_info">Starte die Aufnahme.</string>
+    <string name="tutorial_camera_take_image_title">Fotos</string>
+    <string name="tutorial_edit_info">Swipe hoch/runter um ein Foto zu löschen, oder halte lange gedrückt um die Reihenfolge zu ändern.</string>
+    <string name="tutorial_edit_title">Ediere dein Gif</string>
 
 </resources>
