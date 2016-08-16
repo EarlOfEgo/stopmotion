@@ -51,12 +51,12 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_gif)
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar)
 
         for (i in 0..toolbar.childCount) {
             val view = toolbar.getChildAt(i)
             if (view is TextView) {
-                ViewCompat.setTransitionName(view, "shared_text");
+                ViewCompat.setTransitionName(view, "shared_text")
             }
         }
 
@@ -69,7 +69,6 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         val uriThumb = Uri.parse(gif.thumbnailUriString)
 
         Glide.with(this).load(uriThumb).into(preview)
-//        val startTime = System.nanoTime()
         Glide.with(baseContext).load(mGifUri)
                 .listener(
                         object : RequestListener<Uri, GlideDrawable> {
@@ -84,15 +83,11 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
                                     isFirstResource: Boolean): Boolean {
                                 progress_container.visibility = View.GONE
                                 preview.visibility = View.GONE
-//                                val endTime = System.nanoTime()
-//
-//                                val duration = TimeUnit.SECONDS.convert((endTime - startTime),
-//                                        TimeUnit.NANOSECONDS)
-//                                Log.d("TIME", "$duration")
                                 return false
                             }
                         }
-                ).into(preview_gif)
+                )
+                .into(preview_gif)
 
 
         title = gif.name
