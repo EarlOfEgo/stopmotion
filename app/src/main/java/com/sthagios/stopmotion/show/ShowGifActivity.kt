@@ -18,9 +18,7 @@ import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
@@ -66,28 +64,9 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         val gif = getRealmInstance().where(Gif::class.java).equalTo("id", id).findFirst()
 
         mGifUri = Uri.parse(gif.fileUriString)
-        val uriThumb = Uri.parse(gif.thumbnailUriString)
-
-        Glide.with(this).load(uriThumb).into(preview)
+        val target = GlideDrawableImageViewTarget(preview_gif)
         Glide.with(baseContext).load(mGifUri)
-                .listener(
-                        object : RequestListener<Uri, GlideDrawable> {
-                            override fun onException(e: Exception?, model: Uri?,
-                                    target: Target<GlideDrawable>?,
-                                    isFirstResource: Boolean): Boolean {
-                                return false
-                            }
-
-                            override fun onResourceReady(resource: GlideDrawable?, model: Uri?,
-                                    target: Target<GlideDrawable>?, isFromMemoryCache: Boolean,
-                                    isFirstResource: Boolean): Boolean {
-                                progress_container.visibility = View.GONE
-                                preview.visibility = View.GONE
-                                return false
-                            }
-                        }
-                )
-                .into(preview_gif)
+                .into(target)
 
 
         title = gif.name

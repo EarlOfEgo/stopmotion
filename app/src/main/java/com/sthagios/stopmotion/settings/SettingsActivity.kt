@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget
 import com.sthagios.stopmotion.BuildConfig
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.settings.dialogs.CompressionDialog
@@ -117,7 +118,8 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
         }
 
         val uri = Uri.parse("file:///android_asset/gif.gif")
-        Glide.with(this).load(uri).into(icon_image_view2)
+        val target = GlideDrawableImageViewTarget(icon_image_view2)
+        Glide.with(this).load(uri).into(target)
 
         setUpVersionInfos()
     }
