@@ -12,26 +12,25 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
-import android.transition.Transition
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.share.shareGif
 import com.sthagios.stopmotion.utils.LogDebug
 import com.sthagios.stopmotion.utils.LogError
-import com.sthagios.stopmotion.utils.getApproximateAppStarts
 import com.sthagios.stopmotion.utils.retrieveLongParameter
 import kotlinx.android.synthetic.main.activity_show_gif.*
 import kotlinx.android.synthetic.main.toolbar.*
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import java.io.File
 
 
@@ -69,14 +68,32 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         mGifUri = Uri.parse(gif.fileUriString)
         val uriThumb = Uri.parse(gif.thumbnailUriString)
 
-        if (getApproximateAppStarts() < 4) {
-            Snackbar.make(preview_gif, R.string.snackbar_info_loading_time,
-                    Snackbar.LENGTH_LONG).show()
-        }
-
         Glide.with(this).load(uriThumb).into(preview)
+//        val startTime = System.nanoTime()
+        Glide.with(baseContext).load(mGifUri)
+                .listener(
+                        object : RequestListener<Uri, GlideDrawable> {
+                            override fun onException(e: Exception?, model: Uri?,
+                                    target: Target<GlideDrawable>?,
+                                    isFirstResource: Boolean): Boolean {
+                                return false
+                            }
 
-        doOnTransitionFinished()
+                            override fun onResourceReady(resource: GlideDrawable?, model: Uri?,
+                                    target: Target<GlideDrawable>?, isFromMemoryCache: Boolean,
+                                    isFirstResource: Boolean): Boolean {
+                                progress_container.visibility = View.GONE
+                                preview.visibility = View.GONE
+//                                val endTime = System.nanoTime()
+//
+//                                val duration = TimeUnit.SECONDS.convert((endTime - startTime),
+//                                        TimeUnit.NANOSECONDS)
+//                                Log.d("TIME", "$duration")
+                                return false
+                            }
+                        }
+                ).into(preview_gif)
+
 
         title = gif.name
 
@@ -133,43 +150,6 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
                         return true
                     }
                 })
-    }
-
-    private fun doOnTransitionFinished() {
-
-        if (window.sharedElementEnterTransition != null) {
-            window.sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
-                override fun onTransitionEnd(transition: Transition?) {
-                    loadGif()
-                    window.sharedElementEnterTransition.removeListener(this)
-                }
-
-                override fun onTransitionResume(transition: Transition?) {
-                }
-
-                override fun onTransitionPause(transition: Transition?) {
-                }
-
-                override fun onTransitionCancel(transition: Transition?) {
-                }
-
-                override fun onTransitionStart(transition: Transition?) {
-                }
-
-            })
-        } else {
-            loadGif()
-        }
-    }
-
-    private fun loadGif() {
-        Observable.just(Glide.with(baseContext).load(mGifUri).into(preview_gif))
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({}, {
-                    e ->
-                    e.printStackTrace()
-                }, { })
     }
 
     private fun expandFab() {

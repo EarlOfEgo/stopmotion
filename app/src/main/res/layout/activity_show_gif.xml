@@ -40,6 +40,38 @@
             android:scaleType="centerCrop"
             android:transitionName="shared_image" />
 
+        <LinearLayout
+            android:id="@+id/progress_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                app:cardBackgroundColor="@color/primary"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardPreventCornerOverlap="false"
+                card_view:cardUseCompatPadding="true">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="16dp"
+                    android:text="@string/snackbar_info_loading_time"
+                    android:textColor="@color/primary_text" />
+            </android.support.v7.widget.CardView>
+
+            <ProgressBar
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+
+
         <ImageView
             android:id="@+id/preview_gif"
             android:layout_width="match_parent"
