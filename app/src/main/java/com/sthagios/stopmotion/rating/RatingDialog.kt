@@ -34,6 +34,8 @@ open class RatingDialog : DialogFragment() {
         mCallback.canceled()
     }
 
+    @Suppress("DEPRECATION")
+    @SuppressWarnings("deprecation")
     override fun onAttach(activity: Activity?) {
         super.onAttach(activity)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

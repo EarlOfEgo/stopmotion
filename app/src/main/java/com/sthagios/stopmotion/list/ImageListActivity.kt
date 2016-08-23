@@ -61,7 +61,7 @@ class ImageListActivity : AppCompatActivity() {
         if (resultCode == RESULT_OK) {
             if (requestCode == 1 && data != null) {
                 mAdapter.notifyDataSetChanged()
-                val id = data.getStringExtra("deleted_id")
+//                val id = data.getStringExtra("deleted_id")
                 val name = data.getStringExtra("deleted_name")
                 if (name != null && name.length > 0) {
                     Snackbar.make(recyclerViewImageList, "$name successfully deleted",

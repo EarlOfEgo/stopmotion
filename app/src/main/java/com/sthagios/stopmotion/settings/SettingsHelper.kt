@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.sthagios.stopmotion.settings
 
 import android.content.Context

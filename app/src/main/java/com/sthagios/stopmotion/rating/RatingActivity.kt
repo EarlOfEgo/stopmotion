@@ -44,6 +44,7 @@ class RatingActivity : AppCompatActivity(), RatingDialog.Callback {
         finish()
     }
 
+    @Suppress("DEPRECATION")
     override fun rateTheApp(rate: Boolean) {
         logRatingEvent("rate", rate)
         if (rate) {
