@@ -10,13 +10,6 @@ import io.realm.RealmConfiguration
  * @author  stephan
  * @since   05.06.16
  */
-class DatabaseHelper {
-
-    public fun storeGif(gifName: String, gifPath: String) {
-
-    }
-
-}
 
 fun Activity.getRealmInstance(): Realm {
 

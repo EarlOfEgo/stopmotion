@@ -47,6 +47,7 @@ class EditDialog() : DialogFragment() {
             throw Exception("${context.toString()} must implement Callback")
     }
 
+    @Suppress("DEPRECATION")
     override fun onAttach(activity: Activity?) {
         super.onAttach(activity)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
