@@ -1,3 +1,5 @@
+import com.android.build.OutputFile
+
 import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
@@ -66,6 +68,19 @@ android {
         }
     }
 }
+
+// map for the version code
+ext.versionCodes = ['armeabi-v7a': 1, mips: 2, x86: 3, armeabi: 4, 'arm64-v8a': 5, 'x86_64': 6]
+
+android.applicationVariants.all { variant ->
+    // assign different version code for each output
+    variant.outputs.each { output ->
+        output.versionCodeOverride =
+                project.ext.versionCodes.get(output.getFilter(OutputFile.ABI)) * 1000000 +
+                        android.defaultConfig.versionCode
+    }
+}
+
 
 
 dependencies {
