@@ -1,15 +1,21 @@
 package com.sthagios.stopmotion.settings
 
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.DecelerateInterpolator
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget
 import com.sthagios.stopmotion.BuildConfig
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.settings.dialogs.CompressionDialog
 import com.sthagios.stopmotion.settings.dialogs.LicensesDialog
+import com.sthagios.stopmotion.tracking.getFirebaseInstance
 import com.sthagios.stopmotion.tracking.logSettingsEvent
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -53,10 +59,8 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        setSupportActionBar(toolbar);
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(toolbar)
         title = getString(R.string.settings_title)
-
 
         use_thumbs.setTitle(R.string.settings_use_thumbnails_title)
         use_thumbs.setSubtitle(R.string.settings_use_thumbnails_description)
@@ -92,9 +96,35 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
             dialog.show(fragmentManager, "LicensesDialog")
         })
 
+        icon_image_view.setOnClickListener {
+            if (mImageClickCount++ > 6) {
+                ViewCompat.animate(icon_image_view)
+                        .scaleY(0.toFloat())
+                        .scaleX(0.toFloat())
+                        .setDuration(1000)
+                        .setInterpolator(DecelerateInterpolator()).start()
+
+                ViewCompat.animate(icon_image_view2)
+                        .setStartDelay(1000)
+                        .scaleY(1.toFloat())
+                        .scaleX(1.toFloat())
+                        .setDuration(1000)
+                        .setInterpolator(DecelerateInterpolator()).start()
+
+                val bundle = Bundle()
+                bundle.putString("wee", "wee")
+                getFirebaseInstance().logEvent("easter_egg", bundle)
+            }
+        }
+
+        val uri = Uri.parse("file:///android_asset/gif.gif")
+        val target = GlideDrawableImageViewTarget(icon_image_view2)
+        Glide.with(this).load(uri).into(target)
 
         setUpVersionInfos()
     }
+
+    private var mImageClickCount = 0
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {

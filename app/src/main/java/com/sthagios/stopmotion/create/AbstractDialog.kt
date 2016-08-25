@@ -23,6 +23,7 @@ open class AbstractDialog() : DialogFragment() {
         fun amountChosen(amount: Int)
     }
 
+    @Suppress("OverridingDeprecatedMember", "DEPRECATION")
     override fun onAttach(activity: Activity?) {
         super.onAttach(activity)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

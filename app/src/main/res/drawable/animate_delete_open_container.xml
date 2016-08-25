@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_delete_grey_24dp">
+
+    <target
+        android:name="rotationGroup"
+        android:animation="@animator/delete_close_to_open" />
+</animated-vector>

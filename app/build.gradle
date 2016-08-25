@@ -1,3 +1,5 @@
+import com.android.build.OutputFile
+
 import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
@@ -12,25 +14,27 @@ def buildTime = {
     return df.format(new Date())
 }()
 
-def version_name = "1.0.1"
-def version_code = 2
+def version_name = "1.0.2"
+def version_code = 3
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
 
 
 
     defaultConfig {
         applicationId "com.sthagios.stopmotion"
         minSdkVersion 21
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode version_code
         versionName version_name
 
 
         buildConfigField "String", "GIT_SHA", "\"$gitSha\""
         buildConfigField "String", "BUILD_TIME", "\"$buildTime\""
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     productFlavors {
@@ -46,14 +50,37 @@ android {
     buildTypes {
 
         release {
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'mips', 'x86', 'x86_64'
+            universalApk false
+        }
+    }
 }
+
+// map for the version code
+ext.versionCodes = ['armeabi-v7a': 1, mips: 2, x86: 3, armeabi: 4, 'arm64-v8a': 5, 'x86_64': 6]
+
+android.applicationVariants.all { variant ->
+    // assign different version code for each output
+    variant.outputs.each { output ->
+        output.versionCodeOverride =
+                project.ext.versionCodes.get(output.getFilter(OutputFile.ABI)) * 1000000 +
+                        android.defaultConfig.versionCode
+    }
+}
+
 
 
 dependencies {
@@ -79,16 +106,29 @@ dependencies {
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.afollestad.material-dialogs:core:0.8.5.9'
-    compile 'com.android.support:support-v4:23.4.0'
+//    compile "com.android.support:support-v4:$support_lib_version"
 
     compile 'io.realm:android-adapters:1.2.2'
 
+    compile 'com.github.wooplr:Spotlight:1.2.2'
+
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+    androidTestCompile "com.android.support:support-annotations:$support_lib_version"
+    androidTestCompile 'tools.fastlane:screengrab:0.3.2'
+
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.0') {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
 
 }
+
+
 buildscript {
     ext.kotlin_version = '1.0.1-2'
 
-    ext.support_lib_version = '23.4.0'
+    ext.support_lib_version = '24.1.1'
     ext.firebase_version = '9.0.2'
     repositories {
         mavenCentral()

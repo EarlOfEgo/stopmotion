@@ -7,7 +7,6 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,12 +14,12 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <service android:name=".notifications.NotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.sthagios.stopmotion.fileprovider"
@@ -52,6 +51,7 @@
             android:name=".create.CreateNewImage"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
+            android:taskAffinity="com.sthagios.stopmotion.create"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".show.ShowGifActivity"
@@ -63,6 +63,7 @@
             android:name=".create.GenerateGifActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
+            android:taskAffinity="com.sthagios.stopmotion.create"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".settings.SettingsActivity"
@@ -70,11 +71,16 @@
             android:parentActivityName=".list.ImageListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
             android:name=".rating.RatingActivity"
             android:configChanges="orientation"
             android:theme="@style/AppTheme.Transparent" />
+
+        <activity
+            android:name=".create.edit.EditImagesActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:taskAffinity="com.sthagios.stopmotion.create" />
     </application>
 
 </manifest>

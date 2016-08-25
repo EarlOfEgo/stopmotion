@@ -13,4 +13,10 @@
         <item>@string/compression_rate_medium</item>
         <item>@string/compression_rate_low</item>
     </string-array>
+
+    <string-array name="generated_with">
+        <item>@string/generated_with_text_1</item>
+        <item>@string/generated_with_text_2</item>
+        <item>@string/generated_with_text_3</item>
+    </string-array>
 </resources>

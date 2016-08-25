@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package com.sthagios.stopmotion.rating
 
 import android.content.Context

@@ -46,7 +46,7 @@
     <string name="settings_licences_description">Eine Übersicht der Open Source Lizenzen.</string>
 
 
-    <string name="edit_text_hint_gif_name">Benne das Gif</string>
+    <string name="edit_text_hint_gif_name">Benenne das Gif</string>
     <string name="main_grand_permission_text">Um Stopmotion benutzen zu können, musst du Kamerazugriff gewähren.</string>
     <string name="main_goto_settings_button">Zu den Einstellungen</string>
     <string name="item_image_converted">Konvertiert</string>
@@ -66,5 +66,31 @@
     <string name="rating_rate_positive">Okay, los geht\'s</string>
     <string name="rating_rate_text">Super, willst du Stopmotion im Play Store bewerten?</string>
     <string name="rating_toast_no_action">Trotzdem Danke</string>
+    <string name="menu_entry_generate">Generieren</string>
+    <string name="snackbar_image_required">Du brauchst mehr Bilder um ein Gif zu erstellen</string>
+    <string name="snackbar_take_picture_action">Foto aufnehmen</string>
+    <string name="converting_images_amount_state">Konvertiere Bild %1$s</string>
+    <string name="generate_title">Gif erstellen</string>
+    <string name="converting_images_magic_state">Benutze ein bisschen Magie</string>
+    <string name="generate_button_save">Speichern</string>
+    <string name="generate_successfully_generated_info_1">Dein Gif wurde in %1$s Sekunden generiert*.</string>
+    <string name="generate_successfully_generated_info_2">Es hat eine Größe von %1$s bytes.</string>
+    <string name="generate_successfully_generated_info_3">Es besteht aus %1$s einzelnen Bilder, die alle 1/4 Sekunden angezeigt werden und daher eine Gesamtlaufzeit von %2$s Sekunden hat.</string>
+    <string name="generate_successfully_generated_title">Gif erfolgreich erstellt</string>
+    <string name="generated_with_text_1">Keine Einhörnern wurden während diesem Prozess verletzt</string>
+    <string name="generated_with_text_2">12% Magie benutzt</string>
+    <string name="generated_with_text_3">Hat super funktioniert</string>
+    <string name="generated_with_text_4">Keine Magie gebraucht</string>
+    <string name="generated_with_text_5">Wegen den schönen Motivieven hat es ein bisschen länger gedauert</string>
+    <string name="tutorial_camera_burst_amount_info">Wähle wieviele Fotos du aufnehmen möchtest.</string>
+    <string name="tutorial_camera_burst_amount_title">Burst-Frequenz</string>
+    <string name="tutorial_camera_burst_time_info">Wähle wieviele Bilder hintereinander aufgenommen werden.</string>
+    <string name="tutorial_camera_burst_time_title">Interval</string>
+    <string name="tutorial_camera_switch_info">Wechsle zwischen Vorder- und Rückcamera.</string>
+    <string name="tutorial_camera_switch_title">Kamerawechsel</string>
+    <string name="tutorial_camera_take_image_info">Starte die Aufnahme.</string>
+    <string name="tutorial_camera_take_image_title">Fotos</string>
+    <string name="tutorial_edit_info">Swipe hoch/runter um ein Foto zu löschen, oder halte lange gedrückt um die Reihenfolge zu ändern.</string>
+    <string name="tutorial_edit_title">Ediere dein Gif</string>
 
 </resources>

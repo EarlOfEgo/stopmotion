@@ -61,11 +61,27 @@
                     android:layout_height="match_parent"
                     android:text="Stopmotion" />
 
-                <ImageView
-                    android:layout_width="128dp"
-                    android:layout_height="128dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/web_hi_res_512" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/icon_image_view"
+                        android:layout_width="128dp"
+                        android:layout_height="128dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/web_hi_res_512" />
+
+                    <ImageView
+                        android:id="@+id/icon_image_view2"
+                        android:layout_width="128dp"
+                        android:layout_height="128dp"
+                        android:layout_gravity="center"
+                        android:scaleX="0"
+                        android:scaleY="0" />
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/version_text"

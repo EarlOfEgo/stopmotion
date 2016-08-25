@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.settings.getSettingsPreferences
@@ -50,7 +51,8 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
                 Glide.with(mContext).load(uri).into(holder.mImageView)
             } else {
                 val uri = Uri.parse(gif.fileUriString)
-                Glide.with(mContext).load(uri).into(holder.mImageView)
+                val target = GlideDrawableImageViewTarget(holder.mImageView)
+                Glide.with(mContext).load(uri).into(target)
 
             }
             holder.mShareButton.setOnClickListener(
