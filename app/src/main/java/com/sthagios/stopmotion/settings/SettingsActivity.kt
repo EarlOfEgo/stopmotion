@@ -62,16 +62,12 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
         setSupportActionBar(toolbar)
         title = getString(R.string.settings_title)
 
-        use_thumbs.setTitle(R.string.settings_use_thumbnails_title)
-        use_thumbs.setSubtitle(R.string.settings_use_thumbnails_description)
         use_thumbs.setChecked(getSettingsPreferences().getBoolean("THUMBS_IN_LIST", false))
         use_thumbs.onCheckChanged { b ->
             logSettingsEvent("use_thumbs", b)
             getSettingsPreferences().edit().putBoolean("THUMBS_IN_LIST", b).apply()
         }
 
-        use_pushes.setTitle(R.string.settings_pushes_title)
-        use_pushes.setSubtitle(R.string.settings_pushes_description)
         use_pushes.setChecked(getSettingsPreferences().getBoolean("PUSHES", true))
 
         use_pushes.onCheckChanged { b ->
@@ -79,8 +75,6 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
             getSettingsPreferences().edit().putBoolean("PUSHES", b).apply()
         }
 
-        gif_compression.setTitle(R.string.settings_gif_compression_rate_title)
-        gif_compression.setSubtitle(R.string.settings_gif_compression_rate_description)
         val compressionRate = getCompressionRate()
         setCompressionRateText(compressionRate)
         gif_compression.setOnClickListener({
@@ -88,8 +82,6 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
             dialog.show(fragmentManager, "CompressionDialog")
         })
 
-        licenses.setTitle(R.string.settings_licences_title)
-        licenses.setSubtitle(R.string.settings_licences_description)
         licenses.setOnClickListener({
             logSettingsEvent("license")
             val dialog = LicensesDialog()
