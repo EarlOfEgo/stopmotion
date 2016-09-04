@@ -14,8 +14,8 @@ def buildTime = {
     return df.format(new Date())
 }()
 
-def version_name = "1.0.1"
-def version_code = 2
+def version_name = "1.0.2"
+def version_code = 4
 
 android {
     compileSdkVersion 24
@@ -63,14 +63,14 @@ android {
         abi {
             enable true
             reset()
-            include 'armeabi-v7a', 'mips', 'x86', 'x86_64'
+            include 'armeabi-v7a', 'mips', 'x86'
             universalApk false
         }
     }
 }
 
 // map for the version code
-ext.versionCodes = ['armeabi-v7a': 1, mips: 2, x86: 3, 'x86_64': 4]
+ext.versionCodes = ['armeabi-v7a': 1, mips: 2, x86: 3]
 
 android.applicationVariants.all { variant ->
     // assign different version code for each output
