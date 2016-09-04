@@ -3,7 +3,7 @@
 app_package_name 'com.sthagios.stopmotion'
 # use_tests_in_packages ['com.sthagios.stopmotion.tests.package']
 
-app_apk_path 'app/build/outputs/apk/app-dev-debug.apk'
+app_apk_path 'app/build/outputs/apk/app-dev-armeabi-v7a-debug.apk'
 tests_apk_path 'app/build/outputs/apk/app-dev-debug-androidTest-unaligned.apk'
 
 locales ['en-US', 'de-DE']
