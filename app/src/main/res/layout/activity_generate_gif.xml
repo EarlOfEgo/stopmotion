@@ -46,6 +46,7 @@
                 android:layout_marginBottom="16dp"
                 android:hint="@string/edit_text_hint_gif_name"
                 android:imeOptions="actionDone"
+                android:singleLine="true"
                 android:nextFocusLeft="@id/gif_name"
                 android:nextFocusUp="@id/gif_name" />
 
