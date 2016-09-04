@@ -16,6 +16,7 @@ import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import android.view.inputmethod.EditorInfo
 import com.bumptech.glide.gifencoder.AnimatedGifEncoder
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
@@ -65,6 +66,16 @@ class GenerateGifActivity : AppCompatActivity() {
                     Snackbar.LENGTH_LONG)
                     .show()
         }
+
+        gif_name.setOnEditorActionListener({ textView, i, keyEvent ->
+            var handleIme = false
+            if (i == EditorInfo.IME_ACTION_DONE && mGifGenerated) {
+                handleIme = true
+                deleteTempFolderContent()
+                storeInDatabase()
+            }
+            handleIme
+        })
 
         loading_view.setImageResource(R.drawable.animate_generate_gif)
         val drawable = loading_view.drawable
@@ -120,6 +131,8 @@ class GenerateGifActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private var mGifGenerated: Boolean = false
+
     private fun onGifGenerated() {
 
         val imagePath = File(filesDir, "gifs")
@@ -130,7 +143,7 @@ class GenerateGifActivity : AppCompatActivity() {
         val sideNode = sideNodes[Random().nextInt(sideNodes.size)]
 
         runOnUiThread {
-
+            mGifGenerated = true
             gif_generated_info.text = resources.getString(
                     R.string.generate_successfully_generated_info_1, "$mGenerationTime") +
                     " " + resources.getString(R.string.generate_successfully_generated_info_2,
