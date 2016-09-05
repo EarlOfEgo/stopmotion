@@ -20,7 +20,19 @@ import com.sthagios.stopmotion.tracking.logSettingsEvent
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.toolbar.*
 
-class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
+
+class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, SettingsView {
+
+    override fun setStoragePath(path: String) {
+        throw UnsupportedOperationException(
+                "not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onError(throwable: Throwable) {
+        throw UnsupportedOperationException(
+                "not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun onRateChosen(value: Int) {
         when (value) {
             0 -> {
@@ -55,9 +67,26 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (!mPresenter.hasView()) {
+            mPresenter.attachView(this)
+            mPresenter.onStart()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mPresenter.detachView()
+    }
+
+    private lateinit var mPresenter: SettingsPresenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        mPresenter = SettingsPresenter()
 
         setSupportActionBar(toolbar)
         title = getString(R.string.settings_title)
@@ -69,7 +98,6 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback {
         }
 
         use_pushes.setChecked(getSettingsPreferences().getBoolean("PUSHES", true))
-
         use_pushes.onCheckChanged { b ->
             logSettingsEvent("use_pushes", b)
             getSettingsPreferences().edit().putBoolean("PUSHES", b).apply()
