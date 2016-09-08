@@ -19,18 +19,14 @@ import com.sthagios.stopmotion.tracking.getFirebaseInstance
 import com.sthagios.stopmotion.tracking.logSettingsEvent
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.toolbar.*
+import rx.Observable
+import rx.subjects.PublishSubject
 
 
 class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, SettingsView {
 
-    override fun setStoragePath(path: String) {
-        throw UnsupportedOperationException(
-                "not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun onError(throwable: Throwable) {
-        throw UnsupportedOperationException(
-                "not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO
     }
 
     override fun onRateChosen(value: Int) {
@@ -86,21 +82,13 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        mPresenter = SettingsPresenter()
+        mPresenter = SettingsPresenter(baseContext)
 
         setSupportActionBar(toolbar)
         title = getString(R.string.settings_title)
 
-        use_thumbs.setChecked(getSettingsPreferences().getBoolean("THUMBS_IN_LIST", false))
         use_thumbs.onCheckChanged { b ->
-            logSettingsEvent("use_thumbs", b)
-            getSettingsPreferences().edit().putBoolean("THUMBS_IN_LIST", b).apply()
-        }
-
-        use_pushes.setChecked(getSettingsPreferences().getBoolean("PUSHES", true))
-        use_pushes.onCheckChanged { b ->
-            logSettingsEvent("use_pushes", b)
-            getSettingsPreferences().edit().putBoolean("PUSHES", b).apply()
+            mOnThumbsInListChanged.onNext(null)
         }
 
         val compressionRate = getCompressionRate()
@@ -115,6 +103,10 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
             val dialog = LicensesDialog()
             dialog.show(fragmentManager, "LicensesDialog")
         })
+
+        store_options.onCheckChanged {
+            mOnStorageOptionChanged.onNext(null)
+        }
 
         icon_image_view.setOnClickListener {
             if (mImageClickCount++ > 6) {
@@ -141,8 +133,24 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
         val target = GlideDrawableImageViewTarget(icon_image_view2)
         Glide.with(this).load(uri).into(target)
 
-        setUpVersionInfos()
+        setUpVersionInfo()
     }
+
+    private val mOnStorageOptionChanged: PublishSubject<Void> = PublishSubject.create()
+    private val mOnThumbsInListChanged: PublishSubject<Void> = PublishSubject.create()
+
+    override fun setStorageOption(isSet: Boolean) {
+        store_options.setChecked(isSet)
+    }
+
+    override fun onThumbsInListChanged(): Observable<Void> = mOnThumbsInListChanged.asObservable()
+
+
+    override fun setThumbsInList(isSet: Boolean) {
+        use_thumbs.setChecked(isSet)
+    }
+
+    override fun onStorageOptionChanged(): Observable<Void> = mOnStorageOptionChanged.asObservable()
 
     private var mImageClickCount = 0
 
@@ -150,13 +158,13 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
         when (item!!.itemId) {
             android.R.id.home -> {
                 NavUtils.navigateUpFromSameTask(this)
-                return true;
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun setUpVersionInfos() {
+    private fun setUpVersionInfo() {
         version_text.text = getString(R.string.settings_version, BuildConfig.VERSION_NAME)
 
         if (BuildConfig.DEBUG) {

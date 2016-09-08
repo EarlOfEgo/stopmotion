@@ -43,21 +43,21 @@
                 custom:subTitle="@string/settings_gif_compression_rate_description"
                 custom:title="@string/settings_gif_compression_rate_title" />
 
-            <com.sthagios.stopmotion.settings.items.TextPreferenceItem
+            <com.sthagios.stopmotion.settings.items.CheckBoxPreferenceItem
                 android:id="@+id/store_options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
-                custom:subTitle="Phone"
-                custom:title="Store options" />
+                custom:subTitle="@string/settings_storage_description"
+                custom:title="@string/settings_storage_title" />
 
-            <com.sthagios.stopmotion.settings.items.CheckBoxPreferenceItem
-                android:id="@+id/use_pushes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                custom:subTitle="@string/settings_pushes_description"
-                custom:title="@string/settings_pushes_title" />
+            <!--<com.sthagios.stopmotion.settings.items.CheckBoxPreferenceItem-->
+                <!--android:id="@+id/use_pushes"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--custom:subTitle="@string/settings_pushes_description"-->
+                <!--custom:title="@string/settings_pushes_title" />-->
 
             <com.sthagios.stopmotion.settings.items.TextPreferenceItem
                 android:id="@+id/licenses"
