@@ -1,6 +1,8 @@
 package com.sthagios.stopmotion.settings
 
 import android.net.Uri
+
+
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
@@ -22,11 +24,15 @@ import kotlinx.android.synthetic.main.toolbar.*
 import rx.Observable
 import rx.subjects.PublishSubject
 
-
 class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, SettingsView {
-    override fun onCompressionRateChanged(): Observable<Float> {
-        mOnCompressionRateChanged.asObservable()
-    }
+
+    private val mOnStorageOptionChanged: PublishSubject<Void> = PublishSubject.create()
+
+    private val mOnThumbsInListChanged: PublishSubject<Void> = PublishSubject.create()
+
+    private val mOnCompressionRateChanged: PublishSubject<Float> = PublishSubject.create()
+
+    override fun onCompressionRateChanged(): Observable<Float> = mOnCompressionRateChanged.asObservable()
 
     override fun onError(throwable: Throwable) {
         //TODO
@@ -91,7 +97,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
         }
 
         gif_compression.setOnClickListener({
-            val dialog = CompressionDialog.newInstance(getCompressionRate())
+            val dialog = CompressionDialog.newInstance(getCompressionRate().toBlocking().first())
             dialog.show(fragmentManager, "CompressionDialog")
         })
 
@@ -136,10 +142,6 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
     override fun setCompressionRate(id: Int) {
         gif_compression.setValueText(id)
     }
-
-    private val mOnStorageOptionChanged: PublishSubject<Void> = PublishSubject.create()
-    private val mOnThumbsInListChanged: PublishSubject<Void> = PublishSubject.create()
-    private val mOnCompressionRateChanged: PublishSubject<Float> = PublishSubject.create()
 
     override fun setStorageOption(isSet: Boolean) {
         store_options.setChecked(isSet)

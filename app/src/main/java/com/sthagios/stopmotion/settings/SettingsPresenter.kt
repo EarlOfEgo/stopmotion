@@ -35,7 +35,7 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
                 .subscribe({ mView!!.setCompressionRate(it) }))
 
         subscribe(mView!!.onCompressionRateChanged()
-
+                .doOnNext { mContext.setCompressionRate(it) }
                 .map { getCompressionRateResourceId(it) }
                 .subscribe({ mView!!.setCompressionRate(it) }))
     }
