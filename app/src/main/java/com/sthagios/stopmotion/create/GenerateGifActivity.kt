@@ -55,7 +55,7 @@ class GenerateGifActivity : AppCompatActivity() {
         mGifName = "$fileName.gif"
         mThumbName = "$fileName.PNG"
 
-        mCompressRate = getCompressionRate()
+        mCompressRate = getCompressionRate().toBlocking().first()
 
         mPictureList = retrieveStringListParameter()
 

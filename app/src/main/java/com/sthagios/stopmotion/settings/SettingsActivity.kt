@@ -24,6 +24,9 @@ import rx.subjects.PublishSubject
 
 
 class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, SettingsView {
+    override fun onCompressionRateChanged(): Observable<Float> {
+        mOnCompressionRateChanged.asObservable()
+    }
 
     override fun onError(throwable: Throwable) {
         //TODO
@@ -32,32 +35,28 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
     override fun onRateChosen(value: Int) {
         when (value) {
             0 -> {
-                setCompressionRate(COMPRESSION_HIGH)
-                setCompressionRateText(COMPRESSION_HIGH)
+                mOnCompressionRateChanged.onNext(COMPRESSION_HIGH)
                 logSettingsEvent("gif_compression", "COMPRESSION_HIGH")
             }
             1 -> {
-                setCompressionRate(COMPRESSION_MEDIUM)
-                setCompressionRateText(COMPRESSION_MEDIUM)
+                mOnCompressionRateChanged.onNext(COMPRESSION_MEDIUM)
                 logSettingsEvent("gif_compression", "COMPRESSION_MEDIUM")
             }
             2 -> {
-                val oldCompression = getCompressionRate()
+                //TODO this has to be part of the presenter!
+                val oldCompression = getCompressionRate().toBlocking().first()
                 Snackbar.make(gif_compression, R.string.snackbar_warning_low_compression,
                         Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_undo_action_text, {
                             logSettingsEvent("gif_compression", "undo")
                             if (oldCompression != COMPRESSION_LOW) {
-                                setCompressionRate(oldCompression)
-                                setCompressionRateText(oldCompression)
+                                mOnCompressionRateChanged.onNext(oldCompression)
                             } else {
-                                setCompressionRate(COMPRESSION_HIGH)
-                                setCompressionRateText(COMPRESSION_HIGH)
+                                mOnCompressionRateChanged.onNext(COMPRESSION_HIGH)
                             }
                         })
                         .show()
-                setCompressionRate(COMPRESSION_LOW)
-                setCompressionRateText(COMPRESSION_LOW)
+                mOnCompressionRateChanged.onNext(COMPRESSION_LOW)
                 logSettingsEvent("gif_compression", "COMPRESSION_LOW")
             }
         }
@@ -91,8 +90,6 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
             mOnThumbsInListChanged.onNext(null)
         }
 
-        val compressionRate = getCompressionRate()
-        setCompressionRateText(compressionRate)
         gif_compression.setOnClickListener({
             val dialog = CompressionDialog.newInstance(getCompressionRate())
             dialog.show(fragmentManager, "CompressionDialog")
@@ -136,8 +133,13 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
         setUpVersionInfo()
     }
 
+    override fun setCompressionRate(id: Int) {
+        gif_compression.setValueText(id)
+    }
+
     private val mOnStorageOptionChanged: PublishSubject<Void> = PublishSubject.create()
     private val mOnThumbsInListChanged: PublishSubject<Void> = PublishSubject.create()
+    private val mOnCompressionRateChanged: PublishSubject<Float> = PublishSubject.create()
 
     override fun setStorageOption(isSet: Boolean) {
         store_options.setChecked(isSet)
@@ -175,12 +177,5 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
         }
     }
 
-    private fun setCompressionRateText(compressionRate: Float) {
-        when (compressionRate) {
-            COMPRESSION_HIGH   -> gif_compression.setValueText(R.string.compression_rate_high)
-            COMPRESSION_MEDIUM -> gif_compression.setValueText(R.string.compression_rate_medium)
-            COMPRESSION_LOW    -> gif_compression.setValueText(R.string.compression_rate_low)
-        }
-    }
 }
 

@@ -17,4 +17,8 @@ interface SettingsView : AbstractView {
     fun onThumbsInListChanged(): Observable<Void>
 
     fun setThumbsInList(isSet: Boolean)
+
+    fun setCompressionRate(id: Int)
+
+    fun onCompressionRateChanged() : Observable<Float>
 }

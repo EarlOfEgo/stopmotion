@@ -48,7 +48,7 @@ class CompressionDialog : DialogFragment() {
         val BUNDLE_VALUE = "BUNDLE_VALUE"
 
         fun newInstance(value: Float): CompressionDialog {
-            val args = Bundle();
+            val args = Bundle()
             when (value) {
                 COMPRESSION_HIGH   -> args.putInt(BUNDLE_VALUE, 0);
                 COMPRESSION_MEDIUM -> args.putInt(BUNDLE_VALUE, 1);
