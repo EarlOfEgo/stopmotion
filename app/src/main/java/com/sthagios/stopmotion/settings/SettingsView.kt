@@ -10,15 +10,46 @@ import rx.Observable
  * @since   05.09.16
  */
 interface SettingsView : AbstractView {
+    /**
+     * Is emitted when the storage option changes
+     */
     fun onStorageOptionChanged(): Observable<Void>
 
+    /**
+     * View method to set the storage option
+     * @param isSet true if external is used, false if internal
+     */
     fun setStorageOption(isSet: Boolean)
 
+    /**
+     * Is emitted when the thumbs option has been changed
+     */
     fun onThumbsInListChanged(): Observable<Void>
 
+    /**
+     * View method if thumbs are used or not
+     * @param isSet true if thumbs are used, false if not
+     */
     fun setThumbsInList(isSet: Boolean)
 
+    /**
+     * View method for setting the compression rate text
+     * @param id the resource id of the string for the subtitle
+     */
     fun setCompressionRate(id: Int)
 
-    fun onCompressionRateChanged() : Observable<Float>
+    /**
+     * Is emitted when the compression rate changes, emits a Float with the compression rate
+     */
+    fun onCompressionRateChanged(): Observable<Float>
+
+    /**
+     * Is called when there are no permissions to write the external storage
+     */
+    fun onPermissionNotGranted()
+
+    /**
+     * Is emitted when the user granted or denied the storage permission
+     */
+    fun onPermissionResult(): Observable<Boolean>
 }

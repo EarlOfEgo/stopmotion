@@ -1,6 +1,9 @@
 package com.sthagios.stopmotion.settings
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.support.v4.content.ContextCompat
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.base.AbstractPresenter
 
@@ -15,6 +18,7 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
 
         subscribe(mContext.useExternalStorage()
                 .subscribe({ mView!!.setStorageOption(it) }))
+
         subscribe(mView!!.onStorageOptionChanged()
                 .flatMap { mContext.useExternalStorage() }
                 .map { !it }
@@ -38,6 +42,10 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
                 .doOnNext { mContext.setCompressionRate(it) }
                 .map { getCompressionRateResourceId(it) }
                 .subscribe({ mView!!.setCompressionRate(it) }))
+
+        subscribe(mView!!.onPermissionResult()
+                .filter { it }
+                .subscribe())
     }
 
     private fun getCompressionRateResourceId(it: Float?): Int {
@@ -50,5 +58,8 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
             }
         }
     }
+
+    fun permissionGranted() = ContextCompat.checkSelfPermission(mContext,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
 }
