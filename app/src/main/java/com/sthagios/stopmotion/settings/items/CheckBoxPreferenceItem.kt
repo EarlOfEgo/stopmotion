@@ -58,4 +58,10 @@ class CheckBoxPreferenceItem @JvmOverloads constructor(context: Context, attrs: 
     fun onCheckChanged(function: (Boolean) -> Unit) {
         checkBox.setOnCheckedChangeListener { compoundButton, b -> function(b) }
     }
+
+    fun onClickListener(function: () -> Unit) {
+        checkBox.setOnClickListener {
+            function()
+        }
+    }
 }
