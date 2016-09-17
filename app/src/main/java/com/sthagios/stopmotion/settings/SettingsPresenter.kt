@@ -118,7 +118,7 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
 
             realm.executeTransaction {
                 gif.shareUriString = FileProvider.getUriForFile(mContext,
-                        "com.sthagios.stopmotion.fileprovider", to).toString()
+                        mContext.getString(R.string.fileprovider_authority), to).toString()
                 gif.fileUriString = Uri.fromFile(to).toString()
 
             }

@@ -16,6 +16,7 @@ def buildTime = {
 
 def version_name = "1.0.2"
 def version_code = 4
+def appId = "com.sthagios.stopmotion"
 
 android {
     compileSdkVersion 24
@@ -24,7 +25,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.sthagios.stopmotion"
+        applicationId appId
         minSdkVersion 21
         targetSdkVersion 24
         versionCode version_code
@@ -33,6 +34,8 @@ android {
 
         buildConfigField "String", "GIT_SHA", "\"$gitSha\""
         buildConfigField "String", "BUILD_TIME", "\"$buildTime\""
+
+        resValue "string", "fileprovider_authority", "${appId}.fileprovider"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -53,6 +56,11 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+            resValue "string", "fileprovider_authority", "${appId}.fileprovider.debug"
         }
     }
     sourceSets {

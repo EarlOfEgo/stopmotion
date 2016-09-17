@@ -15,16 +15,16 @@ import com.google.firebase.analytics.FirebaseAnalytics
  */
 
 fun Context.shareGif(shareUriString: String, name: String = "gif_name") {
-    val shareIntent = Intent();
+    val shareIntent = Intent()
     shareIntent.action = Intent.ACTION_SEND;
     shareIntent.putExtra(Intent.EXTRA_TEXT, "Stopmotion");
     try {
         val shareUri = Uri.parse(shareUriString)
         Log.d("Sharing", "Sharing ${shareUri.toString()}")
-        shareIntent.putExtra(Intent.EXTRA_STREAM, shareUri);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, shareUri)
         shareIntent.type = "image/*";
 
-        startActivity(Intent.createChooser(shareIntent, "Stopmotion sharing"));
+        startActivity(Intent.createChooser(shareIntent, "Stopmotion sharing"))
 
 
         val payload = Bundle();

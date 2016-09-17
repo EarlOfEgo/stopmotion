@@ -196,7 +196,7 @@ class GenerateGifActivity : AppCompatActivity() {
             val newFile = File(imagePath, gif.fileName)
 
             gif.shareUriString = FileProvider.getUriForFile(this,
-                    "com.sthagios.stopmotion.fileprovider", newFile).toString()
+                    getString(R.string.fileprovider_authority), newFile).toString()
 
             gif.fileUriString = Uri.fromFile(newFile).toString()
             gif.thumbnailUriString = mThumbUri
