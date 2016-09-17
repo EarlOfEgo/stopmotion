@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         button_next.setOnClickListener {
             //TODO track
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
-                    MY_PERMISSIONS_REQUEST_CAMERA);
+                    MY_PERMISSIONS_REQUEST_CAMERA)
         }
     }
 
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
 
         if (!hasFocus || mAnimationStarted) {
-            return;
+            return
         }
 
         if (ContextCompat.checkSelfPermission(this,
@@ -147,14 +147,14 @@ class MainActivity : AppCompatActivity() {
     private fun showPermissionDenyInfo() {
 
         button_next.setOnClickListener({
-            val i = Intent();
-            i.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
-            i.addCategory(Intent.CATEGORY_DEFAULT);
-            i.data = Uri.parse("package:" + packageName);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            startActivity(i);
+            val i = Intent()
+            i.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            i.addCategory(Intent.CATEGORY_DEFAULT)
+            i.data = Uri.parse("package:" + packageName)
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+            startActivity(i)
         })
     }
 }

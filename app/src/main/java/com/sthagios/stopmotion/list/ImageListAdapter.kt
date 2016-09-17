@@ -69,7 +69,7 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
         val view = LayoutInflater.from(parent!!.context).inflate(R.layout.image_list_item, parent,
-                false);
+                false)
 
         return ViewHolder(view)
     }

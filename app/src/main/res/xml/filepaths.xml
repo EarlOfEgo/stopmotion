@@ -3,4 +3,7 @@
     <files-path
         name="stopmotion_gifs"
         path="gifs/" />
+    <external-path
+        name="stopmotion_gifs_external"
+        path="Stopmotion/gifs" />
 </paths>

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
-import com.sthagios.stopmotion.BuildConfig
 import java.util.*
 
 /**
@@ -101,21 +100,6 @@ inline fun Activity.retrieveStringParameter(): String {
         return intent.extras.getString("string_param", "")
     else
         return ""
-}
-
-inline fun Activity.LogDebug(param: String) {
-    if (BuildConfig.DEBUG)
-        Log.d("${this.javaClass.simpleName}", param)
-}
-
-inline fun Activity.LogVerbose(param: String) {
-    if (BuildConfig.DEBUG)
-        Log.v("${this.javaClass.simpleName}", param)
-}
-
-inline fun Activity.LogError(param: String) {
-    if (BuildConfig.DEBUG)
-        Log.e("${this.javaClass.simpleName}", param)
 }
 
 inline fun Activity.showWhichThreadInLogcat() {

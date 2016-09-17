@@ -7,7 +7,6 @@ import android.graphics.drawable.Animatable
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.support.design.widget.Snackbar
 import android.support.v4.content.FileProvider
 import android.support.v4.view.ViewCompat
@@ -21,6 +20,8 @@ import com.bumptech.glide.gifencoder.AnimatedGifEncoder
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
+import com.sthagios.stopmotion.image.storage.getGifDirectoryFile
+import com.sthagios.stopmotion.image.storage.getThumbDirectoryFile
 import com.sthagios.stopmotion.settings.COMPRESSION_HIGH
 import com.sthagios.stopmotion.settings.getCompressionRate
 import com.sthagios.stopmotion.show.ShowGifActivity
@@ -99,8 +100,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private fun startGifGeneration() {
         val startTime = System.currentTimeMillis()
-        rx.Observable.just(
-                getGifDirectoryFile())
+        rx.Observable.just(getGifDirectoryFile())
                 .map { "$it/$mGifName" }
                 .doOnNext { LogDebug("Gif path $it") }
                 .map { FileOutputStream(it) }
@@ -135,7 +135,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private fun onGifGenerated() {
 
-        val imagePath = File(filesDir, "gifs")
+        val imagePath = getGifDirectoryFile()
         val newFile = File(imagePath, mGifName)
         val fileSize = newFile.length()
 
@@ -192,7 +192,7 @@ class GenerateGifActivity : AppCompatActivity() {
             else
                 gif.name = "Stopmotion Gif"
 
-            val imagePath = File(filesDir, "gifs");
+            val imagePath = getGifDirectoryFile()
             val newFile = File(imagePath, gif.fileName)
 
             gif.shareUriString = FileProvider.getUriForFile(this,
@@ -228,30 +228,6 @@ class GenerateGifActivity : AppCompatActivity() {
         for (file in directory.listFiles()) {
             file.delete()
         }
-    }
-
-    private fun getGifDirectoryFile(): File {
-        val mediaStorageDir = File(filesDir, "gifs")
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                LogDebug("failed to create directory")
-                return File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "Stopmotion" + "/gifs/")
-            }
-        }
-        return mediaStorageDir
-    }
-
-    private fun getThumbDirectoryFile(): File {
-        val mediaStorageDir = File(filesDir, "thumbs")
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                LogDebug("failed to create directory")
-                return File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "Stopmotion" + "/thumbs/")
-            }
-        }
-        return mediaStorageDir
     }
 
 
