@@ -52,4 +52,15 @@ interface SettingsView : AbstractView {
      * Is emitted when the user granted or denied the storage permission
      */
     fun onPermissionResult(): Observable<Boolean>
+
+    /**
+     * IS called when we don't have the permission to access external storage
+     */
+    fun noStoragePermissionGranted()
+
+    /**
+     * Is called when the moving of the gifs started
+     */
+    fun showMovingLoading(show: Boolean)
+
 }

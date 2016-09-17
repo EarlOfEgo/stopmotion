@@ -39,6 +39,14 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
     private val MY_PERMISSIONS_REQUEST_STORAGE: Int = 123
 
     private val mOnPermissionResult: PublishSubject<Boolean> = PublishSubject.create()
+    override fun noStoragePermissionGranted() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                MY_PERMISSIONS_REQUEST_STORAGE)
+    }
+
+    override fun showMovingLoading(show: Boolean) {
+        //TODO
+    }
 
     private val mOnStorageOptionChanged: PublishSubject<Void> = PublishSubject.create()
 
@@ -127,7 +135,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
             dialog.show(fragmentManager, "LicensesDialog")
         })
 
-        store_options.onCheckChanged {
+        store_options.onClickListener {
             mOnStorageOptionChanged.onNext(null)
         }
 
@@ -215,6 +223,8 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
                             showPermissionDenyInfo()
                         }
                     }
+                    store_options.setChecked(false)
+                    mOnPermissionResult.onNext(false)
                 }
                 return
             }

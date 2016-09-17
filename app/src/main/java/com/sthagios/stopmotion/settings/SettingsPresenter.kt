@@ -6,6 +6,10 @@ import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.base.AbstractPresenter
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import rx.subjects.PublishSubject
 
 /**
  * Stopmotion
@@ -14,6 +18,9 @@ import com.sthagios.stopmotion.base.AbstractPresenter
  * @since   05.09.16
  */
 class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>() {
+
+    val mMoveGifs: PublishSubject<Boolean> = PublishSubject.create()
+
     override fun onStart() {
 
         subscribe(mContext.useExternalStorage()
@@ -22,8 +29,40 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
         subscribe(mView!!.onStorageOptionChanged()
                 .flatMap { mContext.useExternalStorage() }
                 .map { !it }
-                .doOnNext { mContext.setUseExternalStorage(it) }
-                .subscribe({ mView!!.setStorageOption(it) }))
+                .subscribe {
+                    //If we want to use external storage
+                    if (it) {
+                        if (permissionGranted()) {
+                            mMoveGifs.onNext(it)
+                        } else {
+                            mView!!.noStoragePermissionGranted()
+                        }
+                    } else {
+                        mMoveGifs.onNext(it)
+                    }
+                }
+        )
+
+        subscribe(
+                Observable.merge(mMoveGifs.asObservable(), mView!!.onPermissionResult())
+                        .doOnNext { mView!!.showMovingLoading(true) }
+                        .flatMap {
+                            Observable.just(moveGifs(it))
+                                    .subscribeOn(Schedulers.io())
+                        }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            mView!!.showMovingLoading(false)
+                            if (it) {
+                                mContext.setUseExternalStorage(it)
+                                mView!!.setStorageOption(it)
+                            } else
+                                mView!!.onError(Throwable("Moving failed"))
+                        }, {
+                            mView!!.showMovingLoading(false)
+                            mView!!.onError(it)
+                        })
+        )
 
         subscribe(mContext.useThumbsInList()
                 .subscribe({ mView!!.setThumbsInList(it) }))
@@ -46,6 +85,15 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
         subscribe(mView!!.onPermissionResult()
                 .filter { it }
                 .subscribe())
+    }
+
+    private fun moveGifs(toExternal: Boolean): Boolean {
+        if(toExternal) {
+
+        } else {
+
+        }
+        return false
     }
 
     private fun getCompressionRateResourceId(it: Float?): Int {
