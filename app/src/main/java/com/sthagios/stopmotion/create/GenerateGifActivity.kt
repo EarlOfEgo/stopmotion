@@ -135,7 +135,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private fun onGifGenerated() {
 
-        val imagePath = File(filesDir, "gifs")
+        val imagePath = getGifDirectoryFile()
         val newFile = File(imagePath, mGifName)
         val fileSize = newFile.length()
 
@@ -192,7 +192,7 @@ class GenerateGifActivity : AppCompatActivity() {
             else
                 gif.name = "Stopmotion Gif"
 
-            val imagePath = File(filesDir, "gifs");
+            val imagePath = getGifDirectoryFile()
             val newFile = File(imagePath, gif.fileName)
 
             gif.shareUriString = FileProvider.getUriForFile(this,
