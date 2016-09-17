@@ -83,7 +83,7 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
                 .doOnNext { mContext.setUseThumbsInList(it) }
                 .subscribe({ mView!!.setThumbsInList(it) }))
 
-        subscribe(mContext.getCompressionRate()
+        subscribe(mContext.getCompressionRateObservable()
                 .map { getCompressionRateResourceId(it) }
                 .subscribe({ mView!!.setCompressionRate(it) }))
 

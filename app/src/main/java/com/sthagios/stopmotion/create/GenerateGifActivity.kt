@@ -56,7 +56,7 @@ class GenerateGifActivity : AppCompatActivity() {
         mGifName = "$fileName.gif"
         mThumbName = "$fileName.PNG"
 
-        mCompressRate = getCompressionRate().toBlocking().first()
+        mCompressRate = getCompressionRate()
 
         mPictureList = retrieveStringListParameter()
 
@@ -229,8 +229,6 @@ class GenerateGifActivity : AppCompatActivity() {
             file.delete()
         }
     }
-
-
 
 
     private lateinit var mPictureList: ArrayList<String>

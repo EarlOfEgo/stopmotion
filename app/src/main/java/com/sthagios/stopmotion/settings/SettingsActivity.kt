@@ -79,7 +79,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
             }
             2 -> {
                 //TODO this has to be part of the presenter!
-                val oldCompression = getCompressionRate().toBlocking().first()
+                val oldCompression = getCompressionRate()
                 Snackbar.make(gif_compression, R.string.snackbar_warning_low_compression,
                         Snackbar.LENGTH_LONG)
                         .setAction(R.string.snackbar_undo_action_text, {
@@ -126,7 +126,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
         }
 
         gif_compression.setOnClickListener({
-            val dialog = CompressionDialog.newInstance(getCompressionRate().toBlocking().first())
+            val dialog = CompressionDialog.newInstance(getCompressionRate())
             dialog.show(fragmentManager, "CompressionDialog")
         })
 

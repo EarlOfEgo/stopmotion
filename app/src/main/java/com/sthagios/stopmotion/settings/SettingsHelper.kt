@@ -22,12 +22,11 @@ inline fun Context.setUseThumbsInList(value: Boolean) {
     getSettingsPreferences().edit().putBoolean("THUMBS_IN_LIST", value).apply()
 }
 
-//inline fun Context.getCompressionRate(): Float = getSettingsPreferences().getFloat(
-//        "COMPRESSION_RATE", COMPRESSION_HIGH)
+inline fun Context.getCompressionRate(): Float = getSettingsPreferences().getFloat(
+        "COMPRESSION_RATE", COMPRESSION_HIGH)
 
-inline fun Context.getCompressionRate(): Observable<Float> = Observable.just(
-        getSettingsPreferences().getFloat(
-                "COMPRESSION_RATE", COMPRESSION_HIGH))
+inline fun Context.getCompressionRateObservable(): Observable<Float> = Observable.just(
+        getCompressionRate())
 
 inline fun Context.setCompressionRate(value: Float) {
     getSettingsPreferences().edit().putFloat("COMPRESSION_RATE", value).apply()

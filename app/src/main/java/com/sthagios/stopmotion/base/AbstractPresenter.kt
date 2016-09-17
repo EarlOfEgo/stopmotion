@@ -5,9 +5,8 @@ import rx.subscriptions.CompositeSubscription
 
 /**
  * Stopmotion
-
+ *
  * @author stephan
- * *
  * @since 05.09.16
  */
 abstract class AbstractPresenter<V : AbstractView> {
