@@ -25,3 +25,8 @@ inline fun Any.LogError(param: String) {
     if (BuildConfig.DEBUG)
         Log.e("${this.javaClass.simpleName}", param)
 }
+
+inline fun Any.LogError(param: Throwable) {
+    if (BuildConfig.DEBUG)
+        Log.e("${this.javaClass.simpleName}", param.message)
+}
