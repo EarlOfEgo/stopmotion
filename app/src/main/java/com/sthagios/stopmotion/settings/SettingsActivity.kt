@@ -63,7 +63,8 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
     override fun onStorageOptionChanged(): Observable<Void> = mOnStorageOptionChanged.asObservable()
 
     override fun onError(throwable: Throwable) {
-        //TODO
+        Snackbar.make(gif_compression, getString(R.string.snackbar_error_occurred),
+                Snackbar.LENGTH_LONG).show()
     }
 
     override fun onRateChosen(value: Int) {
