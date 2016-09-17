@@ -63,5 +63,8 @@ class CheckBoxPreferenceItem @JvmOverloads constructor(context: Context, attrs: 
         checkBox.setOnClickListener {
             function()
         }
+        setOnClickListener {
+            function()
+        }
     }
 }
