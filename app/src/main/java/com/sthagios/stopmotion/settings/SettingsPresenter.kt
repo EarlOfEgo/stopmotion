@@ -23,11 +23,11 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
 
     override fun onStart() {
 
-        subscribe(mContext.useExternalStorage()
+        subscribe(mContext.useExternalStorageObservable()
                 .subscribe({ mView!!.setStorageOption(it) }))
 
         subscribe(mView!!.onStorageOptionChanged()
-                .flatMap { mContext.useExternalStorage() }
+                .flatMap { mContext.useExternalStorageObservable() }
                 .map { !it }
                 .subscribe {
                     //If we want to use external storage
@@ -88,6 +88,7 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
     }
 
     private fun moveGifs(toExternal: Boolean): Boolean {
+
         if(toExternal) {
 
         } else {

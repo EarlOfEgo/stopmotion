@@ -25,8 +25,9 @@ inline fun Context.setUseThumbsInList(value: Boolean) {
 //inline fun Context.getCompressionRate(): Float = getSettingsPreferences().getFloat(
 //        "COMPRESSION_RATE", COMPRESSION_HIGH)
 
-inline fun Context.getCompressionRate(): Observable<Float> = Observable.just(getSettingsPreferences().getFloat(
-        "COMPRESSION_RATE", COMPRESSION_HIGH))
+inline fun Context.getCompressionRate(): Observable<Float> = Observable.just(
+        getSettingsPreferences().getFloat(
+                "COMPRESSION_RATE", COMPRESSION_HIGH))
 
 inline fun Context.setCompressionRate(value: Float) {
     getSettingsPreferences().edit().putFloat("COMPRESSION_RATE", value).apply()
@@ -36,8 +37,11 @@ inline fun Context.setUseExternalStorage(value: Boolean) {
     getSettingsPreferences().edit().putBoolean("USE_EXTERNAL_STORAGE", value).apply()
 }
 
-inline fun Context.useExternalStorage(): Observable<Boolean> = Observable.just(
+inline fun Context.useExternalStorageObservable(): Observable<Boolean> = Observable.just(
         getSettingsPreferences().getBoolean("USE_EXTERNAL_STORAGE", false))
+
+inline fun Context.useExternalStorage(): Boolean = getSettingsPreferences().getBoolean(
+        "USE_EXTERNAL_STORAGE", false)
 
 val COMPRESSION_HIGH = 0.2f
 val COMPRESSION_MEDIUM = 0.4f

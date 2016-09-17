@@ -1,6 +1,6 @@
 package com.sthagios.stopmotion.image.database
 
-import android.app.Activity
+import android.content.Context
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
@@ -11,7 +11,7 @@ import io.realm.RealmConfiguration
  * @since   05.06.16
  */
 
-fun Activity.getRealmInstance(): Realm {
+fun Context.getRealmInstance(): Realm {
 
     // Create configuration and reset Realm.
     val realmConfig = RealmConfiguration.Builder(this).build()
