@@ -3,6 +3,7 @@
 package com.sthagios.stopmotion.rating
 
 import android.content.Context
+import com.sthagios.stopmotion.BuildConfig
 import com.sthagios.stopmotion.utils.getApproximateAppStarts
 
 /**
@@ -12,6 +13,9 @@ import com.sthagios.stopmotion.utils.getApproximateAppStarts
  * @since   20.06.16
  */
 inline fun Context.shouldShowRating(): Boolean {
+    if (BuildConfig.DEBUG)
+        return false
+
     val userRated = userRated()
     val userGaveFeedback = userGaveFeedback()
     if (!userRated && !userGaveFeedback) {
