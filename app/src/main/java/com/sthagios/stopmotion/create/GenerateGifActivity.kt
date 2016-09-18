@@ -12,6 +12,7 @@ import android.support.v4.content.FileProvider
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.text.format.Formatter
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -147,7 +148,7 @@ class GenerateGifActivity : AppCompatActivity() {
             gif_generated_info.text = resources.getString(
                     R.string.generate_successfully_generated_info_1, "$mGenerationTime") +
                     " " + resources.getString(R.string.generate_successfully_generated_info_2,
-                    "$fileSize") +
+                    "${Formatter.formatFileSize(this, fileSize)}") +
                     " " + resources.getString(R.string.generate_successfully_generated_info_3,
                     "${mPictureList.size}", "${mPictureList.size * 0.25}") +
                     "\n\n*$sideNode"

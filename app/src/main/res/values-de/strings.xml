@@ -74,7 +74,7 @@
     <string name="converting_images_magic_state">Benutze ein bisschen Magie</string>
     <string name="generate_button_save">Speichern</string>
     <string name="generate_successfully_generated_info_1">Dein Gif wurde in %1$s Sekunden generiert*.</string>
-    <string name="generate_successfully_generated_info_2">Es hat eine Größe von %1$s bytes.</string>
+    <string name="generate_successfully_generated_info_2">Es hat eine Größe von %1$s.</string>
     <string name="generate_successfully_generated_info_3">Es besteht aus %1$s einzelnen Bilder, die alle 1/4 Sekunden angezeigt werden und daher eine Gesamtlaufzeit von %2$s Sekunden hat.</string>
     <string name="generate_successfully_generated_title">Gif erfolgreich erstellt</string>
     <string name="generated_with_text_1">Keine Einhörnern wurden während diesem Prozess verletzt</string>
