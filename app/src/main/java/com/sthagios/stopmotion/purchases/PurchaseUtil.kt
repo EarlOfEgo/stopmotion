@@ -21,7 +21,6 @@ fun Context.bindService() {
     val serviceIntent = Intent("com.android.vending.billing.InAppBillingService.BIND")
     serviceIntent.`package` = "com.android.vending"
 
-
     bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE)
 }
 
