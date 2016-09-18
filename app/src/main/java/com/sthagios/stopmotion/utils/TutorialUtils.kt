@@ -4,6 +4,7 @@ package com.sthagios.stopmotion.utils
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
+import com.sthagios.stopmotion.BuildConfig
 import com.sthagios.stopmotion.R
 import com.wooplr.spotlight.SpotlightConfig
 
@@ -18,7 +19,7 @@ inline fun Context.getTutorialSharedPrefs() = getSharedPreferences("TUTORIAL", 0
 
 inline fun Context.shouldShowTutorial(): Boolean {
     val name = this.javaClass.simpleName
-    return getTutorialSharedPrefs().getBoolean(name, true)
+    return getTutorialSharedPrefs().getBoolean(name, true) && !BuildConfig.DEBUG
 }
 
 inline fun Context.showedTutorial() {
