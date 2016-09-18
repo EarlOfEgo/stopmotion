@@ -188,7 +188,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
     private var mImageClickCount = 0
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        when (item?.itemId) {
             android.R.id.home -> {
                 NavUtils.navigateUpFromSameTask(this)
                 return true

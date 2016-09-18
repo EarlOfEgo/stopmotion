@@ -45,21 +45,21 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val gif = data[position]
         if (gif.isValid) {
-            holder!!.mImageText.text = gif.name
+            holder?.mImageText?.text = gif.name
             if (useThumbs) {
                 val uri = Uri.parse(gif.thumbnailUriString)
-                Glide.with(mContext).load(uri).into(holder.mImageView)
+                Glide.with(mContext).load(uri).into(holder?.mImageView)
             } else {
                 val uri = Uri.parse(gif.fileUriString)
-                val target = GlideDrawableImageViewTarget(holder.mImageView)
+                val target = GlideDrawableImageViewTarget(holder?.mImageView)
                 Glide.with(mContext).load(uri).into(target)
 
             }
-            holder.mShareButton.setOnClickListener(
+            holder?.mShareButton?.setOnClickListener(
                     { mContext.shareGif(gif.shareUriString, gif.name) })
-            holder.mImageView.setOnClickListener({
+            holder?.mImageView?.setOnClickListener({
                 val p1: Pair<View, String> = Pair.create(holder.mImageView, "shared_image")
-                val p2: Pair<View, String> = Pair.create(holder.mImageText!!, "shared_text")
+                val p2: Pair<View, String> = Pair.create(holder.mImageText, "shared_text")
                 val trans = ActivityOptionsCompat.makeSceneTransitionAnimation(mContext as Activity,
                         p1, p2)
                 mContext.startActivity<ShowGifActivity>(gif.id, 1, trans.toBundle())
@@ -68,15 +68,15 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
-        val view = LayoutInflater.from(parent!!.context).inflate(R.layout.image_list_item, parent,
+        val view = LayoutInflater.from(parent?.context).inflate(R.layout.image_list_item, parent,
                 false)
 
         return ViewHolder(view)
     }
 
     class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
-        var mImageView = itemView!!.image_view
-        var mImageText = itemView!!.image_text
-        var mShareButton = itemView!!.share_button
+        var mImageView = itemView?.image_view
+        var mImageText = itemView?.image_text
+        var mShareButton = itemView?.share_button
     }
 }

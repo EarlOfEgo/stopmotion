@@ -67,7 +67,7 @@ class CompressionDialog : DialogFragment() {
     val BUNDLE_VALUE = "BUNDLE_VALUE"
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        outState!!.putInt(BUNDLE_VALUE, mValue)
+        outState?.putInt(BUNDLE_VALUE, mValue)
         super.onSaveInstanceState(outState)
     }
 

@@ -34,8 +34,9 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
 
     override fun onStart() {
 
+
         subscribe(mContext.useExternalStorageObservable()
-                .subscribe({ mView!!.setStorageOption(it) }))
+                .subscribe({ mView?.setStorageOption(it) }))
 
         subscribe(mView!!.onStorageOptionChanged()
                 .flatMap { mContext.useExternalStorageObservable() }
@@ -75,22 +76,22 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
         )
 
         subscribe(mContext.useThumbsInList()
-                .subscribe({ mView!!.setThumbsInList(it) }))
+                .subscribe({ mView?.setThumbsInList(it) }))
 
         subscribe(mView!!.onThumbsInListChanged()
                 .flatMap { mContext.useThumbsInList() }
                 .map { !it }
                 .doOnNext { mContext.setUseThumbsInList(it) }
-                .subscribe({ mView!!.setThumbsInList(it) }))
+                .subscribe({ mView?.setThumbsInList(it) }))
 
         subscribe(mContext.getCompressionRateObservable()
                 .map { getCompressionRateResourceId(it) }
-                .subscribe({ mView!!.setCompressionRate(it) }))
+                .subscribe({ mView?.setCompressionRate(it) }))
 
         subscribe(mView!!.onCompressionRateChanged()
                 .doOnNext { mContext.setCompressionRate(it) }
                 .map { getCompressionRateResourceId(it) }
-                .subscribe({ mView!!.setCompressionRate(it) }))
+                .subscribe({ mView?.setCompressionRate(it) }))
 
         subscribe(mView!!.onPermissionResult()
                 .filter { it }

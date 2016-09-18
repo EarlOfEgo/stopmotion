@@ -176,12 +176,12 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             val surface = Surface(texture)
 
             // We set up a CaptureRequest.Builder with the output Surface.
-            mPreviewRequestBuilder = mCameraDevice!!.createCaptureRequest(
+            mPreviewRequestBuilder = mCameraDevice?.createCaptureRequest(
                     CameraDevice.TEMPLATE_PREVIEW)
-            mPreviewRequestBuilder!!.addTarget(surface)
+            mPreviewRequestBuilder?.addTarget(surface)
 
             // Here, we create a CameraCaptureSession for camera preview.
-            mCameraDevice!!.createCaptureSession(
+            mCameraDevice?.createCaptureSession(
                     Arrays.asList(surface, mImageReader!!.surface),
                     object : CameraCaptureSession.StateCallback() {
 
@@ -234,7 +234,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
         override fun onCaptureCompleted(session: CameraCaptureSession?, request: CaptureRequest?,
                 result: TotalCaptureResult?) {
-            process(result!!)
+            process(result)
         }
 
         override fun onCaptureProgressed(session: CameraCaptureSession?, request: CaptureRequest?,
@@ -242,20 +242,20 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             process(partialResult!!)
         }
 
-        private fun process(result: CaptureResult) {
+        private fun process(result: CaptureResult?) {
             if (mState != STATE_PREVIEW)
                 when (mState) {
                 // We have nothing to do when the camera preview is working normally.
                     STATE_PREVIEW                -> {
                     }
                     STATE_WAITING_LOCK           -> {
-                        val afState = result.get(CaptureResult.CONTROL_AF_STATE)
+                        val afState = result?.get(CaptureResult.CONTROL_AF_STATE)
                         if (afState == null)
                             captureStillPicture()
                         else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
                                 CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState) {
                             // CONTROL_AE_STATE can be null on some devices
-                            val aeState = result.get(CaptureResult.CONTROL_AE_STATE)
+                            val aeState = result?.get(CaptureResult.CONTROL_AE_STATE)
                             if (aeState == null ||
                                     aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
                                 mState = STATE_PICTURE_TAKEN
@@ -267,7 +267,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     }
                     STATE_WAITING_PRECAPTURE     -> {
                         // CONTROL_AE_STATE can be null on some devices
-                        val aeState = result.get(CaptureResult.CONTROL_AE_STATE)
+                        val aeState = result?.get(CaptureResult.CONTROL_AE_STATE)
                         if (aeState == null ||
                                 aeState == CaptureResult.CONTROL_AE_STATE_PRECAPTURE ||
                                 aeState == CaptureRequest.CONTROL_AE_STATE_FLASH_REQUIRED) {
@@ -276,7 +276,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     }
                     STATE_WAITING_NON_PRECAPTURE -> {
                         // CONTROL_AE_STATE can be null on some devices
-                        val aeState = result.get(CaptureResult.CONTROL_AE_STATE)
+                        val aeState = result?.get(CaptureResult.CONTROL_AE_STATE)
                         if (aeState == null || aeState != CaptureResult.CONTROL_AE_STATE_PRECAPTURE) {
                             mState = STATE_PICTURE_TAKEN
                             captureStillPicture()
@@ -293,11 +293,11 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private fun runPrecaptureSequence() {
         try {
             // This is how to tell the camera to trigger.
-            mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
+            mPreviewRequestBuilder?.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
                     CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_START)
             // Tell #mCaptureCallback to wait for the precapture sequence to be set.
             mState = STATE_WAITING_PRECAPTURE
-            mCaptureSession!!.capture(mPreviewRequestBuilder!!.build(), mCaptureCallback,
+            mCaptureSession?.capture(mPreviewRequestBuilder?.build(), mCaptureCallback,
                     mBackgroundHandler)
         } catch (e: CameraAccessException) {
             e.printStackTrace()
@@ -326,7 +326,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             // This is the CaptureRequest.Builder that we use to take a picture.
             val captureBuilder = mCameraDevice!!.createCaptureRequest(
                     CameraDevice.TEMPLATE_STILL_CAPTURE)
-            captureBuilder.addTarget(mImageReader!!.surface)
+            captureBuilder.addTarget(mImageReader?.surface)
 
             // Use the same AE and AF modes as the preview.
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
@@ -359,8 +359,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                 }
             }
 
-            mCaptureSession!!.stopRepeating()
-            mCaptureSession!!.capture(captureBuilder.build(), CaptureCallback, null)
+            mCaptureSession?.stopRepeating()
+            mCaptureSession?.capture(captureBuilder.build(), CaptureCallback, null)
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
@@ -373,15 +373,15 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private fun unlockFocus() {
         try {
             // Reset the auto-focus trigger
-            mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AF_TRIGGER,
+            mPreviewRequestBuilder?.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_CANCEL)
             setAutoFlash(mPreviewRequestBuilder!!)
             if (null != mCaptureSession) {
-                mCaptureSession!!.capture(mPreviewRequestBuilder!!.build(), mCaptureCallback,
+                mCaptureSession?.capture(mPreviewRequestBuilder?.build(), mCaptureCallback,
                         mBackgroundHandler)
                 // After this, the camera will go back to the normal state of preview.
                 mState = STATE_PREVIEW
-                mCaptureSession!!.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
+                mCaptureSession?.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
                         mBackgroundHandler)
             }
         } catch (e: CameraAccessException) {
@@ -420,13 +420,13 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
         override fun onDisconnected(camera: CameraDevice?) {
             mCameraOpenCloseLock.release()
-            camera!!.close()
+            camera?.close()
             mCameraDevice = null
         }
 
         override fun onError(camera: CameraDevice?, error: Int) {
             mCameraOpenCloseLock.release()
-            camera!!.close()
+            camera?.close()
             mCameraDevice = null
             finish()
         }
@@ -437,8 +437,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
     private fun startBackgroundThread() {
         mBackgroundThread = HandlerThread("CameraBackground")
-        mBackgroundThread!!.start()
-        mBackgroundHandler = Handler(mBackgroundThread!!.looper)
+        mBackgroundThread?.start()
+        mBackgroundHandler = Handler(mBackgroundThread?.looper)
     }
 
     private var mBackgroundHandler: Handler? = null
@@ -464,7 +464,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
     private val mOnImageAvailableListener = ImageReader.OnImageAvailableListener { reader ->
         val file = getOutputMediaFileForImage()
-        mBackgroundHandler!!.post(ImageSaver(reader.acquireNextImage(), file, {
+        mBackgroundHandler?.post(ImageSaver(reader.acquireNextImage(), file, {
             LogDebug("Saved $it")
             mPictureList = mPictureList.plus(it)
 
@@ -598,7 +598,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
                     maxPreviewHeight, largest)
             LogVerbose(
-                    "Preview size: height=${mPreviewSize!!.height} width=${mPreviewSize!!.width}")
+                    "Preview size: height=${mPreviewSize?.height} width=${mPreviewSize?.width}")
 
             // We fit the aspect ratio of TextureView to the size of preview we picked.
 //            val orientation = resources.configuration.orientation
@@ -682,8 +682,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        outState!!.putInt(BUNDLE_BURST_TIME, mBurstTime)
-        outState.putInt(BUNDLE_BURST_AMOUNT, mBurstAmount)
+        outState?.putInt(BUNDLE_BURST_TIME, mBurstTime)
+        outState?.putInt(BUNDLE_BURST_AMOUNT, mBurstAmount)
         super.onSaveInstanceState(outState)
     }
 
@@ -912,11 +912,11 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private fun lockFocus() {
         try {
             // This is how to tell the camera to lock focus.
-            mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AF_TRIGGER,
+            mPreviewRequestBuilder?.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_START)
             // Tell #mCaptureCallback to wait for the lock.
             mState = STATE_WAITING_LOCK
-            mCaptureSession!!.capture(mPreviewRequestBuilder!!.build(), mCaptureCallback,
+            mCaptureSession?.capture(mPreviewRequestBuilder?.build(), mCaptureCallback,
                     mBackgroundHandler)
         } catch (e: CameraAccessException) {
             e.printStackTrace()
@@ -954,9 +954,9 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     }
 
     private fun stopBackgroundThread() {
-        mBackgroundThread!!.quitSafely()
+        mBackgroundThread?.quitSafely()
         try {
-            mBackgroundThread!!.join()
+            mBackgroundThread?.join()
             mBackgroundThread = null
             mBackgroundHandler = null
         } catch (e: InterruptedException) {

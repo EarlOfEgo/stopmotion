@@ -50,7 +50,7 @@ class GenerateGifActivity : AppCompatActivity() {
         setContentView(R.layout.activity_generate_gif)
 
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.generate_title)
 
         val fileName = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
@@ -105,7 +105,7 @@ class GenerateGifActivity : AppCompatActivity() {
                 .map { "$it/$mGifName" }
                 .doOnNext { LogDebug("Gif path $it") }
                 .map { FileOutputStream(it) }
-                .doOnNext { t -> t!!.write(generateGIF()) }
+                .doOnNext { t -> t?.write(generateGIF()) }
                 .doOnNext { t -> t.close() }
                 .subscribeOn(Schedulers.computation())
                 //One second for magic
@@ -123,7 +123,7 @@ class GenerateGifActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        when (item?.itemId) {
             android.R.id.home -> {
                 finish()
                 return true

@@ -22,7 +22,7 @@ class ItemTouchHelperCallback(val mAdapter: StateAdapter, val onRemove: (Int) ->
             return false
 
         Collections.swap(mAdapter.imageList, viewHolder!!.adapterPosition, target.adapterPosition)
-        mAdapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition);
+        mAdapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition)
         return true
     }
 
