@@ -1,8 +1,15 @@
 package com.sthagios.stopmotion.list
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
@@ -46,11 +53,59 @@ class ImageListActivity : AppCompatActivity() {
 
         recyclerViewImageList.addItemDecoration(ItemDecorator())
 
-        fab.setOnClickListener({ view -> createNewImage() })
+        fab.setOnClickListener {
+            if (hasCameraAccess())
+                createNewImage()
+            else {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+            }
+        }
 
         if (shouldShowRating())
             startActivity<RatingActivity>()
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+            grantResults: IntArray) {
+        when (requestCode) {
+            MY_PERMISSIONS_REQUEST_CAMERA -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.size > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    createNewImage()
+                } else {
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                            showPermissionDenyInfo()
+                        }
+                    }
+                }
+                return
+            }
+        }
+    }
+
+    private fun showPermissionDenyInfo() {
+
+        Snackbar.make(recyclerViewImageList, "YOU NEED PERMISSIONS", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Settings", {
+                    val i = Intent();
+                    i.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
+                    i.addCategory(Intent.CATEGORY_DEFAULT);
+                    i.data = Uri.parse("package:" + packageName);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    startActivity(i);
+                })
+                .show()
+    }
+
+    private val MY_PERMISSIONS_REQUEST_CAMERA: Int = 123
+
+    private fun hasCameraAccess() = ContextCompat.checkSelfPermission(this,
+            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
 
     override fun onResume() {
         super.onResume()
@@ -61,7 +116,7 @@ class ImageListActivity : AppCompatActivity() {
         if (resultCode == RESULT_OK) {
             if (requestCode == 1 && data != null) {
                 mAdapter.notifyDataSetChanged()
-//                val id = data.getStringExtra("deleted_id")
+                //                val id = data.getStringExtra("deleted_id")
                 val name = data.getStringExtra("deleted_name")
                 if (name != null && name.length > 0) {
                     Snackbar.make(recyclerViewImageList, "$name successfully deleted",
