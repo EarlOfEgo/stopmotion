@@ -88,8 +88,9 @@ class ImageListActivity : AppCompatActivity() {
 
     private fun showPermissionDenyInfo() {
 
-        Snackbar.make(recyclerViewImageList, "YOU NEED PERMISSIONS", Snackbar.LENGTH_INDEFINITE)
-                .setAction("Settings", {
+        Snackbar.make(recyclerViewImageList, R.string.snackbar_permissions,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.snackbar_permissions_settings_action_text, {
                     val i = Intent();
                     i.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
                     i.addCategory(Intent.CATEGORY_DEFAULT);
