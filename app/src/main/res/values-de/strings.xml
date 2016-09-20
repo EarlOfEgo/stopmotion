@@ -92,5 +92,7 @@
     <string name="tutorial_camera_take_image_title">Fotos</string>
     <string name="tutorial_edit_info">Swipe hoch/runter um ein Foto zu löschen, oder halte lange gedrückt um die Reihenfolge zu ändern.</string>
     <string name="tutorial_edit_title">Ediere dein Gif</string>
+    <string name="snackbar_permissions">Du musst Kamerazugriff gewähren.</string>
+    <string name="snackbar_permissions_settings_action_text">Einstellungen</string>
 
 </resources>

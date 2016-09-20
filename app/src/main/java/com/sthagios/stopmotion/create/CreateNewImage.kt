@@ -1,8 +1,10 @@
 package com.sthagios.stopmotion.create
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.drawable.Animatable
 import android.hardware.camera2.*
@@ -13,6 +15,7 @@ import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Size
 import android.util.SparseIntArray
@@ -198,9 +201,9 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                                 mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AF_MODE,
                                         CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
                                 // Flash is automatically enabled when necessary.
-//                                setAutoFlash(mPreviewRequestBuilder!!)
-//                                mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_MODE,
-//                                        CaptureRequest.FLASH_MODE_OFF)
+                                //                                setAutoFlash(mPreviewRequestBuilder!!)
+                                //                                mPreviewRequestBuilder!!.set(CaptureRequest.CONTROL_AE_MODE,
+                                //                                        CaptureRequest.FLASH_MODE_OFF)
 
                                 // Finally, we start displaying the camera preview.
                                 mPreviewRequest = mPreviewRequestBuilder!!.build()
@@ -529,10 +532,10 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             val characteristics = manager.getCameraCharacteristics(mCameraId)
 
             // We don't use a front facing camera in this sample.
-//            val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
-//            if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
-//                continue
-//            }
+            //            val facing = characteristics.get(CameraCharacteristics.LENS_FACING)
+            //            if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+            //                continue
+            //            }
 
             val map: StreamConfigurationMap = characteristics.get(
                     CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
@@ -601,12 +604,12 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     "Preview size: height=${mPreviewSize?.height} width=${mPreviewSize?.width}")
 
             // We fit the aspect ratio of TextureView to the size of preview we picked.
-//            val orientation = resources.configuration.orientation
-//            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//                camera_preview.setAspectRatio(mPreviewSize!!.width, mPreviewSize!!.height)
-//            } else {
-//                camera_preview.setAspectRatio(mPreviewSize!!.height, mPreviewSize!!.width)
-//            }
+            //            val orientation = resources.configuration.orientation
+            //            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //                camera_preview.setAspectRatio(mPreviewSize!!.width, mPreviewSize!!.height)
+            //            } else {
+            //                camera_preview.setAspectRatio(mPreviewSize!!.height, mPreviewSize!!.width)
+            //            }
 
             // Check if the flash is supported.
             val available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE)
@@ -618,8 +621,8 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             LogError("${e.message}")
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
-//            ErrorDialog.newInstance(getString(R.string.camera_error))
-//                    .show(getChildFragmentManager(), FRAGMENT_DIALOG)
+            //            ErrorDialog.newInstance(getString(R.string.camera_error))
+            //                    .show(getChildFragmentManager(), FRAGMENT_DIALOG)
         }
     }
 
@@ -694,6 +697,11 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            finishAffinity()
+        }
 
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
@@ -793,10 +801,10 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                         button_switch_camera.visibility = View.VISIBLE
                         button_capture.visibility = View.VISIBLE
                     }, {
-//                        container_amount.visibility = View.VISIBLE
-//                        container_time.visibility = View.VISIBLE
-//                        button_switch_camera.visibility = View.VISIBLE
-//                        button_capture.visibility = View.VISIBLE
+                        //                        container_amount.visibility = View.VISIBLE
+                        //                        container_time.visibility = View.VISIBLE
+                        //                        button_switch_camera.visibility = View.VISIBLE
+                        //                        button_capture.visibility = View.VISIBLE
 
                     })
 
@@ -876,7 +884,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             captureStillPicture();
         } else {
             // back camera selected, trigger the focus before creating an image
-//            lockFocus();
+            //            lockFocus();
             captureStillPicture();
         }
     }
@@ -927,11 +935,11 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private lateinit var mCameraId: String
 
     fun getOutputMediaFileForImage(): File {
-//        val mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(
-//                Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/tmp_images/")
+        //        val mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(
+        //                Environment.DIRECTORY_PICTURES), APP_FOLDER_NAME + "/tmp_images/")
 
         var mediaStorageDir = File(filesDir, "tmp_images");
-//                File(filesDir.absolutePath + "/tmp_images/")
+        //                File(filesDir.absolutePath + "/tmp_images/")
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
