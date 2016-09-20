@@ -34,6 +34,8 @@
     <string name="snackbar_warning_low_compression">Set Low compression rate. We recommend a higher compression rate</string>
     <string name="snackbar_image_required">You need more Images to generate a Gif</string>
     <string name="snackbar_take_picture_action">Take Picture</string>
+    <string name="snackbar_permissions">You have to grant Camera permissions.</string>
+    <string name="snackbar_permissions_settings_action_text">Settings</string>
 
     <!--Settings-->
     <string name="settings_title">Settings</string>
