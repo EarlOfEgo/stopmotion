@@ -20,8 +20,6 @@ class TextPreferenceItem @JvmOverloads constructor(context: Context, attrs: Attr
         View.inflate(context, R.layout.text_preference_item, this)
         val paddingTop = context.resources.getDimension(
                 R.dimen.preferences_item_padding_top).toInt()
-        val paddingBottom = context.resources.getDimension(
-                R.dimen.preferences_item_padding_bottom).toInt()
 
         setPadding(0, paddingTop, 0, paddingBottom)
         orientation = VERTICAL

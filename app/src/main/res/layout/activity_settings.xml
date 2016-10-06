@@ -63,11 +63,13 @@
                 android:id="@+id/licenses"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
                 custom:subTitle="@string/settings_licences_description"
                 custom:title="@string/settings_licences_title" />
 
             <!-- Infos -->
             <LinearLayout
+                android:paddingBottom="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
