@@ -50,7 +50,7 @@
     <string name="settings_licences_title">Licenses</string>
     <string name="settings_licences_description">An overview of the used open source licenses</string>
     <string name="settings_storage_title">Use external Storage</string>
-    <string name="settings_storage_description">Use External Storage, like you sd card</string>
+    <string name="settings_storage_description">Use External Storage, like your sd card</string>
 
 
     <string name="edit_text_hint_gif_name">Give the gif a name</string>

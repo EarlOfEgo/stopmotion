@@ -94,5 +94,8 @@
     <string name="tutorial_edit_title">Ediere dein Gif</string>
     <string name="snackbar_permissions">Du musst Kamerazugriff gewähren.</string>
     <string name="snackbar_permissions_settings_action_text">Einstellungen</string>
+    <string name="snackbar_error_occurred">Leider ist ein Fehler aufgetreten.</string>
+    <string name="settings_storage_title">Benutze den externen Speicher</string>
+    <string name="settings_storage_description">Benutze den externen Speicherplatz, wie z.B. deine Sd Karte</string>
 
 </resources>
