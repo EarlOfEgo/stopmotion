@@ -25,7 +25,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.sthagios.stopmotion"
+        applicationId appId
         minSdkVersion 21
         targetSdkVersion 24
         versionCode version_code
@@ -36,6 +36,8 @@ android {
         buildConfigField "String", "BUILD_TIME", "\"$buildTime\""
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        resValue "string", "fileprovider_authority", "${appId}.fileprovider"
     }
 
     productFlavors {
@@ -54,6 +56,11 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+            resValue "string", "fileprovider_authority", "${appId}.fileprovider.debug"
         }
     }
     sourceSets {
