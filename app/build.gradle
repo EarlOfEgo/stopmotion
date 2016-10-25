@@ -134,7 +134,7 @@ dependencies {
 
 
 buildscript {
-    ext.kotlin_version = '1.0.1-2'
+    ext.kotlin_version = '1.0.4'
 
     ext.support_lib_version = '24.1.1'
     ext.firebase_version = '9.0.2'
