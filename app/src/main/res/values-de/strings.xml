@@ -97,5 +97,7 @@
     <string name="snackbar_error_occurred">Leider ist ein Fehler aufgetreten.</string>
     <string name="settings_storage_title">Benutze den externen Speicher</string>
     <string name="settings_storage_description">Benutze den externen Speicherplatz, wie z.B. deine Sd Karte</string>
+    <string name="settings_feedback_description">Hast du einen Bug gefunden? Anregungen, Vorschläge, Verbesserung, jede Art von Feedback ist willkommen.</string>
+    <string name="settings_feedback_title">Feedback</string>
 
 </resources>
