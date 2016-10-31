@@ -119,6 +119,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
         mPresenter = SettingsPresenter(baseContext)
 
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.settings_title)
 
         use_thumbs.onCheckChanged { b ->
