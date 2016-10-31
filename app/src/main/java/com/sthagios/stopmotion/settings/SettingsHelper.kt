@@ -2,7 +2,9 @@
 
 package com.sthagios.stopmotion.settings
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import rx.Observable
 
 /**
@@ -39,8 +41,9 @@ inline fun Context.setUseExternalStorage(value: Boolean) {
 inline fun Context.useExternalStorageObservable(): Observable<Boolean> = Observable.just(
         getSettingsPreferences().getBoolean("USE_EXTERNAL_STORAGE", false))
 
-inline fun Context.useExternalStorage(): Boolean = getSettingsPreferences().getBoolean(
-        "USE_EXTERNAL_STORAGE", false)
+inline fun Context.useExternalStorage(): Boolean =
+        getSettingsPreferences().getBoolean("USE_EXTERNAL_STORAGE", false)
+                && checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
 val COMPRESSION_HIGH = 0.2f
 val COMPRESSION_MEDIUM = 0.4f

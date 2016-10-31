@@ -61,7 +61,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
         mPictureList = retrieveStringListParameter()
 
-        LogDebug("Generating gifs from ${mPictureList.toString()}")
+        LogDebug("Generating gifs from $mPictureList")
 
         if (getApproximateAppStarts() < 4) {
             Snackbar.make(gif_name, R.string.snackbar_info_taking_time,
