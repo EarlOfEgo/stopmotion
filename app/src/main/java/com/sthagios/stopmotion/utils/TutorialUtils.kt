@@ -33,7 +33,7 @@ inline fun Context.getSpotlightConfiguration(): SpotlightConfig {
     val config = SpotlightConfig()
     config.isDismissOnBackpress = true
     config.isRevealAnimationEnabled = true
-    config.lineAnimationDuration = 500
+    config.lineAnimationDuration = 250
     config.lineAndArcColor = ContextCompat.getColor(this, R.color.accent)
     config.headingTvColor = ContextCompat.getColor(this, R.color.accent)
     config.headingTvSize = 28
