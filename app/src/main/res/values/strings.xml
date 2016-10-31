@@ -108,6 +108,8 @@
     <string name="generated_with_text_5">Took longer because of the beautiful scenes</string>
 
     <string name="generate_button_save">Save</string>
+    <string name="settings_feedback_title">Feedback</string>
+    <string name="settings_feedback_description">Found a bug? Want to help improve Stopmotion? Every type of Feedback is appriciated.</string>
 
 
 </resources>

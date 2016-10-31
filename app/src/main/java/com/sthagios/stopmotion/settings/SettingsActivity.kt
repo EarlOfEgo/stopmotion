@@ -137,6 +137,20 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
             dialog.show(fragmentManager, "LicensesDialog")
         })
 
+        feedback.setOnClickListener {
+            logSettingsEvent("feedback")
+            val emailIntent = Intent(Intent.ACTION_SENDTO)
+            emailIntent.type = "message/rfc822"
+            emailIntent.data = Uri.parse("mailto:" + "stopmotion@sthagios.com")
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.rating_feedback_email_title))
+            try {
+                startActivity(Intent.createChooser(emailIntent,
+                        getString(R.string.rating_email_choose_text)))
+            } catch (ex: android.content.ActivityNotFoundException) {
+                //TODO might add toast
+            }
+        }
+
         store_options.onClickListener {
             mOnStorageOptionChanged.onNext(null)
         }
@@ -210,7 +224,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
-            grantResults: IntArray) {
+                                            grantResults: IntArray) {
         when (requestCode) {
             MY_PERMISSIONS_REQUEST_STORAGE -> {
                 // If request is cancelled, the result arrays are empty.

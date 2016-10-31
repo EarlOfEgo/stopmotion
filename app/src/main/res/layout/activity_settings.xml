@@ -60,6 +60,14 @@
                 <!--custom:title="@string/settings_pushes_title" />-->
 
             <com.sthagios.stopmotion.settings.items.TextPreferenceItem
+                android:id="@+id/feedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                custom:subTitle="@string/settings_feedback_description"
+                custom:title="@string/settings_feedback_title" />
+
+            <com.sthagios.stopmotion.settings.items.TextPreferenceItem
                 android:id="@+id/licenses"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
