@@ -811,7 +811,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         })
 
 
-        //TODO make this beautiful
         if (shouldShowTutorial()) {
             SpotlightView.Builder(this)
                     .target(container_amount)
@@ -827,31 +826,6 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                                 .subHeadingTvText(
                                         getString(R.string.tutorial_camera_burst_time_info))
                                 .usageId("camera2")
-                                .setListener {
-                                    SpotlightView.Builder(this)
-                                            .target(button_switch_camera)
-                                            .setConfiguration(getSpotlightConfiguration())
-                                            .headingTvText(getString(
-                                                    R.string.tutorial_camera_switch_title))
-                                            .subHeadingTvText(
-                                                    getString(R.string.tutorial_camera_switch_info))
-                                            .usageId("camera3")
-                                            .setListener {
-                                                SpotlightView.Builder(this)
-                                                        .target(button_capture)
-                                                        .setConfiguration(
-                                                                getSpotlightConfiguration())
-                                                        .headingTvText(getString(
-                                                                R.string.tutorial_camera_take_image_title))
-                                                        .subHeadingTvText(getString(
-                                                                R.string.tutorial_camera_take_image_info))
-                                                        .usageId("camera4")
-                                                        .show()
-
-                                            }
-                                            .show()
-
-                                }
                                 .show()
 
                     }
