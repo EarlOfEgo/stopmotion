@@ -50,6 +50,7 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         setContentView(R.layout.activity_show_gif)
 
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         for (i in 0..toolbar.childCount) {
             val view = toolbar.getChildAt(i)
