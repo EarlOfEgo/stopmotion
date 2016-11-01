@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/preferences_item_padding_bottom"
     android:paddingTop="@dimen/preferences_item_padding_top">
 
     <RelativeLayout

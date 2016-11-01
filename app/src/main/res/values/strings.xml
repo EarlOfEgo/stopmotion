@@ -36,6 +36,7 @@
     <string name="snackbar_take_picture_action">Take Picture</string>
     <string name="snackbar_permissions">You have to grant Camera permissions.</string>
     <string name="snackbar_permissions_settings_action_text">Settings</string>
+    <string name="snackbar_error_occurred">An Error occurred, Sorry</string>
 
     <!--Settings-->
     <string name="settings_title">Settings</string>
@@ -48,6 +49,8 @@
     <string name="settings_gif_compression_rate_description">A higher compression rate decreases the Gif conversion time.</string>
     <string name="settings_licences_title">Licenses</string>
     <string name="settings_licences_description">An overview of the used open source licenses</string>
+    <string name="settings_storage_title">Use external Storage</string>
+    <string name="settings_storage_description">Use External Storage, like your sd card</string>
 
 
     <string name="edit_text_hint_gif_name">Give the gif a name</string>
@@ -105,6 +108,8 @@
     <string name="generated_with_text_5">Took longer because of the beautiful scenes</string>
 
     <string name="generate_button_save">Save</string>
+    <string name="settings_feedback_title">Feedback</string>
+    <string name="settings_feedback_description">Found a bug? Want to help improve Stopmotion? Every type of Feedback is appriciated.</string>
 
 
 </resources>

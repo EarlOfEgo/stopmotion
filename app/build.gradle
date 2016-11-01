@@ -14,8 +14,9 @@ def buildTime = {
     return df.format(new Date())
 }()
 
-def version_name = "1.0.2"
-def version_code = 5
+def version_name = "1.0.3"
+def version_code = 6
+def appId = "com.sthagios.stopmotion"
 
 android {
     compileSdkVersion 24
@@ -24,7 +25,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.sthagios.stopmotion"
+        applicationId appId
         minSdkVersion 21
         targetSdkVersion 24
         versionCode version_code
@@ -35,6 +36,8 @@ android {
         buildConfigField "String", "BUILD_TIME", "\"$buildTime\""
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        resValue "string", "fileprovider_authority", "${appId}.fileprovider"
     }
 
     productFlavors {
@@ -53,6 +56,11 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+            resValue "string", "fileprovider_authority", "${appId}.fileprovider.debug"
         }
     }
     sourceSets {
@@ -126,7 +134,7 @@ dependencies {
 
 
 buildscript {
-    ext.kotlin_version = '1.0.1-2'
+    ext.kotlin_version = '1.0.4'
 
     ext.support_lib_version = '24.1.1'
     ext.firebase_version = '9.0.2'

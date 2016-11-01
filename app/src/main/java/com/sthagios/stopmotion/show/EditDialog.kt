@@ -72,7 +72,7 @@ class EditDialog() : DialogFragment() {
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .alwaysCallInputCallback()
                 .input(getString(R.string.edit_text_hint_gif_name), null, { dialog, input ->
-                    mValue = input!!.toString()
+                    mValue = input.toString()
                 })
                 .onPositive { materialDialog, dialogAction ->
                     mListener.onOk(mValue.toString())

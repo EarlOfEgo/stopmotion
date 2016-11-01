@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -29,27 +30,54 @@
             <com.sthagios.stopmotion.settings.items.CheckBoxPreferenceItem
                 android:id="@+id/use_thumbs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                custom:subTitle="@string/settings_use_thumbnails_description"
+                custom:title="@string/settings_use_thumbnails_title" />
 
             <com.sthagios.stopmotion.settings.items.ValuePreferenceItem
                 android:id="@+id/gif_compression"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
-                android:clickable="true" />
+                android:clickable="true"
+                custom:subTitle="@string/settings_gif_compression_rate_description"
+                custom:title="@string/settings_gif_compression_rate_title" />
 
             <com.sthagios.stopmotion.settings.items.CheckBoxPreferenceItem
-                android:id="@+id/use_pushes"
+                android:id="@+id/store_options"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                custom:subTitle="@string/settings_storage_description"
+                custom:title="@string/settings_storage_title" />
+
+            <!--<com.sthagios.stopmotion.settings.items.CheckBoxPreferenceItem-->
+                <!--android:id="@+id/use_pushes"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--custom:subTitle="@string/settings_pushes_description"-->
+                <!--custom:title="@string/settings_pushes_title" />-->
+
+            <com.sthagios.stopmotion.settings.items.TextPreferenceItem
+                android:id="@+id/feedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                custom:subTitle="@string/settings_feedback_description"
+                custom:title="@string/settings_feedback_title" />
 
             <com.sthagios.stopmotion.settings.items.TextPreferenceItem
                 android:id="@+id/licenses"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                custom:subTitle="@string/settings_licences_description"
+                custom:title="@string/settings_licences_title" />
 
             <!-- Infos -->
             <LinearLayout
+                android:paddingBottom="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"

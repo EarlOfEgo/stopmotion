@@ -20,11 +20,23 @@ class TextPreferenceItem @JvmOverloads constructor(context: Context, attrs: Attr
         View.inflate(context, R.layout.text_preference_item, this)
         val paddingTop = context.resources.getDimension(
                 R.dimen.preferences_item_padding_top).toInt()
-        val paddingBottom = context.resources.getDimension(
-                R.dimen.preferences_item_padding_bottom).toInt()
 
         setPadding(0, paddingTop, 0, paddingBottom)
         orientation = VERTICAL
+
+        val array = context.theme.obtainStyledAttributes(attrs, R.styleable.TextPreferenceItem, 0,
+                0)
+
+        try {
+            val title = array.getString(R.styleable.TextPreferenceItem_title)
+            val subTitle = array.getString(R.styleable.TextPreferenceItem_subTitle)
+
+            if (title != null) setTitle(title)
+            if (subTitle != null) setSubtitle(subTitle)
+
+        } finally {
+            array.recycle()
+        }
     }
 
     fun setTitle(string: String) {

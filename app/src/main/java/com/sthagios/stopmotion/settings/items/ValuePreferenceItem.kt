@@ -20,11 +20,23 @@ class ValuePreferenceItem @JvmOverloads constructor(context: Context, attrs: Att
         View.inflate(context, R.layout.value_preference_item, this)
         val paddingTop = context.resources.getDimension(
                 R.dimen.preferences_item_padding_top).toInt()
-        val paddingBottom = context.resources.getDimension(
-                R.dimen.preferences_item_padding_bottom).toInt()
 
         setPadding(0, paddingTop, 0, paddingBottom)
         orientation = VERTICAL
+
+        val array = context.theme.obtainStyledAttributes(attrs, R.styleable.ValuePreferenceItem, 0,
+                0)
+
+        try {
+            val title = array.getString(R.styleable.ValuePreferenceItem_title)
+            val subTitle = array.getString(R.styleable.ValuePreferenceItem_subTitle)
+
+            if (title != null) setTitle(title)
+            if (subTitle != null) setSubtitle(subTitle)
+
+        } finally {
+            array.recycle()
+        }
     }
 
     fun setTitle(string: String) {

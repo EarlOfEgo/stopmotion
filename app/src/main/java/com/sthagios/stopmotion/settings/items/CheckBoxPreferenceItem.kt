@@ -18,6 +18,19 @@ class CheckBoxPreferenceItem @JvmOverloads constructor(context: Context, attrs: 
 
     init {
         View.inflate(context, R.layout.checkbox_preference_item, this)
+        val array = context.theme.obtainStyledAttributes(attrs, R.styleable.CheckBoxPreferenceItem,
+                0, 0)
+
+        try {
+            val title = array.getString(R.styleable.CheckBoxPreferenceItem_title)
+            val subTitle = array.getString(R.styleable.CheckBoxPreferenceItem_subTitle)
+
+            if (title != null) setTitle(title)
+            if (subTitle != null) setSubtitle(subTitle)
+
+        } finally {
+            array.recycle()
+        }
     }
 
     fun setTitle(string: String) {
@@ -44,5 +57,14 @@ class CheckBoxPreferenceItem @JvmOverloads constructor(context: Context, attrs: 
 
     fun onCheckChanged(function: (Boolean) -> Unit) {
         checkBox.setOnCheckedChangeListener { compoundButton, b -> function(b) }
+    }
+
+    fun onClickListener(function: () -> Unit) {
+        checkBox.setOnClickListener {
+            function()
+        }
+        setOnClickListener {
+            function()
+        }
     }
 }

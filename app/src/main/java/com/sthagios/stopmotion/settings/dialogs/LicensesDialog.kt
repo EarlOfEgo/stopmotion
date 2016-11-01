@@ -26,7 +26,7 @@ class LicensesDialog : DialogFragment() {
                 .customView(view, true)
                 .cancelable(true)
                 .positiveText(R.string.confirm_ok)
-                .show();
+                .show()
 
         return dialog
     }

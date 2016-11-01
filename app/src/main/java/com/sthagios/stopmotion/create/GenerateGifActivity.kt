@@ -7,12 +7,12 @@ import android.graphics.drawable.Animatable
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.support.design.widget.Snackbar
 import android.support.v4.content.FileProvider
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.text.format.Formatter
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -21,6 +21,8 @@ import com.bumptech.glide.gifencoder.AnimatedGifEncoder
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
+import com.sthagios.stopmotion.image.storage.getGifDirectoryFile
+import com.sthagios.stopmotion.image.storage.getThumbDirectoryFile
 import com.sthagios.stopmotion.settings.COMPRESSION_HIGH
 import com.sthagios.stopmotion.settings.getCompressionRate
 import com.sthagios.stopmotion.show.ShowGifActivity
@@ -48,7 +50,7 @@ class GenerateGifActivity : AppCompatActivity() {
         setContentView(R.layout.activity_generate_gif)
 
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.generate_title)
 
         val fileName = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
@@ -59,7 +61,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
         mPictureList = retrieveStringListParameter()
 
-        LogDebug("Generating gifs from ${mPictureList.toString()}")
+        LogDebug("Generating gifs from $mPictureList")
 
         if (getApproximateAppStarts() < 4) {
             Snackbar.make(gif_name, R.string.snackbar_info_taking_time,
@@ -99,12 +101,11 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private fun startGifGeneration() {
         val startTime = System.currentTimeMillis()
-        rx.Observable.just(
-                getGifDirectoryFile())
+        rx.Observable.just(getGifDirectoryFile())
                 .map { "$it/$mGifName" }
                 .doOnNext { LogDebug("Gif path $it") }
                 .map { FileOutputStream(it) }
-                .doOnNext { t -> t!!.write(generateGIF()) }
+                .doOnNext { t -> t?.write(generateGIF()) }
                 .doOnNext { t -> t.close() }
                 .subscribeOn(Schedulers.computation())
                 //One second for magic
@@ -122,7 +123,7 @@ class GenerateGifActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        when (item?.itemId) {
             android.R.id.home -> {
                 finish()
                 return true
@@ -135,7 +136,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private fun onGifGenerated() {
 
-        val imagePath = File(filesDir, "gifs")
+        val imagePath = getGifDirectoryFile()
         val newFile = File(imagePath, mGifName)
         val fileSize = newFile.length()
 
@@ -147,7 +148,7 @@ class GenerateGifActivity : AppCompatActivity() {
             gif_generated_info.text = resources.getString(
                     R.string.generate_successfully_generated_info_1, "$mGenerationTime") +
                     " " + resources.getString(R.string.generate_successfully_generated_info_2,
-                    "$fileSize") +
+                    "${Formatter.formatFileSize(this, fileSize)}") +
                     " " + resources.getString(R.string.generate_successfully_generated_info_3,
                     "${mPictureList.size}", "${mPictureList.size * 0.25}") +
                     "\n\n*$sideNode"
@@ -192,11 +193,11 @@ class GenerateGifActivity : AppCompatActivity() {
             else
                 gif.name = "Stopmotion Gif"
 
-            val imagePath = File(filesDir, "gifs");
+            val imagePath = getGifDirectoryFile()
             val newFile = File(imagePath, gif.fileName)
 
             gif.shareUriString = FileProvider.getUriForFile(this,
-                    "com.sthagios.stopmotion.fileprovider", newFile).toString()
+                    getString(R.string.fileprovider_authority), newFile).toString()
 
             gif.fileUriString = Uri.fromFile(newFile).toString()
             gif.thumbnailUriString = mThumbUri
@@ -228,30 +229,6 @@ class GenerateGifActivity : AppCompatActivity() {
         for (file in directory.listFiles()) {
             file.delete()
         }
-    }
-
-    private fun getGifDirectoryFile(): File {
-        val mediaStorageDir = File(filesDir, "gifs")
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                LogDebug("failed to create directory")
-                return File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "Stopmotion" + "/gifs/")
-            }
-        }
-        return mediaStorageDir
-    }
-
-    private fun getThumbDirectoryFile(): File {
-        val mediaStorageDir = File(filesDir, "thumbs")
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                LogDebug("failed to create directory")
-                return File(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES), "Stopmotion" + "/thumbs/")
-            }
-        }
-        return mediaStorageDir
     }
 
 

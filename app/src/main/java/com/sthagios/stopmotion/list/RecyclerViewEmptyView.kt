@@ -48,8 +48,8 @@ class RecyclerViewEmptyView @JvmOverloads constructor(context: Context, attrs: A
     private fun checkForEmptyDataSet() {
         visibility = if (isEmpty()) View.GONE else View.VISIBLE
 
-        mEmptyView!!.visibility = if (isEmpty()) View.VISIBLE else View.GONE
-        mEmptyTextView!!.visibility = if (isEmpty()) View.VISIBLE else View.GONE
+        mEmptyView?.visibility = if (isEmpty()) View.VISIBLE else View.GONE
+        mEmptyTextView?.visibility = if (isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun isEmpty() = adapter == null || adapter.itemCount <= 0

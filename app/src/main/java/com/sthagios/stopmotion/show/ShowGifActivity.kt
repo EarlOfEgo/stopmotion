@@ -50,6 +50,7 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         setContentView(R.layout.activity_show_gif)
 
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         for (i in 0..toolbar.childCount) {
             val view = toolbar.getChildAt(i)
@@ -190,7 +191,7 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
 
     private fun deleteFile(gifUri: Uri?) {
         LogDebug("Deleting $gifUri")
-        val file = File(gifUri!!.path)
+        val file = File(gifUri?.path)
         Observable.just(file)
                 .subscribe({ it.delete() }, {
                     e ->
@@ -201,7 +202,7 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        when (item?.itemId) {
             android.R.id.home -> {
                 supportFinishAfterTransition()
 //                NavUtils.navigateUpFromSameTask(this)

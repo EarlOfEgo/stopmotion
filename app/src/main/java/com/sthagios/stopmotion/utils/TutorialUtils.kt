@@ -3,7 +3,9 @@
 package com.sthagios.stopmotion.utils
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.support.v4.content.ContextCompat
+import com.sthagios.stopmotion.BuildConfig
 import com.sthagios.stopmotion.R
 import com.wooplr.spotlight.SpotlightConfig
 
@@ -14,23 +16,24 @@ import com.wooplr.spotlight.SpotlightConfig
  * @since   15.08.16
  */
 
-inline fun Context.getTutorialSharedPrefs() = getSharedPreferences("TUTORIAL", 0)!!
+inline fun Context.getTutorialSharedPrefs(): SharedPreferences? = getSharedPreferences("TUTORIAL",
+        0)
 
 inline fun Context.shouldShowTutorial(): Boolean {
     val name = this.javaClass.simpleName
-    return getTutorialSharedPrefs().getBoolean(name, true)
+    return getTutorialSharedPrefs()!!.getBoolean(name, true) && !BuildConfig.DEBUG
 }
 
 inline fun Context.showedTutorial() {
     val name = this.javaClass.simpleName
-    getTutorialSharedPrefs().edit().putBoolean(name, false).apply()
+    getTutorialSharedPrefs()?.edit()?.putBoolean(name, false)?.apply()
 }
 
 inline fun Context.getSpotlightConfiguration(): SpotlightConfig {
     val config = SpotlightConfig()
     config.isDismissOnBackpress = true
     config.isRevealAnimationEnabled = true
-    config.lineAnimationDuration = 500
+    config.lineAnimationDuration = 250
     config.lineAndArcColor = ContextCompat.getColor(this, R.color.accent)
     config.headingTvColor = ContextCompat.getColor(this, R.color.accent)
     config.headingTvSize = 28
