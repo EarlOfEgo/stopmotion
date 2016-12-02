@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit
  * @author  stephan
  * @since   14.05.16
  */
-class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
+class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
     override fun amountChosen(amount: Int) {
         mBurstAmount = amount
         setBurstTexts()
@@ -75,7 +75,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
         }
 
         override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int,
-                height: Int) {
+                                                 height: Int) {
             configureTransform(width, height)
         }
 
@@ -229,19 +229,19 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
     private val mCaptureCallback: CameraCaptureSession.CaptureCallback = object : CameraCaptureSession.CaptureCallback() {
 
         override fun onCaptureFailed(session: CameraCaptureSession?, request: CaptureRequest?,
-                failure: CaptureFailure?) {
+                                     failure: CaptureFailure?) {
             LogError("Capture failed ${Thread.currentThread().stackTrace[2]}")
             Snackbar.make(camera_preview, R.string.snackbar_something_wrong_error,
                     Snackbar.LENGTH_LONG).show()
         }
 
         override fun onCaptureCompleted(session: CameraCaptureSession?, request: CaptureRequest?,
-                result: TotalCaptureResult?) {
+                                        result: TotalCaptureResult?) {
             process(result)
         }
 
         override fun onCaptureProgressed(session: CameraCaptureSession?, request: CaptureRequest?,
-                partialResult: CaptureResult?) {
+                                         partialResult: CaptureResult?) {
             process(partialResult!!)
         }
 
@@ -249,9 +249,9 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             if (mState != STATE_PREVIEW)
                 when (mState) {
                 // We have nothing to do when the camera preview is working normally.
-                    STATE_PREVIEW                -> {
+                    STATE_PREVIEW -> {
                     }
-                    STATE_WAITING_LOCK           -> {
+                    STATE_WAITING_LOCK -> {
                         val afState = result?.get(CaptureResult.CONTROL_AF_STATE)
                         if (afState == null)
                             captureStillPicture()
@@ -268,7 +268,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                             }
                         }
                     }
-                    STATE_WAITING_PRECAPTURE     -> {
+                    STATE_WAITING_PRECAPTURE -> {
                         // CONTROL_AE_STATE can be null on some devices
                         val aeState = result?.get(CaptureResult.CONTROL_AE_STATE)
                         if (aeState == null ||
@@ -343,20 +343,20 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             val CaptureCallback = object : CameraCaptureSession.CaptureCallback() {
 
                 override fun onCaptureFailed(session: CameraCaptureSession?,
-                        request: CaptureRequest?,
-                        failure: CaptureFailure?) {
+                                             request: CaptureRequest?,
+                                             failure: CaptureFailure?) {
                     LogError("Capture failed ${Thread.currentThread().stackTrace[2]}")
                     Snackbar.make(camera_preview, R.string.snackbar_something_wrong_error,
                             Snackbar.LENGTH_LONG).show()
                 }
 
                 override fun onCaptureStarted(session: CameraCaptureSession?,
-                        request: CaptureRequest?, timestamp: Long, frameNumber: Long) {
+                                              request: CaptureRequest?, timestamp: Long, frameNumber: Long) {
                     LogDebug("On capture started")
                 }
 
                 override fun onCaptureCompleted(session: CameraCaptureSession?,
-                        request: CaptureRequest?, result: TotalCaptureResult?) {
+                                                request: CaptureRequest?, result: TotalCaptureResult?) {
                     LogDebug("Capture complete")
                     unlockFocus()
                 }
@@ -541,11 +541,17 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
 
             // For still image captures, we use the largest available size.
-            val largest: Size = Collections.max(map.getOutputSizes(ImageFormat.JPEG).asList(),
+            val outputSizes = map.getOutputSizes(ImageFormat.JPEG).asList()
+            for (outputSize in outputSizes) {
+                LogDebug("${outputSize.width}_${outputSize.height}")
+            }
+            //Use 2 megapixel and if not available use highest available
+            val largest: Size = if (!outputSizes.contains(Size(1920, 1080))) Collections.max(outputSizes,
                     { lhs, rhs ->
                         Math.signum(
                                 (lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
-                    })
+                    }) else Size(1920, 1080)
+
             mImageReader = ImageReader.newInstance(largest.width, largest.height,
                     ImageFormat.JPEG, /*maxImages*/2)
             mImageReader!!.setOnImageAvailableListener(
@@ -559,7 +565,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
             var swappedDimensions = false
 
             when (displayRotation) {
-                Surface.ROTATION_0, Surface.ROTATION_180  ->
+                Surface.ROTATION_0, Surface.ROTATION_180 ->
                     if (mSensorOrientation == 90 || mSensorOrientation == 270) {
                         swappedDimensions = true
                     }
@@ -567,7 +573,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
                     if (mSensorOrientation == 0 || mSensorOrientation == 180) {
                         swappedDimensions = true
                     }
-                else                                      ->
+                else ->
                     LogError("Display rotation is invalid: " + displayRotation)
             }
 
@@ -643,7 +649,7 @@ class CreateNewImage : AppCompatActivity(), AbstractDialog.Callback {
      * @return The optimal {@code Size}, or an arbitrary one if none were big enough
      */
     private fun chooseOptimalSize(choices: List<Size>, textureViewWidth: Int,
-            textureViewHeight: Int, maxWidth: Int, maxHeight: Int, aspectRatio: Size): Size? {
+                                  textureViewHeight: Int, maxWidth: Int, maxHeight: Int, aspectRatio: Size): Size? {
         LogVerbose("Choosing optimal size from ${choices.toString()}\n" +
                 "with: textureViewWidth:$textureViewWidth textureViewHeight: $textureViewHeight, maxWidth: $maxWidth, maxHeight: $maxHeight, aspectRatio: $aspectRatio")
         // Collect the supported resolutions that are at least as big as the preview Surface
