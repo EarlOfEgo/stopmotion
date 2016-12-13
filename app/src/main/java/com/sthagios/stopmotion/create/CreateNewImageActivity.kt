@@ -545,7 +545,7 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
             for (outputSize in outputSizes) {
                 LogDebug("${outputSize.width}_${outputSize.height}")
             }
-            //Use 2 megapixel and if not available use highest available
+            //Use 0.5 megapixel and if not available use highest available
             val largest: Size = if (!outputSizes.contains(Size(800, 600))) Collections.max(outputSizes,
                     { lhs, rhs ->
                         Math.signum(
