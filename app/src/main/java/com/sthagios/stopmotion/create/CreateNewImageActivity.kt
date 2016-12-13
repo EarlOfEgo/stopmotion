@@ -546,11 +546,11 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
                 LogDebug("${outputSize.width}_${outputSize.height}")
             }
             //Use 2 megapixel and if not available use highest available
-            val largest: Size = if (!outputSizes.contains(Size(1920, 1080))) Collections.max(outputSizes,
+            val largest: Size = if (!outputSizes.contains(Size(800, 600))) Collections.max(outputSizes,
                     { lhs, rhs ->
                         Math.signum(
                                 (lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
-                    }) else Size(1920, 1080)
+                    }) else Size(800, 600)
 
             mImageReader = ImageReader.newInstance(largest.width, largest.height,
                     ImageFormat.JPEG, /*maxImages*/2)
