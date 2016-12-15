@@ -26,6 +26,7 @@ import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.camera.ImageSaver
 import com.sthagios.stopmotion.create.edit.EditImagesActivity
 import com.sthagios.stopmotion.tracking.logCameraEvent
+import com.sthagios.stopmotion.tracking.setUserPropertyResolution
 import com.sthagios.stopmotion.utils.*
 import com.wooplr.spotlight.SpotlightView
 import kotlinx.android.synthetic.main.activity_create_new_image.*
@@ -542,15 +543,18 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
 
             // For still image captures, we use the largest available size.
             val outputSizes = map.getOutputSizes(ImageFormat.JPEG).asList()
+
+            setUserPropertyResolution("${outputSizes[0].width}x${outputSizes[0].height}")
+
             for (outputSize in outputSizes) {
                 LogDebug("${outputSize.width}_${outputSize.height}")
             }
             //Use 0.5 megapixel and if not available use highest available
-            val largest: Size = if (!outputSizes.contains(Size(800, 600))) Collections.max(outputSizes,
+            val largest: Size = if (!outputSizes.contains(Size(640, 480))) Collections.max(outputSizes,
                     { lhs, rhs ->
                         Math.signum(
                                 (lhs!!.width * lhs.height - rhs!!.width * rhs.height).toDouble()).toInt()
-                    }) else Size(800, 600)
+                    }) else Size(640, 480)
 
             mImageReader = ImageReader.newInstance(largest.width, largest.height,
                     ImageFormat.JPEG, /*maxImages*/2)
