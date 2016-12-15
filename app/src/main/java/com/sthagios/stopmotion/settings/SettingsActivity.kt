@@ -1,17 +1,14 @@
 package com.sthagios.stopmotion.settings
 
-import android.Manifest
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.support.design.widget.Snackbar
-
-
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NavUtils
 import android.support.v4.view.ViewCompat
@@ -23,10 +20,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget
 import com.sthagios.stopmotion.BuildConfig
 import com.sthagios.stopmotion.R
-import com.sthagios.stopmotion.settings.dialogs.CompressionDialog
 import com.sthagios.stopmotion.settings.dialogs.LicensesDialog
 import com.sthagios.stopmotion.tracking.getFirebaseInstance
 import com.sthagios.stopmotion.tracking.logSettingsEvent
+import com.sthagios.stopmotion.tracking.setUserProperty
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -34,7 +31,7 @@ import rx.Observable
 import rx.subjects.PublishSubject
 
 
-class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, SettingsView {
+class SettingsActivity : AppCompatActivity(), SettingsView {
 
     private val MY_PERMISSIONS_REQUEST_STORAGE: Int = 123
 
@@ -52,10 +49,6 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
 
     private val mOnThumbsInListChanged: PublishSubject<Void> = PublishSubject.create()
 
-    private val mOnCompressionRateChanged: PublishSubject<Float> = PublishSubject.create()
-
-    override fun onCompressionRateChanged(): Observable<Float> = mOnCompressionRateChanged.asObservable()
-
     override fun onThumbsInListChanged(): Observable<Void> = mOnThumbsInListChanged.asObservable()
 
     override fun onPermissionResult(): Observable<Boolean> = mOnPermissionResult.asObservable()
@@ -63,38 +56,8 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
     override fun onStorageOptionChanged(): Observable<Void> = mOnStorageOptionChanged.asObservable()
 
     override fun onError(throwable: Throwable) {
-        Snackbar.make(gif_compression, getString(R.string.snackbar_error_occurred),
+        Snackbar.make(icon_image_view, getString(R.string.snackbar_error_occurred),
                 Snackbar.LENGTH_LONG).show()
-    }
-
-    override fun onRateChosen(value: Int) {
-        when (value) {
-            0 -> {
-                mOnCompressionRateChanged.onNext(COMPRESSION_HIGH)
-                logSettingsEvent("gif_compression", "COMPRESSION_HIGH")
-            }
-            1 -> {
-                mOnCompressionRateChanged.onNext(COMPRESSION_MEDIUM)
-                logSettingsEvent("gif_compression", "COMPRESSION_MEDIUM")
-            }
-            2 -> {
-                //TODO this has to be part of the presenter!
-                val oldCompression = getCompressionRate()
-                Snackbar.make(gif_compression, R.string.snackbar_warning_low_compression,
-                        Snackbar.LENGTH_LONG)
-                        .setAction(R.string.snackbar_undo_action_text, {
-                            logSettingsEvent("gif_compression", "undo")
-                            if (oldCompression != COMPRESSION_LOW) {
-                                mOnCompressionRateChanged.onNext(oldCompression)
-                            } else {
-                                mOnCompressionRateChanged.onNext(COMPRESSION_HIGH)
-                            }
-                        })
-                        .show()
-                mOnCompressionRateChanged.onNext(COMPRESSION_LOW)
-                logSettingsEvent("gif_compression", "COMPRESSION_LOW")
-            }
-        }
     }
 
     override fun onStart() {
@@ -125,11 +88,6 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
         use_thumbs.onCheckChanged { b ->
             mOnThumbsInListChanged.onNext(null)
         }
-
-        gif_compression.setOnClickListener({
-            val dialog = CompressionDialog.newInstance(getCompressionRate())
-            dialog.show(fragmentManager, "CompressionDialog")
-        })
 
         licenses.setOnClickListener({
             logSettingsEvent("license")
@@ -173,6 +131,7 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
                 val bundle = Bundle()
                 bundle.putString("wee", "wee")
                 getFirebaseInstance().logEvent("easter_egg", bundle)
+                setUserProperty("easter_egg", "found")
             }
         }
 
@@ -186,10 +145,6 @@ class SettingsActivity : AppCompatActivity(), CompressionDialog.Callback, Settin
     override fun onPermissionNotGranted() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
                 MY_PERMISSIONS_REQUEST_STORAGE)
-    }
-
-    override fun setCompressionRate(id: Int) {
-        gif_compression.setValueText(id)
     }
 
     override fun setStorageOption(isSet: Boolean) {

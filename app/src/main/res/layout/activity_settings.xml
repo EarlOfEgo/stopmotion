@@ -34,15 +34,6 @@
                 custom:subTitle="@string/settings_use_thumbnails_description"
                 custom:title="@string/settings_use_thumbnails_title" />
 
-            <com.sthagios.stopmotion.settings.items.ValuePreferenceItem
-                android:id="@+id/gif_compression"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                custom:subTitle="@string/settings_gif_compression_rate_description"
-                custom:title="@string/settings_gif_compression_rate_title" />
-
             <com.sthagios.stopmotion.settings.items.CheckBoxPreferenceItem
                 android:id="@+id/store_options"
                 android:layout_width="match_parent"
@@ -53,11 +44,11 @@
                 custom:title="@string/settings_storage_title" />
 
             <!--<com.sthagios.stopmotion.settings.items.CheckBoxPreferenceItem-->
-                <!--android:id="@+id/use_pushes"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--custom:subTitle="@string/settings_pushes_description"-->
-                <!--custom:title="@string/settings_pushes_title" />-->
+            <!--android:id="@+id/use_pushes"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--custom:subTitle="@string/settings_pushes_description"-->
+            <!--custom:title="@string/settings_pushes_title" />-->
 
             <com.sthagios.stopmotion.settings.items.TextPreferenceItem
                 android:id="@+id/feedback"
@@ -77,11 +68,11 @@
 
             <!-- Infos -->
             <LinearLayout
-                android:paddingBottom="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="16dp">
 
                 <TextView
                     style="@style/Base.TextAppearance.AppCompat.Headline"
