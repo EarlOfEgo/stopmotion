@@ -62,7 +62,6 @@ inline fun Context.logEditEvent(type: String, content: String) {
     getFirebaseInstance().logEvent("edit", bundle)
 }
 
-inline fun Context.setUserPropertyResolution(resolution:String) {
-
-    getFirebaseInstance().setUserProperty("resolution_0", resolution)
+inline fun Context.setUserProperty(key: String, value: String) {
+    getFirebaseInstance().setUserProperty(key, value)
 }

@@ -265,8 +265,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
                 matrix.postRotate(getRotation(orientation))
                 finalBitmap = Bitmap.createBitmap(finalBitmap, 0, 0, finalBitmap.width,
-                        finalBitmap.height, matrix,
-                        true)
+                        finalBitmap.height, matrix, true)
             }
 
             if (path === mPictureList[0]) {
