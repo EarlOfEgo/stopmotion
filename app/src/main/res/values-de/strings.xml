@@ -2,11 +2,13 @@
     <string name="app_name">Stopmotion</string>
 
 
-    <string name="burst_time_1">1 Sek.</string>
-    <string name="burst_time_2">2 Sek.</string>
-    <string name="burst_time_3">3 Sek.</string>
-    <string name="burst_time_4">4 Sek.</string>
-    <string name="burst_time_5">5 Sek.</string>
+    <string name="burst_time_1">1/4 Sek.</string>
+    <string name="burst_time_2">1/2 Sek.</string>
+    <string name="burst_time_3">1 Sek.</string>
+    <string name="burst_time_4">2 Sek.</string>
+    <string name="burst_time_5">3 Sek.</string>
+    <string name="burst_time_6">4 Sek.</string>
+    <string name="burst_time_7">5 Sek.</string>
 
     <string name="compression_rate_low">Gering</string>
     <string name="compression_rate_medium">Mittel</string>

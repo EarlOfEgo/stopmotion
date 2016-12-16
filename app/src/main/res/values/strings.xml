@@ -2,11 +2,13 @@
     <string name="app_name">Stopmotion</string>
 
 
-    <string name="burst_time_1">1 Sec.</string>
-    <string name="burst_time_2">2 Sec.</string>
-    <string name="burst_time_3">3 Sec.</string>
-    <string name="burst_time_4">4 Sec.</string>
-    <string name="burst_time_5">5 Sec.</string>
+    <string name="burst_time_1">1/4 Sec.</string>
+    <string name="burst_time_2">1/2 Sec.</string>
+    <string name="burst_time_3">1 Sec.</string>
+    <string name="burst_time_4">2 Sec.</string>
+    <string name="burst_time_5">3 Sec.</string>
+    <string name="burst_time_6">4 Sec.</string>
+    <string name="burst_time_7">5 Sec.</string>
 
     <!-- Empty list-->
     <string name="empty_list_text">Create your first Stopmotion Gif</string>

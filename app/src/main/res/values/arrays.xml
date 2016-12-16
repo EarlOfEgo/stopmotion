@@ -6,6 +6,8 @@
         <item>@string/burst_time_3</item>
         <item>@string/burst_time_4</item>
         <item>@string/burst_time_5</item>
+        <item>@string/burst_time_6</item>
+        <item>@string/burst_time_7</item>
     </string-array>
 
     <string-array name="compression_rate">

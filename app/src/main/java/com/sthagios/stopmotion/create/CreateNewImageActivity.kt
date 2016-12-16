@@ -545,10 +545,8 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
             val outputSizes = map.getOutputSizes(ImageFormat.JPEG).asList()
 
 
-            for (i in 0..outputSizes.size -1) {
-                setUserProperty("resolution_$i", "${outputSizes[i].width}x${outputSizes[i].height}")
-                LogDebug("${outputSizes[i].width}_${outputSizes[i].height}")
-            }
+            getCameraResolutions(outputSizes)
+
             //Use 0.5 megapixel and if not available use highest available
             val largest: Size = if (!outputSizes.contains(Size(640, 480))) Collections.max(outputSizes,
                     { lhs, rhs ->
@@ -636,6 +634,13 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
         }
     }
 
+    private fun getCameraResolutions(outputSizes: List<Size>) {
+        for (i in 0..outputSizes.size - 1) {
+            setUserProperty("resolution_$i", "${outputSizes[i].width}x${outputSizes[i].height}")
+            LogDebug("${outputSizes[i].width}_${outputSizes[i].height}")
+        }
+    }
+
     /**
      * Given {@code choices} of {@code Size}s supported by a camera, choose the smallest one that
      * is at least as large as the respective texture view size, and that is at most as large as the
@@ -654,7 +659,7 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
      */
     private fun chooseOptimalSize(choices: List<Size>, textureViewWidth: Int,
                                   textureViewHeight: Int, maxWidth: Int, maxHeight: Int, aspectRatio: Size): Size? {
-        LogVerbose("Choosing optimal size from ${choices.toString()}\n" +
+        LogVerbose("Choosing optimal size from $choices\n" +
                 "with: textureViewWidth:$textureViewWidth textureViewHeight: $textureViewHeight, maxWidth: $maxWidth, maxHeight: $maxHeight, aspectRatio: $aspectRatio")
         // Collect the supported resolutions that are at least as big as the preview Surface
         val bigEnough = ArrayList<Size>()
@@ -713,8 +718,8 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
             finishAffinity()
         }
 
-        ORIENTATIONS.append(Surface.ROTATION_0, 90);
-        ORIENTATIONS.append(Surface.ROTATION_90, 0);
+        ORIENTATIONS.append(Surface.ROTATION_0, 90)
+        ORIENTATIONS.append(Surface.ROTATION_90, 0)
 
         setContentView(R.layout.activity_create_new_image)
 
@@ -738,7 +743,7 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
 
         setUpCameraInfos()
 
-        if (mAvailableCameras.size > 0) {
+        if (mAvailableCameras.isNotEmpty()) {
             mCameraId = mAvailableCameras[0]
         }
 
@@ -796,7 +801,7 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
             }
 
             rx.Observable
-                    .interval(0, mBurstTime.toLong() + 1, TimeUnit.SECONDS)
+                    .interval(0, getBurstTimeInMilliseconds(mBurstTime), TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .take(mBurstAmount)
 
@@ -846,6 +851,16 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
 
     }
 
+    private fun getBurstTimeInMilliseconds(burstTime: Int): Long {
+        when (burstTime) {
+            0 -> return 250
+            1 -> return 500
+            else -> {
+                return ((burstTime - 1) * 1000).toLong()
+            }
+        }
+    }
+
     private fun animateCameraChange() {
         val drawable = button_switch_camera.drawable
         if (drawable is Animatable) {
@@ -865,11 +880,11 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
         if (CameraCharacteristics.LENS_FACING_FRONT == characteristics.get(
                 CameraCharacteristics.LENS_FACING)) {
             // front camera selected, so take a picture without focus
-            captureStillPicture();
+            captureStillPicture()
         } else {
             // back camera selected, trigger the focus before creating an image
             //            lockFocus();
-            captureStillPicture();
+            captureStillPicture()
         }
     }
 
@@ -933,7 +948,7 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
             }
         }
 
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(Date())
         val mediaFile = File(mediaStorageDir.path + File.separator + "IMG_" + timeStamp + ".jpg")
 
         return mediaFile
