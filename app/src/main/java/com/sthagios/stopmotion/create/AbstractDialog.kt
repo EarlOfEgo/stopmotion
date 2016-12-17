@@ -106,7 +106,7 @@ class BurstAmountDialog : AbstractDialog() {
         }
     }
 
-    val mValues: List<Int> = arrayListOf(3, 4, 5, 6, 7)
+    val mValues: List<Int> = arrayListOf(4, 5, 6, 7, 8, 9, 10)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 

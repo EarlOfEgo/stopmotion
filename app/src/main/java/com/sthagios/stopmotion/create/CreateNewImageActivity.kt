@@ -56,7 +56,7 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
 
     private var mBurstTime = 0
 
-    private var mBurstAmount = 3
+    private var mBurstAmount = 4
 
     override fun timeChosen(time: Int) {
         mBurstTime = time
