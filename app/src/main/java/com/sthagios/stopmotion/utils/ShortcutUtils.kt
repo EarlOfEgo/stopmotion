@@ -8,6 +8,7 @@ import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.show.ShowGifActivity
 import java.util.*
@@ -30,8 +31,8 @@ inline fun Context.addShortcut(gif: Gif) {
 
         val shortcutManager = getSystemService(ShortcutManager::class.java)
         val shortcut = ShortcutInfo.Builder(this, "id1")
-                .setShortLabel("Share Gif")
-                .setLongLabel("Share ${gif.name}")
+                .setShortLabel(getString(R.string.shortcut_label_short_share))
+                .setLongLabel(getString(R.string.shortcut_label_long_share, gif.name))
                 .setIcon(Icon.createWithBitmap(iconBitmap))
                 .setIntent(intent)
                 .build()

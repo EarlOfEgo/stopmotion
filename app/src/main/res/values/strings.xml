@@ -14,6 +14,9 @@
     <string name="take_picture_shortcut_long_label1">Create Stopmotion Gif</string>
     <string name="take_picture_disabled_message1">Disable Shortcut</string>
 
+    <string name="shortcut_label_short_share">Share Gif</string>
+    <string name="shortcut_label_long_share">Share %1$s</string>
+
     <!-- Empty list-->
     <string name="empty_list_text">Create your first Stopmotion Gif</string>
 
