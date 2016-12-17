@@ -10,10 +10,6 @@
     <string name="burst_time_6">4 Sek.</string>
     <string name="burst_time_7">5 Sek.</string>
 
-    <string name="compression_rate_low">Gering</string>
-    <string name="compression_rate_medium">Mittel</string>
-    <string name="compression_rate_high">Hoch</string>
-
     <!-- Empty list-->
     <string name="empty_list_text">Erstelle dein erstes Stopmotion Gif</string>
 
@@ -33,7 +29,6 @@
     <string name="snackbar_renamed_gif">%1$s in %2$s umbenannt</string>
     <string name="snackbar_info_taking_time">Gif erstellen, dies kann eine Weile dauern</string>
     <string name="snackbar_info_loading_time">Laden des Gifs, dies kann ein bisschen dauern</string>
-    <string name="snackbar_warning_low_compression">Niedrige Kompressionsrate gewählt. Wir empfehlen eine hoche Kompressionsrate.</string>
 
     <!--Settings-->
     <string name="settings_title">Einstellungen</string>
@@ -42,8 +37,6 @@
     <string name="settings_pushes_title">Push Nachrichten</string>
     <string name="settings_pushes_description">Push Nachrichten von Stopmotion empfangen.</string>
     <string name="settings_version">Version: %1$s</string>
-    <string name="settings_gif_compression_rate_title">Gif Kompressionsrate</string>
-    <string name="settings_gif_compression_rate_description">Eine höhre Kompressionsrate verringert die Gif Erstellungszeit.</string>
     <string name="settings_licences_title">Lizenzen</string>
     <string name="settings_licences_description">Eine Übersicht der Open Source Lizenzen.</string>
 
