@@ -10,12 +10,6 @@
         <item>@string/burst_time_7</item>
     </string-array>
 
-    <string-array name="compression_rate">
-        <item>@string/compression_rate_high</item>
-        <item>@string/compression_rate_medium</item>
-        <item>@string/compression_rate_low</item>
-    </string-array>
-
     <string-array name="generated_with">
         <item>@string/generated_with_text_1</item>
         <item>@string/generated_with_text_2</item>
