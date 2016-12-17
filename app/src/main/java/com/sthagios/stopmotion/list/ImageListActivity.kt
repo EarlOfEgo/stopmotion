@@ -15,7 +15,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import com.sthagios.stopmotion.R
-import com.sthagios.stopmotion.create.CreateNewImage
+import com.sthagios.stopmotion.create.CreateNewImageActivity
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.rating.RatingActivity
@@ -130,7 +130,7 @@ class ImageListActivity : AppCompatActivity() {
     }
 
     private fun createNewImage() {
-        startActivity<CreateNewImage>()
+        startActivity<CreateNewImageActivity>()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

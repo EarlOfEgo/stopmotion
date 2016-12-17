@@ -33,17 +33,6 @@ interface SettingsView : AbstractView {
     fun setThumbsInList(isSet: Boolean)
 
     /**
-     * View method for setting the compression rate text
-     * @param id the resource id of the string for the subtitle
-     */
-    fun setCompressionRate(id: Int)
-
-    /**
-     * Is emitted when the compression rate changes, emits a Float with the compression rate
-     */
-    fun onCompressionRateChanged(): Observable<Float>
-
-    /**
      * Is called when there are no permissions to write the external storage
      */
     fun onPermissionNotGranted()

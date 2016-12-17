@@ -234,33 +234,6 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private lateinit var mPictureList: ArrayList<String>
 
-    private fun getCompressedWidthHeight(list: List<String>): Pair<Int, Int> {
-        var compressedImageWidth = 0
-        var compressedImageHeight = 0
-
-        for (path in list) {
-
-            val exif = ExifInterface(path)
-            val imgWidth = exif.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, 600)
-            val imgLength = exif.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, 800)
-            val tmpWidth = (imgWidth * mCompressRate).toInt()
-            val tmpHeight = (imgLength * mCompressRate).toInt()
-            if (tmpWidth > compressedImageWidth)
-                compressedImageWidth = tmpWidth
-
-            if (tmpHeight > compressedImageHeight)
-                compressedImageHeight = tmpHeight
-
-            LogDebug(
-                    "ImgWidth $imgWidth mgLength:$imgLength CompressedWidth:$compressedImageWidth CompressedHeight:$compressedImageHeight")
-
-
-        }
-
-        return Pair(compressedImageWidth, compressedImageHeight)
-    }
-
-
     private fun generateGIF(): ByteArray {
 
         showWhichThreadInLogcat()
@@ -269,10 +242,6 @@ class GenerateGifActivity : AppCompatActivity() {
         val encoder = AnimatedGifEncoder()
         encoder.start(bos)
         encoder.setRepeat(0)
-
-        val compressedImageSize = getCompressedWidthHeight(mPictureList)
-        val compressedImageWidth = compressedImageSize.first
-        val compressedImageHeight = compressedImageSize.second
 
         LogDebug("Start gif encoding")
         var i = 1
@@ -288,10 +257,7 @@ class GenerateGifActivity : AppCompatActivity() {
             val exif = ExifInterface(path)
             val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_NORMAL)
-
-            var finalBitmap = Bitmap.createScaledBitmap(bitmap, compressedImageWidth,
-                    compressedImageHeight,
-                    true)
+            var finalBitmap = bitmap
 
             LogDebug("Orientation: $orientation")
             if (orientation != ExifInterface.ORIENTATION_NORMAL) {
@@ -299,8 +265,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
                 matrix.postRotate(getRotation(orientation))
                 finalBitmap = Bitmap.createBitmap(finalBitmap, 0, 0, finalBitmap.width,
-                        finalBitmap.height, matrix,
-                        true)
+                        finalBitmap.height, matrix, true)
             }
 
             if (path === mPictureList[0]) {
@@ -334,7 +299,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private fun getRotation(exif: Int): Float {
         when (exif) {
-            ExifInterface.ORIENTATION_ROTATE_90  -> return 90f
+            ExifInterface.ORIENTATION_ROTATE_90 -> return 90f
             ExifInterface.ORIENTATION_ROTATE_180 -> return 180f
             ExifInterface.ORIENTATION_ROTATE_270 -> return 270f
         }

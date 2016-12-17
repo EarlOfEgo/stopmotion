@@ -87,14 +87,14 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.animate(access_title)
                 .translationY(50f)
                 .alpha(1f)
-                .setStartDelay((START_DELAY + 500).toLong())
+                .setStartDelay((START_DELAY + 500))
                 .setDuration(2500)
                 .setInterpolator(DecelerateInterpolator()).start()
 
         ViewCompat.animate(access_text)
                 .translationY(50f)
                 .alpha(1f)
-                .setStartDelay(((START_DELAY * 2) + 500).toLong())
+                .setStartDelay(((START_DELAY * 2) + 500))
                 .setDuration(2500)
                 .setInterpolator(DecelerateInterpolator()).start()
 

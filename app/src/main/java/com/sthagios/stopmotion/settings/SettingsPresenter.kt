@@ -84,15 +84,6 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
                 .doOnNext { mContext.setUseThumbsInList(it) }
                 .subscribe({ mView?.setThumbsInList(it) }))
 
-        subscribe(mContext.getCompressionRateObservable()
-                .map { getCompressionRateResourceId(it) }
-                .subscribe({ mView?.setCompressionRate(it) }))
-
-        subscribe(mView!!.onCompressionRateChanged()
-                .doOnNext { mContext.setCompressionRate(it) }
-                .map { getCompressionRateResourceId(it) }
-                .subscribe({ mView?.setCompressionRate(it) }))
-
         subscribe(mView!!.onPermissionResult()
                 .filter { it }
                 .subscribe())
@@ -135,17 +126,6 @@ class SettingsPresenter(val mContext: Context) : AbstractPresenter<SettingsView>
         } finally {
             inChannel?.close()
             outChannel?.close()
-        }
-    }
-
-    private fun getCompressionRateResourceId(it: Float?): Int {
-        return when (it) {
-            COMPRESSION_HIGH   -> R.string.compression_rate_high
-            COMPRESSION_MEDIUM -> R.string.compression_rate_medium
-            COMPRESSION_LOW    -> R.string.compression_rate_low
-            else               -> {
-                R.string.compression_rate_high
-            }
         }
     }
 

@@ -6,6 +6,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'realm-android'
+apply plugin: 'com.google.firebase.firebase-crash'
 
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def buildTime = {
@@ -14,20 +15,20 @@ def buildTime = {
     return df.format(new Date())
 }()
 
-def version_name = "1.0.3"
-def version_code = 6
+def version_name = "1.0.4"
+def version_code = 7
 def appId = "com.sthagios.stopmotion"
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
 
 
     defaultConfig {
         applicationId appId
         minSdkVersion 21
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode version_code
         versionName version_name
 
@@ -120,7 +121,7 @@ dependencies {
 
     compile 'com.github.wooplr:Spotlight:1.2.2'
 
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile "com.android.support:support-annotations:$support_lib_version"
     androidTestCompile 'tools.fastlane:screengrab:0.3.2'
 
@@ -134,10 +135,10 @@ dependencies {
 
 
 buildscript {
-    ext.kotlin_version = '1.0.4'
+    ext.kotlin_version = '1.0.5-2'
 
-    ext.support_lib_version = '24.1.1'
-    ext.firebase_version = '9.0.2'
+    ext.support_lib_version = '25.1.0'
+    ext.firebase_version = '10.0.1'
     repositories {
         mavenCentral()
     }

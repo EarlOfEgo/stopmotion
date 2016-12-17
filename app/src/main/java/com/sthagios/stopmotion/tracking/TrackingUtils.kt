@@ -61,3 +61,7 @@ inline fun Context.logEditEvent(type: String, content: String) {
     bundle.putString("type", type)
     getFirebaseInstance().logEvent("edit", bundle)
 }
+
+inline fun Context.setUserProperty(key: String, value: String) {
+    getFirebaseInstance().setUserProperty(key, value)
+}

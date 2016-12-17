@@ -8,9 +8,9 @@ import android.widget.TextView
 
 /**
  * Stopmotion
-
+ *
  * @author stephan
- * *
+ *
  * @since 12.06.16
  */
 class RecyclerViewEmptyView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
@@ -46,7 +46,7 @@ class RecyclerViewEmptyView @JvmOverloads constructor(context: Context, attrs: A
     }
 
     private fun checkForEmptyDataSet() {
-        visibility = if (isEmpty()) View.GONE else View.VISIBLE
+        visibility = if (isEmpty()) View.INVISIBLE else View.VISIBLE
 
         mEmptyView?.visibility = if (isEmpty()) View.VISIBLE else View.GONE
         mEmptyTextView?.visibility = if (isEmpty()) View.VISIBLE else View.GONE

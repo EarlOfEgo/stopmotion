@@ -59,8 +59,8 @@ class BurstTimeDialog : AbstractDialog() {
 
         fun newInstance(value: Int): BurstTimeDialog {
             val fragment = BurstTimeDialog()
-            val args = Bundle();
-            args.putInt(BUNDLE_VALUE, value);
+            val args = Bundle()
+            args.putInt(BUNDLE_VALUE, value)
             fragment.arguments = args
             return fragment
         }
@@ -69,11 +69,11 @@ class BurstTimeDialog : AbstractDialog() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         if (arguments != null) {
-            mValue = arguments.getInt(BUNDLE_VALUE, 0);
+            mValue = arguments.getInt(BUNDLE_VALUE, 0)
         }
 
         if (savedInstanceState != null) {
-            mValue = savedInstanceState.getInt(BUNDLE_VALUE, 0);
+            mValue = savedInstanceState.getInt(BUNDLE_VALUE, 0)
         }
 
         val dialog = MaterialDialog.Builder(activity)
@@ -87,7 +87,7 @@ class BurstTimeDialog : AbstractDialog() {
                 .alwaysCallSingleChoiceCallback()
                 .positiveText(R.string.confirm_ok)
                 .onPositive({ materialDialog, dialogAction -> mListener.timeChosen(mValue) })
-                .show();
+                .show()
 
         return dialog
     }
@@ -99,14 +99,14 @@ class BurstAmountDialog : AbstractDialog() {
 
         fun newInstance(value: Int): BurstAmountDialog {
             val fragment = BurstAmountDialog()
-            val args = Bundle();
-            args.putInt(BUNDLE_VALUE, value);
+            val args = Bundle()
+            args.putInt(BUNDLE_VALUE, value)
             fragment.arguments = args
             return fragment
         }
     }
 
-    val mValues: List<Int> = arrayListOf(3, 4, 5, 6, 7)
+    val mValues: List<Int> = arrayListOf(4, 5, 6, 7, 8, 9, 10)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -115,7 +115,7 @@ class BurstAmountDialog : AbstractDialog() {
         }
 
         if (savedInstanceState != null) {
-            mValue = savedInstanceState.getInt(BUNDLE_VALUE, 0);
+            mValue = savedInstanceState.getInt(BUNDLE_VALUE, 0)
         }
 
         val dialog = MaterialDialog.Builder(activity)

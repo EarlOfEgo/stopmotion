@@ -2,15 +2,13 @@
     <string name="app_name">Stopmotion</string>
 
 
-    <string name="burst_time_1">1 Sec.</string>
-    <string name="burst_time_2">2 Sec.</string>
-    <string name="burst_time_3">3 Sec.</string>
-    <string name="burst_time_4">4 Sec.</string>
-    <string name="burst_time_5">5 Sec.</string>
-
-    <string name="compression_rate_low">Low</string>
-    <string name="compression_rate_medium">Medium</string>
-    <string name="compression_rate_high">High</string>
+    <string name="burst_time_1">1/4 Sec.</string>
+    <string name="burst_time_2">1/2 Sec.</string>
+    <string name="burst_time_3">1 Sec.</string>
+    <string name="burst_time_4">2 Sec.</string>
+    <string name="burst_time_5">3 Sec.</string>
+    <string name="burst_time_6">4 Sec.</string>
+    <string name="burst_time_7">5 Sec.</string>
 
     <!-- Empty list-->
     <string name="empty_list_text">Create your first Stopmotion Gif</string>
@@ -31,7 +29,6 @@
     <string name="snackbar_renamed_gif">Renamed %1$s to %2$s</string>
     <string name="snackbar_info_taking_time">Converting to Gif, this can take some time</string>
     <string name="snackbar_info_loading_time">Loading the animated Gif. Please be patient.</string>
-    <string name="snackbar_warning_low_compression">Set Low compression rate. We recommend a higher compression rate</string>
     <string name="snackbar_image_required">You need more Images to generate a Gif</string>
     <string name="snackbar_take_picture_action">Take Picture</string>
     <string name="snackbar_permissions">You have to grant Camera permissions.</string>
@@ -45,8 +42,6 @@
     <string name="settings_pushes_title">Push Notifications</string>
     <string name="settings_pushes_description">Receive push notifications from Stopmotion</string>
     <string name="settings_version">Version: %1$s</string>
-    <string name="settings_gif_compression_rate_title">Gif Compression Rate</string>
-    <string name="settings_gif_compression_rate_description">A higher compression rate decreases the Gif conversion time.</string>
     <string name="settings_licences_title">Licenses</string>
     <string name="settings_licences_description">An overview of the used open source licenses</string>
     <string name="settings_storage_title">Use external Storage</string>

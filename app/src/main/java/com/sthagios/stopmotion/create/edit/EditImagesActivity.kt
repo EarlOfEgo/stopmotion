@@ -10,7 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.bumptech.glide.Glide
 import com.sthagios.stopmotion.R
-import com.sthagios.stopmotion.create.CreateNewImage
+import com.sthagios.stopmotion.create.CreateNewImageActivity
 import com.sthagios.stopmotion.create.GenerateGifActivity
 import com.sthagios.stopmotion.tracking.logEditEvent
 import com.sthagios.stopmotion.utils.*
@@ -44,7 +44,7 @@ class EditImagesActivity : AppCompatActivity() {
                     Snackbar.make(image_preview, R.string.snackbar_image_required,
                             Snackbar.LENGTH_LONG)
                             .setAction(R.string.snackbar_take_picture_action, {
-                                startActivityForResultWithArgument<CreateNewImage>(true,
+                                startActivityForResultWithArgument<CreateNewImageActivity>(true,
                                         sNewImageTake)
                             })
                             .show()
@@ -78,7 +78,7 @@ class EditImagesActivity : AppCompatActivity() {
                     Glide.with(this).load(it).into(image_preview)
                 },
                 {
-                    startActivityForResultWithArgument<CreateNewImage>(true, sNewImageTake)
+                    startActivityForResultWithArgument<CreateNewImageActivity>(true, sNewImageTake)
                 })
 
         image_list.adapter = mAdapter
