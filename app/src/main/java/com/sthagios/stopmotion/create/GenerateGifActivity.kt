@@ -202,8 +202,8 @@ class GenerateGifActivity : AppCompatActivity() {
             gif.fileUriString = Uri.fromFile(newFile).toString()
             gif.thumbnailUriString = mThumbUri
 
-            LogDebug("Stored gif ${gif.toString()}")
-
+            LogDebug("Stored gif $gif")
+addShortcut(gif)
             startActivity<ShowGifActivity>(gif.id)
             finishAffinity()
         }
@@ -275,7 +275,7 @@ class GenerateGifActivity : AppCompatActivity() {
                 finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
                 fos.close()
                 mThumbUri = Uri.fromFile(imageFile).toString()
-                LogDebug("Thumb created under ${mThumbUri.toString()}")
+                LogDebug("Thumb created under $mThumbUri")
             }
 
             LogDebug("Adding Frame: height:${finalBitmap.height} + width:${finalBitmap.width}")
