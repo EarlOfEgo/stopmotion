@@ -15,8 +15,8 @@ def buildTime = {
     return df.format(new Date())
 }()
 
-def version_name = "1.0.2"
-def version_code = 5
+def version_name = "1.0.3"
+def version_code = 6
 def appId = "com.sthagios.stopmotion"
 
 android {
