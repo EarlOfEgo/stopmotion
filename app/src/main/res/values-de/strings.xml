@@ -94,5 +94,8 @@
     <string name="settings_storage_description">Benutze den externen Speicherplatz, wie z.B. deine Sd Karte</string>
     <string name="settings_feedback_description">Hast du einen Bug gefunden? Anregungen, Vorschläge, Verbesserung, jede Art von Feedback ist willkommen.</string>
     <string name="settings_feedback_title">Feedback</string>
+    <string name="take_picture_disabled_message1">Shortcut entfernen</string>
+    <string name="take_picture_shortcut_long_label1">Generiere ein Stopmotion Gif</string>
+    <string name="take_picture_shortcut_short_label1">Gif erstellen</string>
 
 </resources>
