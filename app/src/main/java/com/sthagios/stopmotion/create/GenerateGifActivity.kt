@@ -203,7 +203,6 @@ class GenerateGifActivity : AppCompatActivity() {
             gif.thumbnailUriString = mThumbUri
 
             LogDebug("Stored gif $gif")
-addShortcut(gif)
             startActivity<ShowGifActivity>(gif.id)
             finishAffinity()
         }

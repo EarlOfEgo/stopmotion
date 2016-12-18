@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
+import android.graphics.Bitmap
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.show.ShowGifActivity
@@ -24,6 +26,8 @@ inline fun Context.addShortcut(gif: Gif) {
 
         val thumbUri = Uri.parse(gif.thumbnailUriString)
         val iconBitmap = MediaStore.Images.Media.getBitmap(contentResolver, thumbUri)
+        val roundIcon = RoundedBitmapDrawableFactory.create(resources, Bitmap.createBitmap(iconBitmap, 0, 0, 48, 48))
+        roundIcon.isCircular = true
 
         val intent = Intent(this, ShowGifActivity::class.java)
         intent.action = Intent.ACTION_VIEW
@@ -33,7 +37,7 @@ inline fun Context.addShortcut(gif: Gif) {
         val shortcut = ShortcutInfo.Builder(this, "id1")
                 .setShortLabel(getString(R.string.shortcut_label_short_share))
                 .setLongLabel(getString(R.string.shortcut_label_long_share, gif.name))
-                .setIcon(Icon.createWithBitmap(iconBitmap))
+                .setIcon(Icon.createWithBitmap(roundIcon.bitmap))
                 .setIntent(intent)
                 .build()
         shortcutManager.removeAllDynamicShortcuts()
