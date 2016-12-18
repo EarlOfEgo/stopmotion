@@ -52,12 +52,10 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        for (i in 0..toolbar.childCount) {
-            val view = toolbar.getChildAt(i)
-            if (view is TextView) {
-                ViewCompat.setTransitionName(view, "shared_text")
-            }
-        }
+        (0..toolbar.childCount)
+                .map { toolbar.getChildAt(it) }
+                .filterIsInstance<TextView>()
+                .forEach { ViewCompat.setTransitionName(it, "shared_text") }
 
         val id = retrieveLongParameter()
         LogDebug(id.toString())
@@ -86,6 +84,9 @@ class ShowGifActivity : AppCompatActivity(), EditDialog.Callback {
 
         share_button.setOnClickListener({
             shareGif(gif.shareUriString, gif.name)
+            getRealmInstance().executeTransaction {
+                gif.sharedAmount++
+            }
         })
 
         edit_button.setOnClickListener({

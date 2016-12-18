@@ -23,5 +23,4 @@ open class Gif(
         open var shareUriString: String = "",
         //Thumbnail file uri as string
         open var thumbnailUriString: String = ""
-) : RealmObject() {
-}
+) : RealmObject()
