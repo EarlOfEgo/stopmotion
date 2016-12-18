@@ -106,8 +106,8 @@ inline fun Activity.showWhichThreadInLogcat() {
 
     val main = Looper.myLooper() == Looper.getMainLooper()
     if (main) {
-        Log.d("${this.javaClass.simpleName}", "On main Thread")
+        Log.d(this.javaClass.simpleName, "On main Thread")
     } else {
-        Log.d("${this.javaClass.simpleName}", "On ${Thread.currentThread().toString()} Thread")
+        Log.d(this.javaClass.simpleName, "On ${Thread.currentThread()} Thread")
     }
 }

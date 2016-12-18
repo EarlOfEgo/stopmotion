@@ -23,8 +23,6 @@ import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.image.storage.getGifDirectoryFile
 import com.sthagios.stopmotion.image.storage.getThumbDirectoryFile
-import com.sthagios.stopmotion.settings.COMPRESSION_HIGH
-import com.sthagios.stopmotion.settings.getCompressionRate
 import com.sthagios.stopmotion.show.ShowGifActivity
 import com.sthagios.stopmotion.utils.*
 import kotlinx.android.synthetic.main.activity_generate_gif.*
@@ -43,8 +41,6 @@ class GenerateGifActivity : AppCompatActivity() {
 
     private lateinit var mThumbName: String
 
-    private var mCompressRate: Float = COMPRESSION_HIGH
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_generate_gif)
@@ -56,8 +52,6 @@ class GenerateGifActivity : AppCompatActivity() {
         val fileName = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         mGifName = "$fileName.gif"
         mThumbName = "$fileName.PNG"
-
-        mCompressRate = getCompressionRate()
 
         mPictureList = retrieveStringListParameter()
 
@@ -145,14 +139,14 @@ class GenerateGifActivity : AppCompatActivity() {
 
         runOnUiThread {
             mGifGenerated = true
-            gif_generated_info.text = resources.getString(
-                    R.string.generate_successfully_generated_info_1, "$mGenerationTime") +
-                    " " + resources.getString(R.string.generate_successfully_generated_info_2,
-                    "${Formatter.formatFileSize(this, fileSize)}") +
-                    " " + resources.getString(R.string.generate_successfully_generated_info_3,
-                    "${mPictureList.size}", "${mPictureList.size * 0.25}") +
+            var infoString = resources.getString(R.string.generate_successfully_generated_info_1, "$mGenerationTime")
+            infoString += " "
+            infoString += resources.getString(R.string.generate_successfully_generated_info_2,
+                    Formatter.formatFileSize(this, fileSize))
+            infoString += " " + resources.getString(R.string.generate_successfully_generated_info_3,
+                    (mPictureList.size).toString(), (mPictureList.size * 0.25).toString()) +
                     "\n\n*$sideNode"
-
+            gif_generated_info.text = infoString
             magic_progressbar.visibility = View.INVISIBLE
             magic_checkmark.visibility = View.VISIBLE
             button_save_gif.setOnClickListener {
