@@ -707,7 +707,6 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
 
     private val APP_FOLDER_NAME = "Stopmotion"
 
-
     private var mTakeOne = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -722,7 +721,6 @@ class CreateNewImageActivity : AppCompatActivity(), AbstractDialog.Callback {
         ORIENTATIONS.append(Surface.ROTATION_90, 0)
 
         setContentView(R.layout.activity_create_new_image)
-
         mTakeOne = retrieveBooleanParameter()
 
         if (savedInstanceState != null) {

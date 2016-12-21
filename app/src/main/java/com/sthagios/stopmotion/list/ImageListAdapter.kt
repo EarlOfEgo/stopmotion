@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
+import com.sthagios.stopmotion.image.database.getRealmInstance
 import com.sthagios.stopmotion.settings.getSettingsPreferences
 import com.sthagios.stopmotion.share.shareGif
 import com.sthagios.stopmotion.show.ShowGifActivity
@@ -55,8 +56,12 @@ class ImageListAdapter(private val mContext: Context, data: OrderedRealmCollecti
                 Glide.with(mContext).load(uri).into(target)
 
             }
-            holder?.mShareButton?.setOnClickListener(
-                    { mContext.shareGif(gif.shareUriString, gif.name) })
+            holder?.mShareButton?.setOnClickListener({
+                mContext.shareGif(gif.shareUriString, gif.name)
+                mContext.getRealmInstance().executeTransaction {
+                    gif.sharedAmount++
+                }
+            })
             holder?.mImageView?.setOnClickListener({
                 val p1: Pair<View, String> = Pair.create(holder.mImageView, "shared_image")
                 val p2: Pair<View, String> = Pair.create(holder.mImageText, "shared_text")
