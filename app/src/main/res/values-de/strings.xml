@@ -97,5 +97,7 @@
     <string name="take_picture_disabled_message1">Shortcut entfernen</string>
     <string name="take_picture_shortcut_long_label1">Generiere ein Stopmotion Gif</string>
     <string name="take_picture_shortcut_short_label1">Gif erstellen</string>
+    <string name="shortcut_label_long_share">Teile %1$s</string>
+    <string name="shortcut_label_short_share">Teile Gif</string>
 
 </resources>
