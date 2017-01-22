@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sthagios.stopmotion.create.GenerateGifActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.sthagios.stopmotion.create.GenerateGifActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -13,7 +13,7 @@
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <include layout="@layout/toolbar" />
+        <include layout="@layout/toolbar"/>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -32,7 +32,7 @@
             android:layout_width="0px"
             android:layout_height="0px"
             android:focusable="true"
-            android:focusableInTouchMode="true" />
+            android:focusableInTouchMode="true"/>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/usernameWrapper"
@@ -46,9 +46,9 @@
                 android:layout_marginBottom="16dp"
                 android:hint="@string/edit_text_hint_gif_name"
                 android:imeOptions="actionDone"
-                android:singleLine="true"
                 android:nextFocusLeft="@id/gif_name"
-                android:nextFocusUp="@id/gif_name" />
+                android:nextFocusUp="@id/gif_name"
+                android:singleLine="true"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -77,7 +77,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="@string/converting_images_amount_state"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"/>
 
                     <ImageView
                         android:id="@+id/converted_checkmark"
@@ -86,13 +86,13 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/ic_check_tint_24dp"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <ProgressBar
                         android:id="@+id/converting_progressbar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true" />
+                        android:layout_alignParentEnd="true"/>
 
                 </RelativeLayout>
 
@@ -110,13 +110,13 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="@string/converting_images_magic_state"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"/>
 
                     <ProgressBar
                         android:id="@+id/magic_progressbar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true" />
+                        android:layout_alignParentEnd="true"/>
 
                     <ImageView
                         android:id="@+id/magic_checkmark"
@@ -125,7 +125,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/ic_check_tint_24dp"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                 </RelativeLayout>
 
@@ -134,7 +134,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="24dp"
-                    android:src="@drawable/animate_generate_gif" />
+                    android:src="@drawable/animate_generate_gif"/>
 
             </LinearLayout>
 
@@ -154,28 +154,28 @@
                     android:layout_marginBottom="16dp"
                     android:padding="4dp"
                     android:text="@string/generate_successfully_generated_title"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"/>
 
                 <!--<TextView-->
-                    <!--android:id="@+id/gif_generated_info"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginBottom="16dp"-->
-                    <!--android:padding="4dp" />-->
+                <!--android:id="@+id/gif_generated_info"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="16dp"-->
+                <!--android:padding="4dp" />-->
 
                 <ImageView
                     android:id="@+id/gif_preview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:padding="4dp" />
+                    android:layout_marginBottom="16dp"
+                    android:padding="4dp"/>
 
                 <Button
                     android:id="@+id/button_save_gif"
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/generate_button_save" />
+                    android:text="@string/generate_button_save"/>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
