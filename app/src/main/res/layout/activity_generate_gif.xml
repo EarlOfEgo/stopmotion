@@ -156,12 +156,19 @@
                     android:text="@string/generate_successfully_generated_title"
                     android:textSize="24sp" />
 
-                <TextView
-                    android:id="@+id/gif_generated_info"
+                <!--<TextView-->
+                    <!--android:id="@+id/gif_generated_info"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="16dp"-->
+                    <!--android:padding="4dp" />-->
+
+                <ImageView
+                    android:id="@+id/gif_preview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:padding="4dp" />
+                android:layout_marginBottom="16dp"
+                android:padding="4dp" />
 
                 <Button
                     android:id="@+id/button_save_gif"
