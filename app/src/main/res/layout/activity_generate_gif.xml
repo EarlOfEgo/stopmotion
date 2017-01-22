@@ -159,7 +159,7 @@
                 <ImageView
                     android:id="@+id/gif_preview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginBottom="16dp"
                     android:padding="4dp"/>
 
