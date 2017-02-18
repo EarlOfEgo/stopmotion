@@ -23,8 +23,6 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
 
-
-
     defaultConfig {
         applicationId appId
         minSdkVersion 21
@@ -135,9 +133,9 @@ dependencies {
 
 
 buildscript {
-    ext.kotlin_version = '1.0.5-2'
+    ext.kotlin_version = '1.0.6'
 
-    ext.support_lib_version = '25.1.0'
+    ext.support_lib_version = '25.1.1'
     ext.firebase_version = '10.0.1'
     repositories {
         mavenCentral()
