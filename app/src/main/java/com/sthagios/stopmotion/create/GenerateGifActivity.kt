@@ -12,12 +12,13 @@ import android.support.v4.content.FileProvider
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
-import android.text.format.Formatter
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
+import com.bumptech.glide.Glide
 import com.bumptech.glide.gifencoder.AnimatedGifEncoder
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget
 import com.sthagios.stopmotion.R
 import com.sthagios.stopmotion.image.database.Gif
 import com.sthagios.stopmotion.image.database.getRealmInstance
@@ -139,20 +140,20 @@ class GenerateGifActivity : AppCompatActivity() {
 
         runOnUiThread {
             mGifGenerated = true
-            var infoString = resources.getString(R.string.generate_successfully_generated_info_1, "$mGenerationTime")
-            infoString += " "
-            infoString += resources.getString(R.string.generate_successfully_generated_info_2,
-                    Formatter.formatFileSize(this, fileSize))
-            infoString += " " + resources.getString(R.string.generate_successfully_generated_info_3,
-                    (mPictureList.size).toString(), (mPictureList.size * 0.25).toString()) +
-                    "\n\n*$sideNode"
-            gif_generated_info.text = infoString
+
             magic_progressbar.visibility = View.INVISIBLE
             magic_checkmark.visibility = View.VISIBLE
             button_save_gif.setOnClickListener {
                 deleteTempFolderContent()
                 storeInDatabase()
             }
+
+
+            val gifUri = Uri.fromFile(newFile).toString()
+            val target = GlideDrawableImageViewTarget(gif_preview)
+            Glide.with(baseContext).load(gifUri).into(target)
+
+
             val drawable = loading_view.drawable
             if (drawable is Animatable) {
                 ViewCompat.animate(loading_container)
