@@ -140,14 +140,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
         runOnUiThread {
             mGifGenerated = true
-//            var infoString = resources.getString(R.string.generate_successfully_generated_info_1, "$mGenerationTime")
-//            infoString += " "
-//            infoString += resources.getString(R.string.generate_successfully_generated_info_2,
-//                    Formatter.formatFileSize(this, fileSize))
-//            infoString += " " + resources.getString(R.string.generate_successfully_generated_info_3,
-//                    (mPictureList.size).toString(), (mPictureList.size * 0.25).toString()) +
-//                    "\n\n*$sideNode"
-//            gif_generated_info.text = infoString
+
             magic_progressbar.visibility = View.INVISIBLE
             magic_checkmark.visibility = View.VISIBLE
             button_save_gif.setOnClickListener {
@@ -158,7 +151,7 @@ class GenerateGifActivity : AppCompatActivity() {
 
             val gifUri = Uri.fromFile(newFile).toString()
             val target = GlideDrawableImageViewTarget(gif_preview)
-            Glide.with(baseContext).load(gifUri)                    .into(target)
+            Glide.with(baseContext).load(gifUri).into(target)
 
 
             val drawable = loading_view.drawable

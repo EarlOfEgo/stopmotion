@@ -138,38 +138,42 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/container_finished"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:scaleX="0"
                 android:scaleY="0"
-                tools:scaleX="0"
-                tools:scaleY="0">
+                tools:scaleX="1"
+                tools:scaleY="1">
 
                 <TextView
+                    android:id="@+id/gif_save_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:padding="4dp"
+                    android:layout_alignParentTop="true"
                     android:text="@string/generate_successfully_generated_title"
                     android:textSize="24sp"/>
 
-                <ImageView
-                    android:id="@+id/gif_preview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="4dp"
-                    android:padding="4dp"/>
-
                 <Button
+                    android:layout_alignParentBottom="true"
                     android:id="@+id/button_save_gif"
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/generate_button_save"/>
-            </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/gif_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="4dp"
+                    android:layout_below="@+id/gif_save_title"
+                    android:layout_alignParentStart="true"/>
+            </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>
