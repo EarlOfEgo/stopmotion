@@ -6,7 +6,7 @@ pipeline {
                 sh './gradlew assembleDebug'
             }
         }
-        stage('Test' {
+        stage('Test') {
             steps {
                 sh './gradlew test'
             }
