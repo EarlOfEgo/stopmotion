@@ -3,12 +3,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh './gradlew assembleDebug'
+                sh './gradlew assembleDebug --no-daemon'
             }
         }
         stage('Test') {
             steps {
-                sh './gradlew test'
+                sh './gradlew test --no-daemon'
             }
         }
     }
