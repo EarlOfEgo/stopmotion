@@ -41,3 +41,5 @@ proguard/
 captures/
 
 keys/
+
+app/google-services.json
